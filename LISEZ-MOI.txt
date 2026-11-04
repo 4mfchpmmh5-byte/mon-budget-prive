@@ -1,6 +1,9 @@
-Mon Budget Privé 1.4 — mise à jour compatible avec le coffre v1.3.
+Mon Budget Privé 1.4.1 — correctifs iPhone
 
-Nouveautés : ajout express de dépenses, catégories libres, modification des opérations, historique manuel du patrimoine.
+- Champs à 16px pour éviter le zoom automatique iOS.
+- Légende du graphique réorganisée pour les écrans étroits.
+- Suppression du focus automatique sur le montant lors de l’ajout express.
+- Raccourci Transport remplacé par Maison.
+- Coffre et sauvegardes inchangés.
 
-Avant mise à jour : exporter une sauvegarde JSON chiffrée et conserver la phrase secrète.
-Décompresser puis envoyer index.html, sw.js, manifest.webmanifest et les deux icônes à la racine du dépôt GitHub Pages. Ne jamais envoyer de sauvegarde JSON sur GitHub. Ne pas supprimer la PWA iPhone.
+Sauvegardez votre coffre chiffré avant toute mise à jour. Envoyez les fichiers à la racine du dépôt GitHub, jamais votre sauvegarde JSON.
