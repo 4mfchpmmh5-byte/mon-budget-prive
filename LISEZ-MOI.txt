@@ -1,8 +1,7 @@
-Mon Budget Privé 1.5 — budget détaillé, modèles récurrents manuels, patrimoine
+Mon Budget Privé 1.6
 
-- Modification des lignes du budget (sans ressaisie).
-- Modèles récurrents : création, modification, suppression et ajout au mois choisi sur confirmation. Protection contre les doublons par modèle et mois.
-- Modification des comptes/actifs via formulaire. Historique de patrimoine conservé.
-- Même clé localStorage et même format de sauvegarde chiffrée.
-- Ne jamais publier une sauvegarde JSON sur GitHub. Exporter une sauvegarde avant mise à jour.
-- Le montant des opérations récurrentes doit être validé manuellement; aucune synchronisation bancaire.
+Mise à jour depuis 1.5 : sauvegarder le coffre avant installation, puis envoyer les fichiers de ce dossier à la racine du dépôt GitHub. Ne jamais envoyer le fichier JSON de sauvegarde sur GitHub.
+
+Nouveautés : types de placements, capital investi facultatif, répartition, graphique d’évolution à partir de deux dates, réinitialisation sécurisée des données tout en conservant le coffre.
+
+Attention : l’écart entre valeur et capital versé n’est pas un calcul de performance. La courbe du patrimoine n’est pas un historique des rendements.
