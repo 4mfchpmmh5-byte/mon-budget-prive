@@ -1,12 +1,9 @@
-MON BUDGET PRIVÉ - V1
+Mon Budget Privé v1.1
 
-Contenu : index.html, manifest.webmanifest, sw.js, icônes.
-Aucune donnée financière personnelle préremplie.
-
-IMPORTANT : le déploiement sur workers.dev peut rendre le code public. Configurer Cloudflare Access avant de saisir des données personnelles. Ne pas déposer de sauvegarde dans Cloudflare.
-
-L’application chiffre localement les données avec AES-GCM et PBKDF2. Faire une sauvegarde chiffrée régulièrement. Aucun audit de sécurité indépendant.
-
-INSTALLATION : déployer les fichiers du dossier (pas le ZIP), configurer et tester Cloudflare Access, ouvrir dans Safari iPhone, Partager > Sur l’écran d’accueil.
-
-Le mode hors ligne dépend de la mise en cache initiale du service worker et de la politique iOS. Le stockage local peut être supprimé par iOS.
+Ne contient aucune donnée financière.
+Sauvegardez votre coffre chiffré avant de remplacer les fichiers GitHub.
+Compatibilité du coffre v1 préservée.
+Verrouillage après fermeture ou 15 s en arrière-plan.
+Le remplissage par Face ID dépend de Safari/Mots de passe et n’est pas garanti.
+Mettre les fichiers à la racine du dépôt, ne jamais publier de sauvegarde JSON.
+Tester avec données fictives.
