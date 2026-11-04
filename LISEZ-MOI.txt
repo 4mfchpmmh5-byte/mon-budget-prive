@@ -1,9 +1,6 @@
-Mon Budget Privé v1.1
-
-Ne contient aucune donnée financière.
-Sauvegardez votre coffre chiffré avant de remplacer les fichiers GitHub.
-Compatibilité du coffre v1 préservée.
-Verrouillage après fermeture ou 15 s en arrière-plan.
-Le remplissage par Face ID dépend de Safari/Mots de passe et n’est pas garanti.
-Mettre les fichiers à la racine du dépôt, ne jamais publier de sauvegarde JSON.
-Tester avec données fictives.
+Mon Budget Privé v1.3 — interface hybride Apple/Finary.
+Sauvegarde chiffrée AVANT mise à jour.
+Décompressez et téléversez index.html, sw.js, manifest.webmanifest et les deux icônes à la racine du dépôt GitHub.
+Ne téléversez JAMAIS la sauvegarde JSON ni la phrase secrète.
+Le coffre existant et le format de sauvegarde sont inchangés.
+Les graphiques utilisent exclusivement les montants locaux déchiffrés après ouverture.
