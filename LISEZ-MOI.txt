@@ -1,9 +1,8 @@
-Mon Budget Privé 1.4.1 — correctifs iPhone
+Mon Budget Privé 1.5 — budget détaillé, modèles récurrents manuels, patrimoine
 
-- Champs à 16px pour éviter le zoom automatique iOS.
-- Légende du graphique réorganisée pour les écrans étroits.
-- Suppression du focus automatique sur le montant lors de l’ajout express.
-- Raccourci Transport remplacé par Maison.
-- Coffre et sauvegardes inchangés.
-
-Sauvegardez votre coffre chiffré avant toute mise à jour. Envoyez les fichiers à la racine du dépôt GitHub, jamais votre sauvegarde JSON.
+- Modification des lignes du budget (sans ressaisie).
+- Modèles récurrents : création, modification, suppression et ajout au mois choisi sur confirmation. Protection contre les doublons par modèle et mois.
+- Modification des comptes/actifs via formulaire. Historique de patrimoine conservé.
+- Même clé localStorage et même format de sauvegarde chiffrée.
+- Ne jamais publier une sauvegarde JSON sur GitHub. Exporter une sauvegarde avant mise à jour.
+- Le montant des opérations récurrentes doit être validé manuellement; aucune synchronisation bancaire.
