@@ -1,6 +1,6 @@
-Mon Budget Privé v1.3 — interface hybride Apple/Finary.
-Sauvegarde chiffrée AVANT mise à jour.
-Décompressez et téléversez index.html, sw.js, manifest.webmanifest et les deux icônes à la racine du dépôt GitHub.
-Ne téléversez JAMAIS la sauvegarde JSON ni la phrase secrète.
-Le coffre existant et le format de sauvegarde sont inchangés.
-Les graphiques utilisent exclusivement les montants locaux déchiffrés après ouverture.
+Mon Budget Privé 1.4 — mise à jour compatible avec le coffre v1.3.
+
+Nouveautés : ajout express de dépenses, catégories libres, modification des opérations, historique manuel du patrimoine.
+
+Avant mise à jour : exporter une sauvegarde JSON chiffrée et conserver la phrase secrète.
+Décompresser puis envoyer index.html, sw.js, manifest.webmanifest et les deux icônes à la racine du dépôt GitHub Pages. Ne jamais envoyer de sauvegarde JSON sur GitHub. Ne pas supprimer la PWA iPhone.
