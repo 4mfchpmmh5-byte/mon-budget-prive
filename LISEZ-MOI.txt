@@ -1,3 +1,4 @@
-Mon Budget Privé v2.1
-Sauvegardez vos données chiffrées avant la mise à jour. Remplacez les fichiers du dépôt GitHub, sans désinstaller la PWA ni effacer les données du navigateur.
-Accueil consultatif, charges fixes automatiques en prévisions, regroupement par catégorie, menus compacts. Les débits ne sont pas vérifiés auprès de la banque.
+Mon Budget Privé v2.2 — amélioration ergonomique.
+Avant installation : exporte une sauvegarde chiffrée depuis Réglages.
+Remplace les fichiers GitHub sans désinstaller la PWA ni effacer ses données.
+Tests recommandés : changement de mois, ajout de dépense, imputation à une enveloppe, modification/suppression, sauvegarde/restauration.

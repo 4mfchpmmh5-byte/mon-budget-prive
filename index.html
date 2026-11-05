@@ -74,6 +74,15 @@ header{padding-top:12px!important;padding-bottom:8px!important}header .eyebrow,h
 #plans .v19-details>.v19-content>.card>h2,#plans .v19-details>.v19-content>.card>.section-title{display:none}
 #txlist .right>div,#planlist .right>div{display:none!important}#txlist .row,#planlist .row{padding:12px 0}#txlist .right,#planlist .right{min-width:0!important}#txlist .v21-more,#planlist .v21-more{display:inline-block!important;border:0;background:transparent;color:#b7c5db;font-size:21px;padding:2px 10px;cursor:pointer}#txlist .right,#planlist .right{display:flex;flex-direction:row;align-items:center;gap:4px}
 #v21groupcard{margin-top:12px}#v21groupcard h2{margin-top:0}#v21dashboard .card{margin-bottom:12px}#plans .v19-details .tracker-actions button{padding:7px 9px}
+</style><style>
+/* v2.2 — densité et priorité aux actions du quotidien */
+#transactions>.section-title h2{font-size:22px}#transactions .card{padding:15px!important}#transactions label{font-size:12px}#transactions #txmonth{margin-bottom:6px}#transactions .v19-filters{grid-template-columns:minmax(0,1fr) 118px;gap:8px}#transactions .v19-filters input,#transactions .v19-filters select{min-width:0;width:100%;font-size:14px;padding:10px 9px}#transactions #txsummary{margin:9px 0;font-size:12px}#transactions #txlist:empty{min-height:0}#transactions #v19empty{margin:10px 0;font-size:13px}
+#plans>.card:has(#budgetmonth){padding:10px 13px!important}#plans>.card:has(#budgetmonth) label{margin:0;font-size:12px}#plans #budgetmonth{margin:5px 0 0;padding:10px 12px;font-size:16px}#plans .v19-details{margin:8px 0}#plans .v19-details>summary{padding:12px 13px;font-size:15px}#plans .v19-details>.v19-content{padding:0 10px 9px}#plans .tracker{padding:12px 0!important}#plans .tracker-top{gap:8px}#plans .tracker-top b{font-size:15px}#plans .tracker small{font-size:12px;line-height:1.4}#plans .tracker-actions{margin-top:7px}#plans .tracker-actions .btn{font-size:12px;padding:6px 10px!important}#plans .trackbar{margin:8px 0!important}
+#plans #v21groupcard{margin-top:8px;padding:12px!important}#plans #v21groupcard h2{font-size:17px}#plans .v21-group{margin:6px 0}#plans .v21-group summary{padding:10px;font-size:13px}#plans .v21-group .v21-line{padding:7px 0}#plans .v19-actions-menu{margin:8px 0}#plans .v19-actions-menu>summary{padding:9px 14px;font-size:14px}#plans #resetEnvelopes{display:none!important}
+#txdialog form{max-height:85dvh;overflow-y:auto}#txdialog label{margin-bottom:9px}#txdialog input,#txdialog select{padding:10px}#txdialog .v22-advanced{margin:10px 0;border:1px solid #343c51;border-radius:12px;padding:8px 10px}#txdialog .v22-advanced>summary{cursor:pointer;color:#b6c2d8;font-size:13px}#txdialog .v22-advanced>label{display:block;margin-top:10px}#txdialog #txamount{font-size:22px}
+.v22-action{border:1px solid #343c51;background:#262c44;color:#f1f1fc;border-radius:10px;padding:7px 12px;font-size:13px;cursor:pointer}.v22-pop{display:flex;gap:7px;flex-wrap:wrap;margin:6px 0}.v22-pop button{font-size:12px;padding:7px 10px}.v22-envrow{display:flex;justify-content:space-between;align-items:center;gap:8px}.v22-envrow b{font-size:15px}.v22-envrow small{color:#aab4c9}.v22-envactions{margin:6px 0 0}.v22-envactions button{font-size:12px}
+#plans #v22quickadd{margin-top:8px}#plans .v19-details:has(#categoryTracking){display:none}#plans #v21groupcard .muted{font-size:11px!important}#plans>.v19-details:has(#variableTracking) .tracker-actions{display:none!important}
+@media(max-width:390px){#plans .v21-group summary{font-size:12px}#plans .v21-group summary span:last-child{white-space:nowrap}#plans .v19-details>summary{font-size:14px}}
 </style></head><body><main><header><div class="eyebrow">Personnel · Chiffré · Hors ligne</div><h1>Mon Budget <span style="color:#3de2b7">Privé</span></h1><p id="subtitle">Ton budget, uniquement sur ton appareil.</p></header>
 <section id="setup" class="card hidden"><h2>Créer mon coffre privé</h2><p>Choisis une phrase secrète d'au moins 12 caractères. Elle servira à chiffrer tes données sur cet appareil. <b>Nous ne pouvons pas la récupérer.</b></p><label>Phrase secrète<input id="newpass" type="password" autocomplete="new-password" minlength="12" placeholder="12 caractères minimum"></label><label>Confirmer<input id="confpass" type="password" autocomplete="new-password"></label><button class="btn" id="create">Créer mon coffre</button><p id="setupmsg" class="muted"></p><div class="notice">Aucune donnée financière n'est incluse dans les fichiers hébergés. Fais une sauvegarde chiffrée après tes premières saisies.</div></section>
 <section id="unlock" class="card hidden"><h2>Déverrouiller mon budget</h2><form id="unlockform" autocomplete="on"><input aria-label="Identifiant du coffre" type="text" name="username" autocomplete="username" value="mon-budget" readonly style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0"><label>Phrase secrète<input id="pass" name="password" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"></label><button class="btn" id="open" type="submit">Déverrouiller</button></form><p id="unlockmsg" class="muted"></p><p class="muted">Si tu oublies ta phrase secrète, seul un export sauvegardé avec son mot de passe te permettra de retrouver tes données.</p></section>
@@ -82,7 +91,7 @@ header{padding-top:12px!important;padding-bottom:8px!important}header .eyebrow,h
 <div id="plans" class="view hidden"><h2>Budget mensuel prévu</h2><div class="card" style="padding:14px"><label>Mois du budget<select id="budgetmonth"></select></label><p class="muted" style="margin-bottom:0">Chaque mois possède ses propres prévisions. Les provisions se cumulent.</p></div><p>Définis les montants de référence. Ils ne sont pas des dépenses réelles : les dépenses sont saisies dans « Opérations ».</p><div class="card"><div id="planlist"></div><button class="btn secondary" id="newplan">+ Ajouter une ligne</button><p class="muted">Modifie tes charges et abonnements directement dans cette liste. Les prévisions ne sont pas des dépenses enregistrées.</p></div><div class="card"><h2>Budgets variables · restant ce mois</h2><p class="muted">Les dépenses enregistrées sont déduites de chaque ligne du budget.</p><div id="variableTracking"></div></div><div class="card"><h2>Mes provisions cumulatives</h2><p class="muted">Ajoute uniquement les sommes réellement mises de côté. Le solde se reporte au mois suivant.</p><div id="envelopeTracking"></div><button class="btn secondary" id="resetEnvelopes">Remettre les enveloppes à zéro</button></div><div class="card"><h2>Mes dépenses par catégorie</h2><div id="categoryTracking"></div></div><div class="card"><div class="section-title"><h2>Opérations récurrentes</h2><span class="muted">Sur validation uniquement</span></div><p>Crédit, EDF, abonnements… Ces modèles servent uniquement à enregistrer des paiements confirmés. Ils ne modifient pas les prévisions.</p><div id="recurringlist"></div><div class="card" id="paymentcard"><div class="section-title"><h2>Échéances du mois</h2><span class="muted">Prévu / payé</span></div><div id="paymentlist"></div></div><div class="actions"><button class="btn secondary" id="newrecurring">+ Nouveau modèle</button><button class="btn" id="applyrecurring">Ajouter au mois sélectionné</button></div><p class="muted" id="recurringmonth"></p></div></div>
 <div id="wealth" class="view hidden"><h2>Mon patrimoine</h2><div class="card hero"><span class="pill">Suivi manuel · Sans connexion bancaire</span><div class="muted" style="margin-top:16px">Patrimoine suivi</div><div class="amount" id="wealthtotal">0,00 €</div><div class="wealth-kpis"><div class="wealth-kpi"><small>Capital investi renseigné</small><strong id="investedtotal">0,00 €</strong></div><div class="wealth-kpi"><small>Écart valeur / capital</small><strong id="wealthgain">0,00 €</strong></div></div><p class="muted" style="font-size:12px">Écart indicatif : il ne tient pas compte des retraits, frais ou mouvements historiques.</p></div><div class="card"><div class="section-title"><h2>Évolution du patrimoine</h2><span class="muted">Historique manuel</span></div><div id="wealthchart" class="wealthchart"></div><button class="btn secondary" id="snapshot">📌 Enregistrer la valeur du jour</button><p class="muted">Les valeurs historiques sont des instantanés manuels, pas des cours en direct.</p></div><div class="card"><h2>Répartition de mes actifs</h2><div id="wealthbreakdown" class="wealth-breakdown"></div></div><div class="card"><div id="wealthlist"></div><button class="btn secondary" id="newasset">+ Ajouter un compte / actif</button><p class="muted">Valeurs saisies manuellement : aucun cours en direct et aucune connexion bancaire.</p></div></div>
 <div id="settings" class="view hidden"><h2>Sécurité et sauvegardes</h2><div class="card"><p>Les données sont chiffrées dans le stockage local de cet appareil (AES-GCM). La phrase secrète n'est pas transmise au serveur.</p><div class="actions"><button class="btn" id="export">Exporter une sauvegarde chiffrée</button><button class="btn secondary" id="import">Importer une sauvegarde</button></div><input type="file" id="importfile" accept=".json,application/json" class="hidden"><hr><button class="btn secondary" id="lock">Verrouiller</button><p class="muted">Le coffre reste déverrouillé pendant 5 minutes après avoir quitté l’application, sauf fermeture complète. Le remplissage par Face ID dépend des réglages Mots de passe de ton iPhone.</p><div class="reset-box"><b>Repartir de zéro sans supprimer le coffre</b><p class="muted">Supprime le budget, les opérations, les modèles récurrents, les actifs et l’historique. Ta phrase secrète reste la même. Action irréversible sans sauvegarde.</p><button class="btn danger" id="resetdata">Réinitialiser les données</button></div><hr><button class="btn danger" id="wipe">Effacer les données locales</button></div><div class="notice">Important : le stockage Safari/iOS peut être effacé. Conserve des sauvegardes régulières dans un emplacement sûr. Cette application n'est pas un coffre-fort audité.</div></div></section>
-<div class="footer">Mon Budget Privé · Version 2.1 · Aucune connexion bancaire</div><div id="msg" role="status"></div></main><nav id="nav"><button data-tab="home" class="active">◉<br>Accueil</button><button data-tab="transactions">⇄<br>Opérations</button><button data-tab="plans">▤<br>Budget</button><button data-tab="wealth">◇<br>Patrimoine</button><button data-tab="settings">⚙<br>Réglages</button></nav>
+<div class="footer">Mon Budget Privé · Version 2.2 · Aucune connexion bancaire</div><div id="msg" role="status"></div></main><nav id="nav"><button data-tab="home" class="active">◉<br>Accueil</button><button data-tab="transactions">⇄<br>Opérations</button><button data-tab="plans">▤<br>Budget</button><button data-tab="wealth">◇<br>Patrimoine</button><button data-tab="settings">⚙<br>Réglages</button></nav>
 <dialog id="txdialog"><form id="txform"><button type="button" class="close" data-close>×</button><h2>Nouvelle opération</h2><label>Type<select id="txtype"><option value="expense">Dépense</option><option value="income">Revenu</option></select></label><label>Libellé<input id="txname" required maxlength="100" placeholder="Ex. Courses"></label><label>Montant (€)<input id="txamount" required type="number" min="0.01" step="0.01" inputmode="decimal"></label><label>Catégorie personnalisable<input id="txcat" list="txcats" required maxlength="60" value="Variables" placeholder="Ex. Alimentation"><datalist id="txcats"><option value="Fixes"><option value="Variables"><option value="Provisions"><option value="Impôts"><option value="Investissements"><option value="Courses"><option value="Restaurant"><option value="Maison"><option value="Loisirs"><option value="Autres"></datalist></label><label>Imputer au budget / à une enveloppe (facultatif)<select id="txbudget"><option value="">Aucune imputation</option></select></label><label>Date<input id="txdate" type="date" required></label><button class="btn" id="txsubmit" type="submit">Enregistrer</button></form></dialog>
 <dialog id="plandialog"><form id="planform"><button type="button" class="close" data-close>×</button><h2 id="plantitle">Ajouter une ligne au budget</h2><label>Libellé<input id="planname" required maxlength="80" placeholder="Ex. Loyer"></label><label>Montant mensuel (€)<input id="planamount" required type="number" min="0" step="0.01"></label><label>Catégorie<select id="plancat"><option>Revenus</option><option>Fixes</option><option>Variables</option><option>Provisions</option><option>Impôts</option><option>Investissements</option></select></label><label>Groupe de dépenses<select id="plangroup"><option value="auto">Classement automatique</option><option>Résidence principale</option><option>Abonnements & télécoms</option><option>Banque & assurances</option><option>Vie quotidienne & loisirs</option><option>Provisions & investissements</option><option>Impôts</option><option>Revenus</option></select></label><label class="inline-check"><input type="checkbox" id="planrecurring"> Créer / synchroniser un modèle récurrent</label><label id="planrecurringdaywrap" class="hidden">Jour du prélèvement (1 à 28)<input type="number" min="1" max="28" value="5" id="planrecurringday"></label><button class="btn" id="plansubmit" type="submit">Ajouter</button></form></dialog>
 <dialog id="assetdialog"><form id="assetform"><button type="button" class="close" data-close>×</button><h2 id="assettitle">Ajouter un actif</h2><label>Nom<input id="assetname" required maxlength="80" placeholder="Ex. Livret A"></label><label>Type de placement<select id="assettype"><option value="Livrets">Livrets / épargne</option><option value="PEA">PEA</option><option value="Compte-titres">Compte-titres</option><option value="Crypto">Cryptomonnaies</option><option value="Immobilier">Immobilier</option><option value="Autres">Autres</option></select></label><label>Valeur actuelle (€)<input id="assetamount" required type="number" min="0" step="0.01" inputmode="decimal"></label><label>Capital investi ou versé (€) — facultatif<input id="assetinvested" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Laisser vide si inconnu"></label><p class="muted" style="font-size:12px">Le capital investi sert uniquement à calculer un écart indicatif, pas une performance réelle.</p><button class="btn" id="assetsubmit" type="submit">Ajouter</button></form></dialog>
@@ -334,6 +343,81 @@ document.addEventListener('click',async e=>{
  // La liste des échéances ne déclenche plus de paiements manuels ; on conserve les anciens mouvements.
  renderPayments=function(){const cash=$('cashflowview');if(cash)cash.textContent='';const payments=$('paymentlist');if(payments)payments.textContent='';};
  const old=render;render=function(){old();render21()};
+ render();
+})();
+</script><script>
+// v2.2: amélioration progressive de l'interface, aucune migration des données chiffrées.
+(function(){
+ const byId=id=>document.getElementById(id);
+ const plans=byId('plans'),picker=byId('budgetmonth')?.closest('.card');
+ const varSection=[...plans.querySelectorAll(':scope > details.v19-details')].find(d=>d.querySelector('#variableTracking'));
+ const envSection=[...plans.querySelectorAll(':scope > details.v19-details')].find(d=>d.querySelector('#envelopeTracking'));
+ const charges=byId('v21groupcard'),menu=plans.querySelector('.v19-actions-menu');
+ if(picker&&varSection&&envSection&&charges&&menu){
+  picker.after(varSection);varSection.after(envSection);envSection.after(charges);charges.after(menu);
+  varSection.querySelector('summary').textContent='Budgets variables';
+  varSection.open=true;envSection.open=false;
+  charges.querySelector('h2').textContent='Charges fixes';
+  menu.id='v22quickadd';menu.querySelector('summary').textContent='＋ Ajouter / modifier';
+  const m=menu.querySelector('.v19-menu-content');
+  if(m){const b=byId('v19expense');if(b)b.textContent='Nouvelle dépense';}
+ }
+ const tx=byId('transactions');const heading=tx.querySelector(':scope > .section-title h2');if(heading)heading.textContent='Opérations';
+ const search=byId('v19search');if(search)search.placeholder='Rechercher…';
+ const type=byId('v19type');if(type){const label=type.closest('label');if(label)label.firstChild.textContent='Filtrer';}
+ const summary=byId('txsummary');
+ const empty=byId('v19empty');if(empty)empty.textContent='Aucune opération ce mois-ci.';
+ // Un seul message pour les listes vides, sans perdre les filtres.
+ const txlist=byId('txlist');
+ const dialog=byId('txdialog'),form=byId('txform');
+ const typeLabel=byId('txtype')?.closest('label'),nameLabel=byId('txname')?.closest('label'),amountLabel=byId('txamount')?.closest('label');
+ const catLabel=byId('txcat')?.closest('label'),budgetLabel=byId('txbudget')?.closest('label'),dateLabel=byId('txdate')?.closest('label');
+ if(form&&typeLabel&&nameLabel&&amountLabel&&catLabel&&budgetLabel&&dateLabel){
+  const details=document.createElement('details');details.className='v22-advanced';details.innerHTML='<summary>Plus de détails (catégorie et date)</summary>';
+  form.insertBefore(amountLabel,nameLabel);form.insertBefore(nameLabel,typeLabel);form.insertBefore(typeLabel,catLabel);
+  form.insertBefore(details,byId('txsubmit'));
+  details.append(catLabel,dateLabel);
+  // L'imputation au budget reste visible pour éviter les dépenses non affectées.
+  form.insertBefore(budgetLabel,details);
+  dialog.addEventListener('close',()=>{details.open=false});
+ }
+ // Menus accessibles sans prompt, pour modifier/supprimer une opération.
+ document.addEventListener('click',e=>{
+  const more=e.target.closest('.v21-more');
+  if(more){e.preventDefault();e.stopPropagation();const right=more.closest('.right');const existing=right?.querySelector('.v22-pop');if(existing){existing.remove();return;}
+   document.querySelectorAll('.v22-pop').forEach(x=>x.remove());const original=right?.querySelector('div');if(!original)return;
+   const actions=[...original.querySelectorAll('button')];const pop=document.createElement('div');pop.className='v22-pop';
+   for(let i=0;i<Math.min(2,actions.length);i++){const b=document.createElement('button');b.className='v22-action';b.textContent=i===0?'Modifier':'Supprimer';b.onclick=()=>{pop.remove();actions[i].click()};pop.append(b)}
+   right.append(pop);return;
+  }
+  if(!e.target.closest('.v22-pop'))document.querySelectorAll('.v22-pop').forEach(x=>x.remove());
+ });
+ // Les actions d'enveloppe sont cachées sous un bouton unique, en conservant les handlers existants.
+ function compactEnvelopes(){
+  const container=byId('envelopeTracking');if(!container)return;
+  container.querySelectorAll('.tracker').forEach(row=>{
+   const actions=row.querySelector('.tracker-actions');if(!actions||actions.dataset.v22==='1')return;actions.dataset.v22='1';
+   const buttons=[...actions.querySelectorAll('button')];if(!buttons.length)return;
+   const toggle=document.createElement('button');toggle.type='button';toggle.className='v22-action';toggle.textContent='＋ Gérer';
+   const wrap=document.createElement('div');wrap.className='v22-envactions';wrap.hidden=true;
+   toggle.onclick=()=>{wrap.hidden=!wrap.hidden;toggle.textContent=wrap.hidden?'＋ Gérer':'Fermer'};
+   actions.before(toggle);actions.parentElement.insertBefore(wrap,actions);wrap.append(actions);
+  });
+ }
+ // Bouton de remise à zéro déplacé dans Réglages, avec confirmation historique conservée.
+ const reset=byId('resetEnvelopes'),settings=byId('settings');
+ if(reset&&settings){
+  const card=document.createElement('div');card.className='card';card.innerHTML='<h2>Enveloppes</h2><p class="muted">Remise à zéro des provisions à partir du mois sélectionné dans Budget. Action irréversible sans sauvegarde.</p>';
+  const button=document.createElement('button');button.className='btn secondary';button.textContent='Remettre les enveloppes à zéro';
+  button.onclick=()=>reset.click();card.append(button);settings.append(card);
+ }
+ // Le rendu existant peut reconstruire les lignes : réappliquer uniquement les éléments d'interface.
+ const previous=render;
+ render=function(){previous();compactEnvelopes();if(txlist&&summary&&empty){
+  const noRows=!txlist.querySelector('.row:not(.v19-hidden)');
+  if(noRows){txlist.querySelectorAll('p').forEach(p=>{if(/aucune opération/i.test(p.textContent))p.style.display='none'});empty.classList.remove('v19-hidden')}
+  else empty.classList.add('v19-hidden');
+ }};
  render();
 })();
 </script></body></html>
