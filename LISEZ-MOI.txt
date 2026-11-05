@@ -1,1 +1,3 @@
-Mon Budget Privé v2.0 — échéances et suivi prévisionnel. Sauvegarder les données chiffrées avant installation. Remplacer les fichiers GitHub sans effacer les données locales. Les échéances sans date sont affichées sans inventer de jour. Le reste à vivre est une projection, pas le solde bancaire.
+Mon Budget Privé v2.1
+Sauvegardez vos données chiffrées avant la mise à jour. Remplacez les fichiers du dépôt GitHub, sans désinstaller la PWA ni effacer les données du navigateur.
+Accueil consultatif, charges fixes automatiques en prévisions, regroupement par catégorie, menus compacts. Les débits ne sont pas vérifiés auprès de la banque.
