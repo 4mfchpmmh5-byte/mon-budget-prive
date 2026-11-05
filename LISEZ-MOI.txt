@@ -1,12 +1,6 @@
-Mon Budget Privé 1.7 — Mise à jour depuis 1.6
-
-1. Conserver une sauvegarde chiffrée JSON dans Fichiers, hors de GitHub.
-2. Sur GitHub, téléverser uniquement index.html, sw.js, manifest.webmanifest, icon-192.png et icon-512.png à la racine du dépôt existant.
-3. Ne pas supprimer l'application iPhone, ni effacer les données locales.
-4. Vérifier la version 1.7 après actualisation / réouverture de l'application.
-
-Nouveautés : regroupement des dépenses par catégorie, budgets variables restants, enveloppes de provisions cumulatives alimentées manuellement, imputation des opérations, création de modèles récurrents depuis le budget, meilleure mise en page des libellés.
-
-IMPORTANT : les provisions ne sont PAS des soldes bancaires. Le bouton « Mettre de côté » enregistre une affectation déclarative ; il ne transfère pas d'argent. Les dépenses sont comptabilisées dans l'enveloppe si elles sont explicitement imputées à cette enveloppe. Pour les dépenses variables, une correspondance exacte du libellé est également reconnue.
-
-La mise à zéro des enveloppes est indépendante des données patrimoniales. Avant tout essai, exporter une sauvegarde chiffrée.
+Mon Budget Privé 1.8 — version de test.
+Avant installation, exporter une sauvegarde chiffrée.
+Téléverser uniquement index.html, sw.js, manifest.webmanifest, icon-192.png, icon-512.png dans GitHub Pages.
+Ne jamais publier la sauvegarde financière.
+Novembre 2026 conserve le budget historique. Les mois suivants ont des prévisions indépendantes à partir de la première modification.
+Le verrouillage après 5 minutes est un compromis de confort, pas une protection équivalente à un coffre audité.
