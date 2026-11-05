@@ -1,13 +1,1 @@
-MON BUDGET PRIVÉ — v1.9 (test)
-
-Refonte ergonomique des trois premiers onglets :
-- Accueil : ajout rapide, graphiques et historique repliables.
-- Opérations : recherche et filtre dépenses/revenus.
-- Budget : bouton Ajouter unique, sections repliables, lignes détaillées masquées par défaut.
-- Les prévisions mensuelles sont reprises du mois précédent (fonctionnement existant v1.8).
-- Les paiements réels ne sont jamais créés automatiquement : ne pas confondre prévu et payé.
-- Chiffrement local, données et patrimoine conservés, verrouillage 5 minutes inchangé.
-
-INSTALLATION : conserver une sauvegarde chiffrée hors de GitHub, puis remplacer les fichiers de l'application sur GitHub Pages. Ne pas supprimer l'application iPhone ni réinitialiser les données.
-
-Cette version est une version de test. Tester sur iPhone avant usage régulier.
+Mon Budget Privé v2.0 — échéances et suivi prévisionnel. Sauvegarder les données chiffrées avant installation. Remplacer les fichiers GitHub sans effacer les données locales. Les échéances sans date sont affichées sans inventer de jour. Le reste à vivre est une projection, pas le solde bancaire.
