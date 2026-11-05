@@ -1,7 +1,12 @@
-Mon Budget Privé 1.6
+Mon Budget Privé 1.7 — Mise à jour depuis 1.6
 
-Mise à jour depuis 1.5 : sauvegarder le coffre avant installation, puis envoyer les fichiers de ce dossier à la racine du dépôt GitHub. Ne jamais envoyer le fichier JSON de sauvegarde sur GitHub.
+1. Conserver une sauvegarde chiffrée JSON dans Fichiers, hors de GitHub.
+2. Sur GitHub, téléverser uniquement index.html, sw.js, manifest.webmanifest, icon-192.png et icon-512.png à la racine du dépôt existant.
+3. Ne pas supprimer l'application iPhone, ni effacer les données locales.
+4. Vérifier la version 1.7 après actualisation / réouverture de l'application.
 
-Nouveautés : types de placements, capital investi facultatif, répartition, graphique d’évolution à partir de deux dates, réinitialisation sécurisée des données tout en conservant le coffre.
+Nouveautés : regroupement des dépenses par catégorie, budgets variables restants, enveloppes de provisions cumulatives alimentées manuellement, imputation des opérations, création de modèles récurrents depuis le budget, meilleure mise en page des libellés.
 
-Attention : l’écart entre valeur et capital versé n’est pas un calcul de performance. La courbe du patrimoine n’est pas un historique des rendements.
+IMPORTANT : les provisions ne sont PAS des soldes bancaires. Le bouton « Mettre de côté » enregistre une affectation déclarative ; il ne transfère pas d'argent. Les dépenses sont comptabilisées dans l'enveloppe si elles sont explicitement imputées à cette enveloppe. Pour les dépenses variables, une correspondance exacte du libellé est également reconnue.
+
+La mise à zéro des enveloppes est indépendante des données patrimoniales. Avant tout essai, exporter une sauvegarde chiffrée.
