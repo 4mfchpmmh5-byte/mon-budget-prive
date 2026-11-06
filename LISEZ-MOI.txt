@@ -1,4 +1,9 @@
-Mon Budget Privé v2.2 — amélioration ergonomique.
-Avant installation : exporte une sauvegarde chiffrée depuis Réglages.
-Remplace les fichiers GitHub sans désinstaller la PWA ni effacer ses données.
-Tests recommandés : changement de mois, ajout de dépense, imputation à une enveloppe, modification/suppression, sauvegarde/restauration.
+Mon Budget Privé v2.3 — correctifs opérations et budget.
+
+1. AVANT TOUT : exporter une sauvegarde chiffrée depuis Réglages.
+2. Remplacer les fichiers du dépôt GitHub Pages, sans désinstaller la PWA ni effacer ses données.
+3. Actualiser la PWA (au besoin fermer puis rouvrir). Vérifier « Version 2.3 ».
+4. Tester le bouton ⋯ : les actions Modifier et Supprimer doivent apparaître sans clavier.
+5. Vérifier novembre 2026 : le crédit immobilier historique est masqué de la liste manuelle, mais conservé et intégré au calcul.
+
+Les données chiffrées restent sur ton appareil ; le ZIP ne contient aucune donnée personnelle.
