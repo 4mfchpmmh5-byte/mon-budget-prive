@@ -113,7 +113,7 @@ header{padding:9px 0 5px!important}header h1{font-size:19px!important}
 <div id="plans" class="view hidden"><h2>Budget mensuel prévu</h2><div class="card" style="padding:14px"><label>Mois du budget<select id="budgetmonth"></select></label><p class="muted" style="margin-bottom:0">Chaque mois possède ses propres prévisions. Les provisions se cumulent.</p></div><p>Définis les montants de référence. Ils ne sont pas des dépenses réelles : les dépenses sont saisies dans « Opérations ».</p><div class="card"><div id="planlist"></div><button class="btn secondary" id="newplan">+ Ajouter une ligne</button><p class="muted">Modifie tes charges et abonnements directement dans cette liste. Les prévisions ne sont pas des dépenses enregistrées.</p></div><div class="card"><h2>Budgets variables · restant ce mois</h2><p class="muted">Les dépenses enregistrées sont déduites de chaque ligne du budget.</p><div id="variableTracking"></div></div><div class="card"><h2>Mes provisions cumulatives</h2><p class="muted">Ajoute uniquement les sommes réellement mises de côté. Le solde se reporte au mois suivant.</p><div id="envelopeTracking"></div><button class="btn secondary" id="resetEnvelopes">Remettre les enveloppes à zéro</button></div><div class="card"><h2>Mes dépenses par catégorie</h2><div id="categoryTracking"></div></div><div class="card"><div class="section-title"><h2>Opérations récurrentes</h2><span class="muted">Sur validation uniquement</span></div><p>Crédit, EDF, abonnements… Ces modèles servent uniquement à enregistrer des paiements confirmés. Ils ne modifient pas les prévisions.</p><div id="recurringlist"></div><div class="card" id="paymentcard"><div class="section-title"><h2>Échéances du mois</h2><span class="muted">Prévu / payé</span></div><div id="paymentlist"></div></div><div class="actions"><button class="btn secondary" id="newrecurring">+ Nouveau modèle</button><button class="btn" id="applyrecurring">Ajouter au mois sélectionné</button></div><p class="muted" id="recurringmonth"></p></div></div>
 <div id="wealth" class="view hidden"><h2>Mon patrimoine</h2><div class="card hero"><span class="pill">Suivi manuel · Sans connexion bancaire</span><div class="muted" style="margin-top:16px">Patrimoine suivi</div><div class="amount" id="wealthtotal">0,00 €</div><div class="wealth-kpis"><div class="wealth-kpi"><small>Capital investi renseigné</small><strong id="investedtotal">0,00 €</strong></div><div class="wealth-kpi"><small>Écart valeur / capital</small><strong id="wealthgain">0,00 €</strong></div></div><p class="muted" style="font-size:12px">Écart indicatif : il ne tient pas compte des retraits, frais ou mouvements historiques.</p></div><div class="card"><div class="section-title"><h2>Évolution du patrimoine</h2><span class="muted">Historique manuel</span></div><div id="wealthchart" class="wealthchart"></div><button class="btn secondary" id="snapshot">📌 Enregistrer la valeur du jour</button><p class="muted">Les valeurs historiques sont des instantanés manuels, pas des cours en direct.</p></div><div class="card"><h2>Répartition de mes actifs</h2><div id="wealthbreakdown" class="wealth-breakdown"></div></div><div class="card"><div id="wealthlist"></div><button class="btn secondary" id="newasset">+ Ajouter un compte / actif</button><p class="muted">Valeurs saisies manuellement : aucun cours en direct et aucune connexion bancaire.</p></div></div>
 <div id="settings" class="view hidden"><h2>Sécurité et sauvegardes</h2><div class="card"><p>Les données sont chiffrées dans le stockage local de cet appareil (AES-GCM). La phrase secrète n'est pas transmise au serveur.</p><div class="actions"><button class="btn" id="export">Exporter une sauvegarde chiffrée</button><button class="btn secondary" id="import">Importer une sauvegarde</button></div><input type="file" id="importfile" accept=".json,application/json" class="hidden"><hr><button class="btn secondary" id="lock">Verrouiller</button><p class="muted">Le coffre reste déverrouillé pendant 5 minutes après avoir quitté l’application, sauf fermeture complète. Le remplissage par Face ID dépend des réglages Mots de passe de ton iPhone.</p><div class="reset-box"><b>Repartir de zéro sans supprimer le coffre</b><p class="muted">Supprime le budget, les opérations, les modèles récurrents, les actifs et l’historique. Ta phrase secrète reste la même. Action irréversible sans sauvegarde.</p><button class="btn danger" id="resetdata">Réinitialiser les données</button></div><hr><button class="btn danger" id="wipe">Effacer les données locales</button></div><div class="notice">Important : le stockage Safari/iOS peut être effacé. Conserve des sauvegardes régulières dans un emplacement sûr. Cette application n'est pas un coffre-fort audité.</div></div></section>
-<div class="footer">Mon Budget Privé · Version 2.4.2 · Aucune connexion bancaire</div><div id="msg" role="status"></div></main><nav id="nav"><button data-tab="home" class="active">◉<br>Accueil</button><button data-tab="transactions">⇄<br>Opérations</button><button data-tab="plans">▤<br>Budget</button><button data-tab="wealth">◇<br>Patrimoine</button><button data-tab="settings">⚙<br>Réglages</button></nav>
+<div class="footer">Mon Budget Privé · Version 2.5 bêta 1 · Aucune connexion bancaire</div><div id="msg" role="status"></div></main><nav id="nav"><button data-tab="home" class="active">◉<br>Accueil</button><button data-tab="transactions">⇄<br>Opérations</button><button data-tab="plans">▤<br>Budget</button><button data-tab="wealth">◇<br>Patrimoine</button><button data-tab="settings">⚙<br>Réglages</button></nav>
 <dialog id="txdialog"><form id="txform"><button type="button" class="close" data-close>×</button><h2>Nouvelle opération</h2><label>Type<select id="txtype"><option value="expense">Dépense</option><option value="income">Revenu</option></select></label><label>Libellé<input id="txname" required maxlength="100" placeholder="Ex. Courses"></label><label>Montant (€)<input id="txamount" required type="number" min="0.01" step="0.01" inputmode="decimal"></label><label>Catégorie personnalisable<input id="txcat" list="txcats" required maxlength="60" value="Variables" placeholder="Ex. Alimentation"><datalist id="txcats"><option value="Fixes"><option value="Variables"><option value="Provisions"><option value="Impôts"><option value="Investissements"><option value="Courses"><option value="Restaurant"><option value="Maison"><option value="Loisirs"><option value="Autres"></datalist></label><label>Imputer au budget / à une enveloppe (facultatif)<select id="txbudget"><option value="">Aucune imputation</option></select></label><label>Date<input id="txdate" type="date" required></label><button class="btn" id="txsubmit" type="submit">Enregistrer</button></form></dialog>
 <dialog id="plandialog"><form id="planform"><button type="button" class="close" data-close>×</button><h2 id="plantitle">Ajouter une ligne au budget</h2><label>Libellé<input id="planname" required maxlength="80" placeholder="Ex. Loyer"></label><label>Montant mensuel (€)<input id="planamount" required type="number" min="0" step="0.01"></label><label>Catégorie<select id="plancat"><option>Revenus</option><option>Fixes</option><option>Variables</option><option>Provisions</option><option>Impôts</option><option>Investissements</option></select></label><label>Groupe de dépenses<select id="plangroup"><option value="auto">Classement automatique</option><option>Résidence principale</option><option>Abonnements & télécoms</option><option>Banque & assurances</option><option>Vie quotidienne & loisirs</option><option>Provisions & investissements</option><option>Impôts</option><option>Revenus</option></select></label><label class="inline-check"><input type="checkbox" id="planrecurring"> Créer / synchroniser un modèle récurrent</label><label id="planrecurringdaywrap" class="hidden">Jour du prélèvement (1 à 28)<input type="number" min="1" max="28" value="5" id="planrecurringday"></label><button class="btn" id="plansubmit" type="submit">Ajouter</button></form></dialog>
 <dialog id="assetdialog"><form id="assetform"><button type="button" class="close" data-close>×</button><h2 id="assettitle">Ajouter un actif</h2><label>Nom<input id="assetname" required maxlength="80" placeholder="Ex. Livret A"></label><label>Type de placement<select id="assettype"><option value="Livrets">Livrets / épargne</option><option value="PEA">PEA</option><option value="Compte-titres">Compte-titres</option><option value="Crypto">Cryptomonnaies</option><option value="Immobilier">Immobilier</option><option value="Autres">Autres</option></select></label><label>Valeur actuelle (€)<input id="assetamount" required type="number" min="0" step="0.01" inputmode="decimal"></label><label>Capital investi ou versé (€) — facultatif<input id="assetinvested" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Laisser vide si inconnu"></label><p class="muted" style="font-size:12px">Le capital investi sert uniquement à calculer un écart indicatif, pas une performance réelle.</p><button class="btn" id="assetsubmit" type="submit">Ajouter</button></form></dialog>
@@ -473,7 +473,7 @@ document.addEventListener('click',async e=>{
  const period=document.createElement('div');period.className='v24-period';period.innerHTML='<label for="v24period" style="font-size:12px">Période</label><select id="v24period" aria-label="Période du bilan"></select>';
  quick.after(period);
  const annual=document.createElement('div');annual.id='v24annual';annual.className='card';period.after(annual);
- const choices=()=>quickType==='expense'?[['courses','🛒 Courses'],['midi','🥪 Repas midi'],['sorties','🍽️ Sorties'],['autre','＋ Autre']]:[['salaire','💶 Salaire'],['prime','✨ Prime'],['autre','＋ Autre']];
+ const choices=()=>quickType==='expense'?[['courses','🛒 Courses'],['midi','🥪 Repas midi'],['sorties','🍽️ Sorties'],['exception','⚡ Imprévu'],['autre','＋ Autre']]:[['salaire','💶 Salaire'],['prime','✨ Prime'],['autre','＋ Autre']];
  function drawChoices(){const opts=choices();if(!opts.some(x=>x[0]===quickCat))quickCat=opts[0][0];document.getElementById('v24cats').innerHTML=opts.map(([id,label])=>'<button type="button" class="v24-chip '+(quickCat===id?'active':'')+'" data-v24cat="'+id+'">'+label+'</button>').join('')}
  function setType(type){quickType=type;quickCat='';document.getElementById('v24expense').classList.toggle('active',type==='expense');document.getElementById('v24income').classList.toggle('active',type==='income');drawChoices()}
  document.getElementById('v24expense').onclick=()=>setType('expense');document.getElementById('v24income').onclick=()=>setType('income');document.getElementById('v24cats').onclick=e=>{const b=e.target.closest('[data-v24cat]');if(b){quickCat=b.dataset.v24cat;drawChoices()}};drawChoices();
@@ -482,11 +482,11 @@ document.addEventListener('click',async e=>{
   if(!data)return;const amount=Number(document.getElementById('v24amount').value),feedback=document.getElementById('v24feedback');
   if(!Number.isFinite(amount)||amount<=0||amount>100000000){feedback.textContent='Saisis un montant valide.';return}
   const p=quickType==='expense'?matchingPlan(quickCat):null;
-  const defaultNames={courses:'Courses',midi:'Repas du midi',sorties:'Restaurants / sorties',salaire:'Salaire',prime:'Prime',autre:'Autre'};
+  const defaultNames={courses:'Courses',midi:'Repas du midi',sorties:'Restaurants / sorties',salaire:'Salaire',prime:'Prime',exception:'Dépense exceptionnelle',autre:'Autre'};
   let name=p?.name||defaultNames[quickCat]||'Opération';
-  if(quickCat==='autre'){const custom=prompt('Libellé de cette opération :','');if(custom===null)return;name=custom.trim().slice(0,100)||'Autre'}
+  if(quickCat==='autre'||quickCat==='exception'){const custom=prompt('Libellé de cette opération :','');if(custom===null)return;name=custom.trim().slice(0,100)||(quickCat==='exception'?'Dépense exceptionnelle':'Autre')}
   const date=new Date().toLocaleDateString('sv-SE');
-  const t={id:uid(),type:quickType,name,amount,cat:quickType==='income'?'Revenus':'Variables',date};
+  const t={id:uid(),type:quickType,name,amount,cat:quickType==='income'?'Revenus':quickCat==='exception'?'Exceptionnelles':'Variables',date};
   if(p)t.planId=p.id;
   // Avoid a duplicate salary when the quick entry is tapped twice accidentally.
   if(quickType==='income'&&quickCat==='salaire'&&data.transactions.some(x=>x.type==='income'&&x.date===date&&x.name===name&&Number(x.amount)===amount)){
@@ -543,8 +543,82 @@ document.addEventListener('click',async e=>{
  function updateForecastFields(){if(!data)return;const c=forecastSettings();document.getElementById('forecast2027income').value=c.income;document.getElementById('forecast2027tax').value=c.tax}
  const renderWithForecast=render;render=function(){renderWithForecast();if(data&&document.activeElement?.closest('#forecast2027form')===null)updateForecastFields()};
  document.getElementById('forecast2027form').onsubmit=async e=>{e.preventDefault();if(!data)return;const income=Number(document.getElementById('forecast2027income').value),tax=Number(document.getElementById('forecast2027tax').value);if(!Number.isFinite(income)||!Number.isFinite(tax)||income<0||tax<0){alertMsg('Montants invalides');return}data.forecast2027={income,tax};try{await save();render();alertMsg('Prévisions 2027 enregistrées')}catch(err){alertMsg('Échec de la sauvegarde')}};
- const version=document.querySelector('.footer');if(version)version.textContent='Mon Budget Privé · Version 2.4.3 · Aucune connexion bancaire';
+ const version=document.querySelector('.footer');if(version)version.textContent='Mon Budget Privé · Version 2.5 bêta 1 · Aucune connexion bancaire';
  const txMenuFix=document.createElement('style');txMenuFix.textContent='#txlist .v22-pop,#planlist .v22-pop{display:flex!important}#txlist .v22-pop button,#planlist .v22-pop button{display:inline-flex!important}';document.head.append(txMenuFix);
  render();
+})();
+</script><style id="v244-style">
+#plans.v244-annual > :not(h2):not(.v244-picker):not(.v244-report){display:none!important}
+#transactions.v244-annual .section-title button{display:none!important}
+#transactions.v244-annual #txsummary,#transactions.v244-annual #txlist{display:none!important}
+.v244-report{margin-top:12px}.v244-report .v244-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}.v244-report .v244-stat{padding:13px;border:1px solid #394258;border-radius:13px;background:#202638;min-width:0}.v244-stat small{display:block;color:#adb4c9;margin-bottom:8px}.v244-stat b{font-size:18px;overflow-wrap:anywhere}.v244-report h3{margin:20px 0 8px}.v244-report .v244-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid #343b50;padding:10px 0}.v244-report .v244-row b{white-space:nowrap}.v244-report .muted{font-size:12px;line-height:1.5}
+</style>
+<script id="v244-script">
+(()=>{
+'use strict';
+const homePicker=document.getElementById('v24period'),budgetPicker=document.getElementById('budgetmonth'),txPicker=document.getElementById('txmonth');
+const plansView=document.getElementById('plans'),txView=document.getElementById('transactions');
+const budgetBox=budgetPicker.closest('.card');budgetBox.classList.add('v244-picker');
+const budgetReport=document.createElement('div');budgetReport.className='card v244-report';plansView.insertBefore(budgetReport,budgetBox.nextSibling);
+const txReport=document.createElement('div');txReport.className='v244-report';txPicker.closest('.card').appendChild(txReport);
+const euro=n=>fmt(Math.round((n+Number.EPSILON)*100)/100),sum=a=>a.reduce((s,x)=>s+Number(x.amount||0),0);
+const row=(label,n)=>'<div class="v244-row"><span>'+escapeHtml(label)+'</span><b>'+euro(n)+'</b></div>';
+const stat=(label,n)=>'<div class="v244-stat"><small>'+label+'</small><b>'+euro(n)+'</b></div>';
+function yearValue(){const val=homePicker.value;return val?.startsWith('annual-')?val.slice(7):null}
+function getPlans(m){const prev=selectedMonth;selectedMonth=m;try{return monthPlans()}finally{selectedMonth=prev}}
+function options(select){const previous=select.value;for(let y=2026;y<=2032;y++){const value='annual-'+y;if(![...select.options].some(o=>o.value===value)){const o=new Option(y+' · Bilan annuel',value);select.insertBefore(o,select.firstChild)}}select.value=yearValue()?'annual-'+yearValue():selectedMonth}
+function annualBudget(year){
+ let income=0,fixed=0,taxes=0,variable=0,provisions=0,investments=0;const cats=new Map();let months=0;
+ for(let i=1;i<=12;i++){const m=year+'-'+String(i).padStart(2,'0');if(m<'2026-11')continue;months++;for(const p of getPlans(m)){
+ const amount=Number(p.amount||0);if(p.cat==='Revenus'){if(!/ticket.?resto|titre.?resto/i.test(p.name))income+=amount}
+ else if(p.cat==='Fixes')fixed+=amount;else if(p.cat==='Impôts')taxes+=amount;else if(p.cat==='Variables'){variable+=amount;cats.set(p.name,(cats.get(p.name)||0)+amount)}
+ else if(p.cat==='Provisions')provisions+=amount;else if(p.cat==='Investissements')investments+=amount;
+ }}
+ const tx=(data.transactions||[]).filter(t=>t.date?.startsWith(year));const actualIncome=sum(tx.filter(t=>t.type==='income'));
+ const actualVariable=sum(tx.filter(t=>t.type==='expense'&&t.cat==='Variables'));
+ const actualProvisions=sum(tx.filter(t=>t.type==='expense'&&t.cat==='Provisions'));
+ const actualInvestments=sum(tx.filter(t=>t.type==='expense'&&t.cat==='Investissements'));const actualExceptional=sum(tx.filter(t=>t.type==='expense'&&t.cat==='Exceptionnelles'));
+ const total=fixed+taxes+variable+provisions+investments;
+ budgetReport.innerHTML='<h2>Budget annuel '+year+'</h2><p class="muted">'+(year==='2026'?'Prévisions limitées à novembre et décembre 2026 : les mois antérieurs ne sont pas reconstitués.':'Prévisions pour les 12 mois de '+year+'.')+' Les montants prévus ne sont pas des débits constatés.</p>'+
+ '<div class="v244-grid">'+stat('Revenus prévus',income)+stat('Reste prévu après épargne',income-total)+stat('Charges fixes + impôts',fixed+taxes)+stat('Variables prévues',variable)+'</div>'+
+ '<h3>Répartition prévisionnelle</h3>'+row('Charges fixes',fixed)+row('Impôts',taxes)+row('Enveloppes variables',variable)+row('Provisions à constituer',provisions)+row('Investissements prévus',investments)+
+ '<h3>Enveloppes variables</h3>'+([...cats.entries()].map(([name,value])=>row(name,value)).join('')||'<p class="muted">Aucune enveloppe prévue.</p>')+
+ '<h3>Réalisé enregistré</h3>'+row('Revenus saisis',actualIncome)+row('Dépenses variables saisies',actualVariable)+row('Mouvements de provisions saisis',actualProvisions)+row('Investissements saisis',actualInvestments)+row('Dépenses exceptionnelles saisies',actualExceptional)+
+ '<p class="muted">Les provisions et investissements prévus figurent une seule fois dans le budget. Les mouvements saisis sont affichés séparément et ne sont pas soustraits une deuxième fois. Le suivi des charges fixes reste prévisionnel tant qu’elles ne sont pas pointées.</p>';
+}
+function annualOperations(year){const tx=(data.transactions||[]).filter(t=>t.date?.startsWith(year)).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));const income=sum(tx.filter(t=>t.type==='income')),expenses=sum(tx.filter(t=>t.type==='expense'));
+ txReport.innerHTML='<h2>Opérations '+year+'</h2><p class="muted">Historique annuel des opérations manuelles, sans les charges fixes simplement prévues. Pour modifier ou supprimer une opération, sélectionne son mois.</p><div class="v244-grid">'+stat('Revenus saisis',income)+stat('Sorties saisies',expenses)+'</div><h3>'+tx.length+' opération(s)</h3>'+(tx.length?tx.map(t=>'<div class="v244-row"><span><b>'+escapeHtml(t.name||'Opération')+'</b><br><small class="muted">'+escapeHtml(t.date||'')+' · '+escapeHtml(t.cat||'')+'</small></span><b style="color:'+(t.type==='income'?'#45e5b6':'#ffaaa8')+'">'+(t.type==='income'?'+':'−')+euro(t.amount)+'</b></div>').join(''):'<p class="muted">Aucune opération saisie pour cette année.</p>');
+}
+const baseRender=render;
+render=function(){baseRender();options(budgetPicker);options(txPicker);const year=yearValue();plansView.classList.toggle('v244-annual',!!year);txView.classList.toggle('v244-annual',!!year);budgetReport.style.display=year?'':'none';txReport.style.display=year?'':'none';if(year){annualBudget(year);annualOperations(year)}};
+function pick(e){const val=e.target.value;e.stopImmediatePropagation();if(val.startsWith('annual-')){homePicker.value=val;homePicker.dispatchEvent(new Event('change',{bubbles:true}))}else{homePicker.value=val;homePicker.dispatchEvent(new Event('change',{bubbles:true}))}}
+budgetPicker.addEventListener('change',pick,true);txPicker.addEventListener('change',pick,true);
+render();
+})();
+</script>
+<style id="v25beta-style">
+/* v2.5 beta 1: compact quick entry, no automatic keyboard */
+#v24quick{padding:13px!important;margin-bottom:8px!important}
+#v24quick h2{margin:0 0 8px!important;font-size:17px!important}
+#v24quick .v24-hint{font-size:11px!important;margin:6px 0 0!important}
+#v24quick .v24-cats{gap:5px!important;margin:8px 0!important}
+#v24quick .v24-chip{padding:9px 7px!important;font-size:12px!important}
+#v24quick .v24-save{margin-top:7px!important}
+#v24quick .v24-amount{margin:8px 0!important}
+</style>
+<script id="v25beta-script">
+(()=>{
+  'use strict';
+  // Progressive disclosure of existing forecast form; retain all original inputs and handlers.
+  const forecast=document.getElementById('forecast2027form');
+  if(forecast){const card=forecast.closest('.card');const header=card?.querySelector('h3');
+    if(header){const details=document.createElement('details');details.className='v25-forecast-details';
+      const summary=document.createElement('summary');summary.textContent='Prévisions 2027 · Modifier';
+      details.append(summary);
+      for(const child of [...card.children])if(child!==header)details.append(child);
+      header.replaceWith(details);
+      const style=document.createElement('style');style.textContent='.v25-forecast-details summary{cursor:pointer;font-weight:700;padding:9px 0;list-style:disclosure-closed}.v25-forecast-details[open] summary{list-style:disclosure-open}';document.head.append(style);
+    }
+  }
 })();
 </script></body></html>
