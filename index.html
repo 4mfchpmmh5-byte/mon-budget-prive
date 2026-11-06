@@ -529,7 +529,21 @@ document.addEventListener('click',async e=>{
  for(const group of groups){const box=document.createElement('div');box.className='card v24-settings-group';box.innerHTML='<h3>'+group.title+'</h3>';for(const [id,ico,label] of group.items){const btn=originals[id];if(!btn)continue;btn.className='v24-settings-row'+(id==='reset'?' danger':'');btn.innerHTML='<span class="v24-ico">'+ico+'</span><span>'+label+'</span><span class="v24-chevron">›</span>';box.append(btn)}if(group.title==='Sécurité'){const p=document.createElement('p');p.className='muted';p.textContent='Coffre chiffré · Verrouillage après 5 minutes hors de l’application.';box.append(p)}if(group.title==='Zone sensible'){const p=document.createElement('p');p.className='muted';p.textContent='Une confirmation et la phrase secrète sont requises. Fais une sauvegarde avant.';box.append(p)}settings.append(box)}
  // Keep import input and other existing controls in DOM for event handlers.
  for(const card of oldCards){if(!card.querySelector('button')&&!card.querySelector('input'))card.style.display='none';else card.style.display='none'}
- const version=document.querySelector('.footer');if(version)version.textContent='Mon Budget Privé · Version 2.4.2 · Aucune connexion bancaire';
+
+ // v2.4.3: forecast settings are stored inside the existing encrypted vault.
+ // Apply only to 2027; historical 2026 budgets and recorded operations stay untouched.
+ const forecastDefaults={income:55000,tax:7700};
+ function forecastSettings(){const c=data?.forecast2027||{};return {income:Number.isFinite(Number(c.income))&&Number(c.income)>=0?Number(c.income):forecastDefaults.income,tax:Number.isFinite(Number(c.tax))&&Number(c.tax)>=0?Number(c.tax):forecastDefaults.tax}}
+ function splitAnnual(annual,month){const cents=Math.round(annual*100),base=Math.floor(cents/12);return (base+(month===12?cents-base*12:0))/100}
+ const originalMonthPlans=monthPlans;
+ monthPlans=function(){const list=originalMonthPlans();if(!selectedMonth.startsWith('2027-'))return list;const c=forecastSettings(),month=Number(selectedMonth.slice(5));const result=list.filter(p=>p.cat!=='Revenus'&&p.cat!=='Impôts').map(p=>({...p}));result.push({id:'forecast-income-2027',name:'Salaire prévisionnel · 2027',cat:'Revenus',amount:splitAnnual(c.income,month)});result.push({id:'forecast-tax-2027',name:'Impôt prévisionnel · 2027',cat:'Impôts',amount:splitAnnual(c.tax,month)});return result};
+ const settingsForecast=document.createElement('div');settingsForecast.className='card v24-settings-group';
+ settingsForecast.innerHTML='<h3>Prévisions 2027</h3><p class="muted">Hypothèses annuelles modifiables. Les salaires réellement saisis et les budgets de 2026 ne sont pas modifiés.</p><form id="forecast2027form"><label>Revenus annuels avant impôt (€)<input id="forecast2027income" type="number" inputmode="decimal" min="0" step="0.01" required></label><label>Impôt annuel provisionnel (€)<input id="forecast2027tax" type="number" inputmode="decimal" min="0" step="0.01" required></label><p class="muted" id="forecast2027hint">Estimation à 14 % ; ce n’est pas un calcul fiscal officiel.</p><button class="btn" type="submit">Enregistrer les prévisions</button></form>';
+ const securityGroup=settings.querySelector('.v24-settings-group');settings.insertBefore(settingsForecast,securityGroup);
+ function updateForecastFields(){if(!data)return;const c=forecastSettings();document.getElementById('forecast2027income').value=c.income;document.getElementById('forecast2027tax').value=c.tax}
+ const renderWithForecast=render;render=function(){renderWithForecast();if(data&&document.activeElement?.closest('#forecast2027form')===null)updateForecastFields()};
+ document.getElementById('forecast2027form').onsubmit=async e=>{e.preventDefault();if(!data)return;const income=Number(document.getElementById('forecast2027income').value),tax=Number(document.getElementById('forecast2027tax').value);if(!Number.isFinite(income)||!Number.isFinite(tax)||income<0||tax<0){alertMsg('Montants invalides');return}data.forecast2027={income,tax};try{await save();render();alertMsg('Prévisions 2027 enregistrées')}catch(err){alertMsg('Échec de la sauvegarde')}};
+ const version=document.querySelector('.footer');if(version)version.textContent='Mon Budget Privé · Version 2.4.3 · Aucune connexion bancaire';
  const txMenuFix=document.createElement('style');txMenuFix.textContent='#txlist .v22-pop,#planlist .v22-pop{display:flex!important}#txlist .v22-pop button,#planlist .v22-pop button{display:inline-flex!important}';document.head.append(txMenuFix);
  render();
 })();

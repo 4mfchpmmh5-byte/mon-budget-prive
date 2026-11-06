@@ -1,11 +1,9 @@
-Mon Budget Privé v2.3 — correctifs opérations et budget.
+Mon Budget Privé v2.4.3 — prévisions 2027
 
-1. AVANT TOUT : exporter une sauvegarde chiffrée depuis Réglages.
-2. Remplacer les fichiers du dépôt GitHub Pages, sans désinstaller la PWA ni effacer ses données.
-3. Actualiser la PWA (au besoin fermer puis rouvrir). Vérifier « Version 2.3 ».
-4. Tester le bouton ⋯ : les actions Modifier et Supprimer doivent apparaître sans clavier.
-5. Vérifier novembre 2026 : le crédit immobilier historique est masqué de la liste manuelle, mais conservé et intégré au calcul.
+Revenus annuels par défaut : 55 000 € ; impôt provisionnel : 7 700 €.
+Réglages : champs modifiables, enregistrés dans le coffre chiffré.
+Application mensuelle uniquement sur 2027, avec ajustement des centimes en décembre.
+Aucune opération existante ni budget 2026 n’est supprimé.
 
-Les données chiffrées restent sur ton appareil ; le ZIP ne contient aucune donnée personnelle.
-
-Correctif 2.4.2 : menu flottant independant de la liste.
+Installation : sauvegarder le coffre chiffré, puis remplacer les fichiers à la racine du dépôt GitHub Pages. Ne pas désinstaller la PWA.
+Vérifier le résultat sur iPhone après publication.
