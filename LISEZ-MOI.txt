@@ -7,3 +7,5 @@ Mon Budget Privé v2.3 — correctifs opérations et budget.
 5. Vérifier novembre 2026 : le crédit immobilier historique est masqué de la liste manuelle, mais conservé et intégré au calcul.
 
 Les données chiffrées restent sur ton appareil ; le ZIP ne contient aucune donnée personnelle.
+
+Correctif 2.4.2 : menu flottant independant de la liste.
