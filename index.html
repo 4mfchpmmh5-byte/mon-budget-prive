@@ -170,6 +170,39 @@ header h1{padding-right:105px}
 .v25-tax-card input,.v25-tax-card select{margin-bottom:8px}
 .v25-tax-card .btn{width:100%}
 @media(max-height:630px){#add .v24-hint:not(#v24feedback){display:none}#add #v24quick h2{font-size:16px}}
+</style><style id="v26-layout">
+/* Vue compacte indépendante des anciens styles : aucune zone vide étirée. */
+body:has(#app:not(.hidden) #home:not(.hidden)),body:has(#app:not(.hidden) #add:not(.hidden)){height:100dvh;overflow:hidden;overscroll-behavior:none}
+body:has(#app:not(.hidden) #home:not(.hidden)) main,body:has(#app:not(.hidden) #add:not(.hidden)) main{height:100dvh;max-height:100dvh;display:flex;flex-direction:column;overflow:hidden;padding:calc(env(safe-area-inset-top) + 7px) 12px calc(env(safe-area-inset-bottom) + 73px)!important}
+body:has(#app:not(.hidden) #home:not(.hidden)) #app,body:has(#app:not(.hidden) #add:not(.hidden)) #app{flex:1;min-height:0;display:flex;flex-direction:column}
+body:has(#app:not(.hidden) #home:not(.hidden)) header,body:has(#app:not(.hidden) #add:not(.hidden)) header{flex:none;padding:0 0 5px!important}
+#home:not(.hidden){flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+#home #v24period{margin:0}#home>.v24-period{flex:none;margin:0 0 5px!important}
+#home #v21dashboard{flex:1;min-height:0;overflow:hidden;display:flex!important;flex-direction:column}
+#home.v24-annual #v21dashboard{display:none!important}
+#home.v24-annual #v24annual{display:block!important;flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;margin:0}
+#v26home{display:flex;flex-direction:column;gap:clamp(6px,1.3dvh,12px);height:100%;min-height:0}
+.v26-hero{background:linear-gradient(115deg,#302957,#172e35);border:1px solid #4c446d;border-radius:17px;padding:clamp(10px,1.8dvh,17px)}
+.v26-hero small{display:block;font-size:11px}.v26-big{font-size:clamp(25px,4.8dvh,36px);font-weight:800;line-height:1.2;margin:4px 0}
+.v26-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.v26-stat{background:#20253a;border:1px solid #383d55;border-radius:13px;padding:clamp(8px,1.3dvh,12px);min-width:0}
+.v26-stat small{display:block;font-size:10px;line-height:1.2}.v26-stat b{display:block;font-size:clamp(14px,2.5dvh,19px);margin-top:5px;white-space:nowrap}
+.v26-panel{background:#1b2031;border:1px solid #373b53;border-radius:15px;padding:clamp(8px,1.5dvh,13px);min-height:0}
+.v26-panel h2{font-size:13px;margin:0 0 7px}.v26-chartrow{display:flex;align-items:center;gap:12px}.v26-ring{width:clamp(86px,16dvh,135px);height:clamp(86px,16dvh,135px);border-radius:50%;flex:none;display:grid;place-items:center}.v26-ring-inner{background:#1b2031;width:68%;height:68%;border-radius:50%;display:grid;place-items:center;text-align:center;font-size:11px;font-weight:800}
+.v26-legend{flex:1;min-width:0;font-size:11px}.v26-legend div{display:flex;justify-content:space-between;gap:8px;padding:3px 0}.v26-legend b{white-space:nowrap}
+.v26-foot{font-size:10px;color:#aab3c9;line-height:1.25}
+#add:not(.hidden){height:auto!important;min-height:0!important;flex:1;overflow:hidden}
+#add:not(.hidden) #v24quick{height:auto!important;flex:1;min-height:0;padding:clamp(9px,1.5dvh,15px)!important;margin:0!important;gap:clamp(5px,1.1dvh,10px)!important;border-radius:17px;display:flex!important;flex-direction:column}
+#add #v24quick h2{font-size:clamp(15px,2.5dvh,20px)!important}
+#add .v24-cats{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,minmax(0,1fr));flex:1;min-height:0;gap:6px!important}
+#add .v24-chip:last-child:nth-child(odd){grid-column:1/-1}
+#add .v24-chip{min-height:0!important;font-size:clamp(12px,2.2dvh,16px)!important}
+#add .v24-hint:not(#v24feedback){display:none!important}
+#v25settings{top:calc(env(safe-area-inset-top) + 5px);right:12px;min-height:30px;padding:4px 8px;font-size:12px}
+#v26custombox input{margin:6px 0}#v26custombox .btn{width:100%}
+.v26-barchart{display:flex;align-items:end;gap:5px;height:75px;margin:12px 0 5px}.v26-barcol{flex:1;min-width:0;text-align:center;font-size:9px;color:#b1b5cb}.v26-bar{min-height:2px;border-radius:4px 4px 0 0;background:#a58aff}
+@media(max-height:690px){#v26home{gap:5px}.v26-panel{padding:7px}.v26-ring{width:83px;height:83px}.v26-stats{gap:5px}.v26-hero{padding:8px}.v26-foot{font-size:9px}#add .v24-switch button{height:35px}#add .v24-amount input{height:45px}}
+@media(max-height:580px){#v26home .v26-foot{display:none}#v26home .v26-ring{width:68px;height:68px}#v26home .v26-hero{padding:6px}#v26home .v26-panel h2{margin-bottom:3px}}
 </style></head><body><main><header><div class="eyebrow">Personnel · Chiffré · Hors ligne</div><h1>Mon Budget <span style="color:#3de2b7">Privé</span></h1><p id="subtitle">Ton budget, uniquement sur ton appareil.</p></header>
 <section id="setup" class="card hidden"><h2>Créer mon coffre privé</h2><p>Choisis une phrase secrète d'au moins 12 caractères. Elle servira à chiffrer tes données sur cet appareil. <b>Nous ne pouvons pas la récupérer.</b></p><label>Phrase secrète<input id="newpass" type="password" autocomplete="new-password" minlength="12" placeholder="12 caractères minimum"></label><label>Confirmer<input id="confpass" type="password" autocomplete="new-password"></label><button class="btn" id="create">Créer mon coffre</button><p id="setupmsg" class="muted"></p><div class="notice">Aucune donnée financière n'est incluse dans les fichiers hébergés. Fais une sauvegarde chiffrée après tes premières saisies.</div></section>
 <section id="unlock" class="card hidden"><h2>Déverrouiller mon budget</h2><form id="unlockform" autocomplete="on"><input aria-label="Identifiant du coffre" type="text" name="username" autocomplete="username" value="mon-budget" readonly style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0"><label>Phrase secrète<input id="pass" name="password" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"></label><button class="btn" id="open" type="submit">Déverrouiller</button></form><p id="unlockmsg" class="muted"></p><p class="muted">Si tu oublies ta phrase secrète, seul un export sauvegardé avec son mot de passe te permettra de retrouver tes données.</p></section>
@@ -678,5 +711,61 @@ render();
  // La catégorie personnalisée est déjà prise en charge dans le formulaire détaillé.
  const hint=el('v24quick')?.querySelector('.v24-hint');if(hint)hint.textContent='Saisie rapide · Pour une catégorie personnalisée : Opérations → Ajouter';
  const footer=document.querySelector('.footer');if(footer)footer.textContent='Mon Budget Privé · Version 2.5 bêta 4 · Aucune connexion bancaire';
+})();
+</script><script id="v26-features">
+(()=>{'use strict';
+ const el=id=>document.getElementById(id),money=n=>fmt(Number(n)||0),sum=a=>a.reduce((n,x)=>n+Number(x.amount||0),0);
+ const safe=s=>escapeHtml(String(s??''));
+ const oldRender=render;
+ function renderCompact(){
+  if(!data)return;
+  const root=el('v21dashboard');if(!root)return;
+  const plans=monthPlans(), tx=data.transactions.filter(t=>t.date?.startsWith(selectedMonth));
+  const by=c=>sum(plans.filter(p=>p.cat===c));
+  const income=sum(plans.filter(p=>p.cat==='Revenus'&&!/ticket.?resto|titre.?resto/i.test(p.name)));
+  const fixed=by('Fixes')+by('Impôts'),variable=by('Variables'),saving=by('Provisions')+by('Investissements');
+  const matches=t=>plans.find(p=>p.id===t.planId)||plans.find(p=>p.name?.trim().toLowerCase()===t.name?.trim().toLowerCase());
+  let fixedDiff=0,spent=0,extra=0;const accounted=new Set();
+  for(const t of tx.filter(t=>t.type==='expense')){
+   const p=matches(t),a=Number(t.amount||0);
+   if(p&&['Fixes','Impôts'].includes(p.cat)){if(!accounted.has(p.id)){fixedDiff-=Number(p.amount);accounted.add(p.id)}fixedDiff+=a}
+   else if(p?.cat==='Variables'||t.cat==='Variables')spent+=a;
+   else if(['Provisions','Investissements'].includes(p?.cat)||['Provisions','Investissements'].includes(t.cat)){}
+   else extra+=a;
+  }
+  const net=income-fixed-fixedDiff-variable-saving-extra;
+  const remain=Math.max(0,variable-spent);
+  const colors=['#9e85fa','#36dbac','#e9b16c','#f17d9b'];
+  const portions=[fixed+fixedDiff,variable,saving,extra].map(v=>Math.max(0,v));
+  const total=portions.reduce((a,b)=>a+b,0), pct=total?portions.map(v=>100*v/total):[0,0,0,0];
+  let at=0;const stops=pct.map((v,i)=>{const part=`${colors[i]} ${at.toFixed(2)}% ${(at+v).toFixed(2)}%`;at+=v;return part}).join(',');
+  const legend=['Fixes + impôts','Variables','Épargne prévue','Hors budget'].map((k,i)=>`<div><span style="color:${colors[i]}">● <span style="color:#e9e9f4">${k}</span></span><b>${money(portions[i])}</b></div>`).join('');
+  root.innerHTML=`<div id="v26home">
+    <div class="v26-hero"><small>Reste prévisionnel après épargne</small><div class="v26-big ${net<0?'negative':'positive'}">${money(net)}</div><small>Projection du mois · pas un solde bancaire</small></div>
+    <div class="v26-stats"><div class="v26-stat"><small>Revenus prévus</small><b>${money(income)}</b></div><div class="v26-stat"><small>Charges fixes et impôts</small><b>${money(fixed+fixedDiff)}</b></div><div class="v26-stat"><small>Variables disponibles</small><b>${money(remain)}</b></div><div class="v26-stat"><small>Épargne et provisions</small><b>${money(saving)}</b></div></div>
+    <div class="v26-panel"><h2>Répartition du budget</h2><div class="v26-chartrow"><div class="v26-ring" style="background:${total?'conic-gradient('+stops+')':'#393c50'}"><div class="v26-ring-inner">${money(total)}<small style="font-size:9px">affectés</small></div></div><div class="v26-legend">${legend}</div></div></div>
+    <div class="v26-panel"><h2>Suivi des dépenses variables</h2><div style="display:flex;justify-content:space-between;font-size:12px"><span>Utilisé : ${money(spent)}</span><b>${variable?Math.round(spent/variable*100):0} %</b></div><div style="height:9px;background:#33384d;border-radius:10px;margin-top:8px;overflow:hidden"><div style="height:100%;width:${variable?Math.min(100,spent/variable*100):0}%;background:${spent>variable?'#f17d9b':'#36dbac'}"></div></div></div>
+    <div class="v26-foot">Les tickets restaurant ne sont pas des liquidités. Les provisions et investissements sont réservés dans la prévision, sans être comptés comme achats supplémentaires.</div>
+  </div>`;
+ }
+ // Les graphiques du budget et les graphiques patrimoniaux historiques restent séparés.
+ const budgetGraph=document.createElement('div');budgetGraph.className='card';budgetGraph.id='v26budgetgraph';budgetGraph.innerHTML='<h2>Dépenses par catégorie · réalisé</h2><div id="v26budgetbars"></div>';
+ const plansRoot=el('plans');plansRoot.append(budgetGraph);
+ function renderBars(){if(!data)return;const tx=data.transactions.filter(t=>t.date?.startsWith(selectedMonth)&&t.type==='expense'&&!['Provisions','Investissements'].includes(t.cat));const groups={};for(const t of tx)groups[t.cat||'Autres']=(groups[t.cat||'Autres']||0)+Number(t.amount||0);const rows=Object.entries(groups).sort((a,b)=>b[1]-a[1]);const max=Math.max(1,...rows.map(x=>x[1]));el('v26budgetbars').innerHTML=rows.length?rows.map(([k,v])=>`<div style="margin:10px 0"><div style="display:flex;justify-content:space-between;gap:10px;font-size:12px"><span>${safe(k)}</span><b>${money(v)}</b></div><div style="background:#34384b;height:9px;border-radius:8px;margin-top:5px;overflow:hidden"><div style="background:#9e85fa;height:100%;width:${Math.min(100,v/max*100)}%"></div></div></div>`).join(''):'<p class="muted">Aucune dépense enregistrée sur cette période.</p>'}
+ // Raccourcis configurables, sauvegardés dans le coffre chiffré.
+ const box=document.createElement('div');box.className='card';box.id='v26custombox';box.innerHTML='<h3>Mes raccourcis personnalisés</h3><p class="muted">Ajoute tes libellés favoris. Le premier apparaît sur Ajouter ; les autres restent enregistrés pour une prochaine évolution. Le raccourci ouvre la fiche détaillée en Variables.</p><form id="v26customform"><label>Nouveau raccourci<input id="v26custominput" maxlength="40" placeholder="Ex. Essence, Santé, Cadeaux" required></label><button class="btn" type="submit">Ajouter le raccourci</button></form><div id="v26customlist"></div><p id="v26customstatus" class="muted" role="status"></p>';
+ el('settings').append(box);
+ function drawCustom(){if(!data)return;const names=Array.isArray(data.quickLabels)?data.quickLabels:[];el('v26customlist').innerHTML=names.map((n,i)=>`<div class="row"><span>${safe(n)}</span><button type="button" class="v22-action" data-v26remove="${i}">Retirer</button></div>`).join('');
+  const cats=el('v24cats');if(!cats)return;cats.querySelectorAll('.v26-custom-chip').forEach(x=>x.remove());
+  for(const n of names.slice(0,1)){const b=document.createElement('button');b.type='button';b.className='v24-chip v26-custom-chip';b.textContent='＋ '+n;b.title='Ouvrir une opération détaillée';b.onclick=()=>{openTx('expense',n,'Variables')};cats.append(b)}
+ }
+ el('v26customform').onsubmit=async e=>{e.preventDefault();if(!data)return;const name=el('v26custominput').value.trim();if(!name)return;const previous=[...(data.quickLabels||[])];if(previous.some(x=>x.toLowerCase()===name.toLowerCase())){el('v26customstatus').textContent='Ce raccourci existe déjà.';return}data.quickLabels=[...previous,name].slice(0,12);try{await save();el('v26custominput').value='';drawCustom();el('v26customstatus').textContent='Raccourci enregistré.'}catch(err){data.quickLabels=previous;el('v26customstatus').textContent='Échec de l’enregistrement.'}};
+ el('v26customlist').onclick=async e=>{const b=e.target.closest('[data-v26remove]');if(!b||!data)return;const previous=[...(data.quickLabels||[])];data.quickLabels=previous.filter((_,i)=>i!==Number(b.dataset.v26remove));try{await save();drawCustom()}catch(err){data.quickLabels=previous;drawCustom()}};
+ // Graphique de patrimoine basé uniquement sur les actifs saisis, sans valeur de marché inventée.
+ const wealthCard=document.createElement('div');wealthCard.className='card';wealthCard.id='v26assetgraph';wealthCard.innerHTML='<h2>Répartition de mon patrimoine</h2><div id="v26assetbars"></div>';
+ el('wealth').append(wealthCard);
+ function renderAssets(){if(!data)return;const groups={};for(const a of data.assets||[])groups[a.type||'Autres']=(groups[a.type||'Autres']||0)+Number(a.amount||0);const rows=Object.entries(groups).sort((a,b)=>b[1]-a[1]);const total=rows.reduce((n,x)=>n+x[1],0);el('v26assetbars').innerHTML=rows.length?rows.map(([k,v])=>`<div style="margin:9px 0"><div style="display:flex;justify-content:space-between;font-size:12px"><span>${safe(k)}</span><b>${money(v)}</b></div><div style="background:#34384b;height:9px;border-radius:9px;margin-top:5px"><div style="width:${total?Math.max(0,Math.min(100,v/total*100)):0}%;height:100%;background:#36dbac;border-radius:9px"></div></div></div>`).join(''):'<p class="muted">Ajoute un actif pour afficher sa répartition.</p>'}
+ render=function(){oldRender();renderCompact();renderBars();renderAssets();drawCustom();const footer=document.querySelector('.footer');if(footer)footer.textContent='Mon Budget Privé · Version 2.6 test · Données chiffrées localement'};
+ render();
 })();
 </script></body></html>
