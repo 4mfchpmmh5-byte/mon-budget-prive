@@ -1,9 +1,0 @@
-Mon Budget Privé v2.4.3 — prévisions 2027
-
-Revenus annuels par défaut : 55 000 € ; impôt provisionnel : 7 700 €.
-Réglages : champs modifiables, enregistrés dans le coffre chiffré.
-Application mensuelle uniquement sur 2027, avec ajustement des centimes en décembre.
-Aucune opération existante ni budget 2026 n’est supprimé.
-
-Installation : sauvegarder le coffre chiffré, puis remplacer les fichiers à la racine du dépôt GitHub Pages. Ne pas désinstaller la PWA.
-Vérifier le résultat sur iPhone après publication.
