@@ -449,6 +449,17 @@ body:has(#app:not(.hidden) #home:not(.hidden)){overflow:hidden}
 #add:not(.hidden) #v264budgetpanel{flex:0 0 auto!important;min-height:112px!important;max-height:165px!important;overflow:auto!important}
 #add:not(.hidden) #v24quick{flex:1 1 auto!important;min-height:0!important}
 @media(max-height:700px){#add:not(.hidden) #v264budgetpanel{max-height:120px!important;min-height:90px!important}}
+</style><style id="v301-layout-fix">
+/* Version visible uniquement dans Profil > Fiscalité et sécurité. */
+#app ~ .footer, main > .footer, .footer{display:none!important}
+#v30profile #settings .v262-version{display:block!important;margin:18px 0 12px;text-align:center;color:#9ca6b9;font-size:12px}
+/* L'écran Ajouter s'adapte au contenu : plus de bloc étiré sous Enregistrer. */
+#add:not(.hidden) #v24quick{flex:0 0 auto!important;height:auto!important;min-height:0!important;max-height:none!important;justify-content:flex-start!important;align-content:start!important}
+#add:not(.hidden) #v264budgetpanel{flex:0 0 auto!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;margin-top:10px!important}
+#add:not(.hidden){justify-content:flex-start!important;gap:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding-bottom:6px!important}
+body:has(#app:not(.hidden) #add:not(.hidden)) #app{overflow:hidden!important}
+#add:not(.hidden) #v24quick .v24-save{flex:0 0 auto!important}
+@media(max-height:740px){#add:not(.hidden) #v24quick{gap:5px!important;padding:9px!important}#add:not(.hidden) #v264budgetpanel{margin-top:7px!important}}
 </style></head><body><main><header><div class="eyebrow">Personnel · Chiffré · Hors ligne</div><h1>Mon Budget <span style="color:#3de2b7">Privé</span></h1><p id="subtitle">Ton budget, uniquement sur ton appareil.</p></header>
 <section id="setup" class="card hidden"><h2>Créer mon coffre privé</h2><p>Choisis une phrase secrète d'au moins 12 caractères. Elle servira à chiffrer tes données sur cet appareil. <b>Nous ne pouvons pas la récupérer.</b></p><label>Phrase secrète<input id="newpass" type="password" autocomplete="new-password" minlength="12" placeholder="12 caractères minimum"></label><label>Confirmer<input id="confpass" type="password" autocomplete="new-password"></label><button class="btn" id="create">Créer mon coffre</button><p id="setupmsg" class="muted"></p><div class="notice">Aucune donnée financière n'est incluse dans les fichiers hébergés. Fais une sauvegarde chiffrée après tes premières saisies.</div></section>
 <section id="unlock" class="card hidden"><h2>Déverrouiller mon budget</h2><form id="unlockform" autocomplete="on"><input aria-label="Identifiant du coffre" type="text" name="username" autocomplete="username" value="mon-budget" readonly style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0"><label>Phrase secrète<input id="pass" name="password" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"></label><button class="btn" id="open" type="submit">Déverrouiller</button></form><p id="unlockmsg" class="muted"></p><p class="muted">Si tu oublies ta phrase secrète, seul un export sauvegardé avec son mot de passe te permettra de retrouver tes données.</p></section>
@@ -1244,7 +1255,7 @@ function renameLabels(){document.querySelectorAll('#planlist b,#variableTracking
 const lastRender=render;render=function(){lastRender();renameLabels()};
 // Keep settings and original operations screen available internally for existing edit handlers.
 const oldShow=show;show=function(id){oldShow(id);if(id==='app'){nav.style.display='flex'}};
-const footer=document.querySelector('#settings .v262-version');if(footer)footer.textContent='Mon Budget Privé · Version 3.0 bêta 1 · Données chiffrées localement';
+const footer=document.querySelector('#settings .v262-version');if(footer)footer.textContent='Mon Budget Privé · Version 3.0 bêta 2 · Données chiffrées localement';
 // The original start() still enters the Add screen; the original nav button listeners are preserved by a direct click listener.
 if(data)render();
 })();
