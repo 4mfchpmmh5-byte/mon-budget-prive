@@ -269,7 +269,36 @@ nav button.active:not([data-tab="add"]){background:#a58aff26;color:#c5b4ff}
  #v26home .v26-panel h2{margin-bottom:3px}
  #v26home .v26-legend div:nth-child(4){display:none}
 }
-</style></head><body><main><header><div class="eyebrow">Personnel · Chiffré · Hors ligne</div><h1>Mon Budget <span style="color:#3de2b7">Privé</span></h1><p id="subtitle">Ton budget, uniquement sur ton appareil.</p></header>
+</style>
+<style id="v262-cleanup">
+/* Navigation et entête */
+#v25settings{position:absolute!important;top:calc(env(safe-area-inset-top) + 16px)!important;right:16px!important;
+ width:38px!important;height:38px!important;min-height:38px!important;padding:0!important;
+ border-radius:12px!important;font-size:0!important;display:grid;place-items:center}
+#v25settings::before{content:"⚙";font-size:23px}
+body:has(#settings:not(.hidden)) #v25settings{display:none!important}
+header{position:relative;padding-right:45px!important}
+body:has(#app:not(.hidden)) .footer{display:none!important}
+body:has(#settings:not(.hidden)) .footer{display:block!important}
+#settings .v262-version{font-size:12px;color:#a8a7bb;text-align:center;margin:16px 0}
+#transactions .section-title #newtx{display:none!important}
+nav{bottom:0!important;padding-bottom:max(9px,env(safe-area-inset-bottom))!important;z-index:60}
+body:has(#app:not(.hidden)) main{padding-bottom:calc(68px + env(safe-area-inset-bottom))!important}
+body:has(#app:not(.hidden) #home:not(.hidden)) main,
+body:has(#app:not(.hidden) #add:not(.hidden)) main{
+ padding-bottom:calc(68px + env(safe-area-inset-bottom))!important
+}
+#v262taxbox .v262-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#v262taxbox .v262-results{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+#v262taxbox .v262-result{background:#282b40;border-radius:11px;padding:10px}
+#v262taxbox .v262-result strong{display:block;font-size:19px;margin-top:5px}
+#v262taxbox label{font-size:12px}
+#v262taxbox .v262-note{font-size:12px;line-height:1.5;color:#b4b3c8}
+#v262taxbox .v262-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#v262taxbox .v262-buttons button{font-size:12px;padding:12px 6px}
+@media(max-width:390px){#v262taxbox .v262-grid{grid-template-columns:1fr}}
+</style>
+</head><body><main><header><div class="eyebrow">Personnel · Chiffré · Hors ligne</div><h1>Mon Budget <span style="color:#3de2b7">Privé</span></h1><p id="subtitle">Ton budget, uniquement sur ton appareil.</p></header>
 <section id="setup" class="card hidden"><h2>Créer mon coffre privé</h2><p>Choisis une phrase secrète d'au moins 12 caractères. Elle servira à chiffrer tes données sur cet appareil. <b>Nous ne pouvons pas la récupérer.</b></p><label>Phrase secrète<input id="newpass" type="password" autocomplete="new-password" minlength="12" placeholder="12 caractères minimum"></label><label>Confirmer<input id="confpass" type="password" autocomplete="new-password"></label><button class="btn" id="create">Créer mon coffre</button><p id="setupmsg" class="muted"></p><div class="notice">Aucune donnée financière n'est incluse dans les fichiers hébergés. Fais une sauvegarde chiffrée après tes premières saisies.</div></section>
 <section id="unlock" class="card hidden"><h2>Déverrouiller mon budget</h2><form id="unlockform" autocomplete="on"><input aria-label="Identifiant du coffre" type="text" name="username" autocomplete="username" value="mon-budget" readonly style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0"><label>Phrase secrète<input id="pass" name="password" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"></label><button class="btn" id="open" type="submit">Déverrouiller</button></form><p id="unlockmsg" class="muted"></p><p class="muted">Si tu oublies ta phrase secrète, seul un export sauvegardé avec son mot de passe te permettra de retrouver tes données.</p></section>
 <section id="app" class="hidden"><div id="add" class="view hidden"></div><div id="home" class="view"><button type="button" class="btn secondary" style="float:right;margin-bottom:10px" onclick="tab('settings')">⚙ Réglages</button><div style="clear:both"></div><div class="card hero"><span class="pill" id="monthlabel"></span><div class="muted" style="margin-top:15px">Reste prévisionnel mensuel</div><div class="amount" id="available">0,00 €</div><div class="grid"><div class="stat"><small>Revenus du mois</small><strong id="income">0 €</strong></div><div class="stat"><small>Sorties du mois</small><strong id="outgoing">0 €</strong></div></div></div><div class="card" id="cashflowcard"><h2>Reste à vivre · suivi</h2><div id="cashflowview"></div><p class="muted" style="font-size:12px">Projection budgétaire, pas un solde bancaire. Les revenus non encaissés et les tickets restaurant ne sont pas des liquidités disponibles.</p></div><div class="card"><h2>Mes budgets restants</h2><div id="homeTracking"></div></div><div class="card analytics"><div class="section-title"><h2>Répartition du budget</h2><span class="muted">Prévisions</span></div><div class="analytic-layout"><div class="donut" id="budgetDonut"><div class="donut-center"><small>Reste prévu</small><strong id="donutRemaining">0 €</strong></div></div><div class="legend" id="budgetLegend"></div></div><p class="muted" style="margin-bottom:0">Les montants sont prévisionnels et ne représentent pas tes dépenses réelles.</p></div><div class="card"><div class="section-title"><h2>Ajout express</h2><span class="muted">Une dépense en quelques secondes</span></div><div class="quick-actions"><button class="btn secondary" data-quick="Courses" data-quick-cat="Variables">🛒 Courses</button><button class="btn secondary" data-quick="Restaurant" data-quick-cat="Provisions">🍽️ Restaurant</button><button class="btn secondary" data-quick="Maison" data-quick-cat="Variables">🏠 Maison</button><button class="btn secondary" data-quick="Loisirs" data-quick-cat="Provisions">🎟️ Loisirs</button></div></div><div class="card"><h2>Vue d'ensemble</h2><div id="overview"></div><div class="actions" style="margin-top:16px"><button class="btn" id="addExpense">+ Ajouter une dépense</button><button class="btn secondary" id="addIncome">+ Revenu</button></div></div><div class="card"><div class="section-title"><h2>Dernières opérations</h2><span class="muted">Ce mois-ci</span></div><div id="recent"></div></div></div>
@@ -834,4 +863,104 @@ render();
  render=function(){oldRender();renderCompact();renderBars();renderAssets();drawCustom();const footer=document.querySelector('.footer');if(footer)footer.textContent='Mon Budget Privé · Version 2.6.1 test · Données chiffrées localement'};
  render();
 })();
-</script></body></html>
+</script>
+<script id="v262-fiscal-and-ui">
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const eur=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n);
+const num=id=>Number($(id)?.value)||0;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Barème officiel 2026 sur revenus 2025. Simulation indicative pour préparer 2027.
+const BRACKETS=[[11600,0],[29579,.11],[84577,.30],[181917,.41],[Infinity,.45]];
+function progressive(x){let prev=0,total=0;for(const [limit,rate] of BRACKETS){const portion=Math.max(0,Math.min(x,limit)-prev);total+=portion*rate;prev=limit;if(x<=limit)break}return total}
+function calculate({income,parts,baseParts,couple,deductions,credits,withholding}){
+ const taxable=Math.max(0,income-deductions),q=Math.max(.5,parts);
+ const raw=progressive(taxable/q)*q;
+ // Plafond indicatif de l'avantage familial : 1 807 € par demi-part supplémentaire (revenus 2025).
+ const normal=progressive(taxable/baseParts)*baseParts;
+ const cap=1807*Math.max(0,(q-baseParts)*2);
+ const capped=q>baseParts?Math.max(raw,normal-cap):raw;
+ const discount=Math.max(0,(couple?1483:897)-.4525*capped);
+ const afterDiscount=Math.max(0,capped-discount);
+ const annual=Math.max(0,afterDiscount-credits);
+ const pas=taxable*withholding/100;
+ return {taxable,raw,capped,discount,annual,monthly:annual/12,average:taxable?100*annual/taxable:0,pas,balance:annual-pas};
+}
+const existing=$('v25taxform');
+if(existing){
+ const card=document.createElement('div');card.className='card';card.id='v262taxbox';
+ card.innerHTML=`<h3>🧮 Simulateur d'impôt · prévisions 2027</h3>
+ <p class="v262-note">Calcul indicatif basé sur le <b>barème 2026 (revenus 2025)</b>. Le barème applicable aux revenus 2027 n'est pas encore publié. Ce simulateur ne remplace pas celui des impôts.</p>
+ <div class="v262-grid">
+ <label>Revenu net imposable annuel (€)<input id="v262income" type="number" min="0" step="0.01" inputmode="decimal"></label>
+ <label>Situation fiscale<select id="v262couple"><option value="0">Imposition individuelle</option><option value="1">Couple imposé conjointement</option></select></label>
+ <label>Parts fiscales<input id="v262parts" type="number" min=".5" max="20" step=".5" value="1"></label>
+ <label>Déductions supplémentaires (€)<input id="v262deductions" type="number" min="0" step="0.01" value="0"></label>
+ <label>Réductions / crédits d'impôt (€)<input id="v262credits" type="number" min="0" step="0.01" value="0"></label>
+ <label>Taux de prélèvement à la source (%)<input id="v262pas" type="number" min="0" max="100" step=".01" value="0"></label>
+ </div>
+ <div class="v262-results" aria-live="polite">
+ <div class="v262-result"><small>Impôt annuel estimé</small><strong id="v262annual">—</strong></div>
+ <div class="v262-result"><small>Équivalent mensuel</small><strong id="v262monthly">—</strong></div>
+ <div class="v262-result"><small>Taux moyen estimé</small><strong id="v262average">—</strong></div>
+ <div class="v262-result"><small>Écart impôt / PAS annuel indicatif</small><strong id="v262balance">—</strong></div>
+ </div>
+ <p class="v262-note" id="v262detail">Le prélèvement à la source est comparé à l'impôt estimé, jamais ajouté une seconde fois. Son calcul réel dépend de l'assiette et du calendrier de prélèvement.</p>
+ <div class="v262-buttons"><button class="btn secondary" id="v262calc" type="button">Recalculer</button><button class="btn" id="v262apply" type="button">Utiliser pour 2027</button></div>
+ <p class="v262-note" id="v262status" role="status"></p>
+ <p class="v262-note">Cas non entièrement pris en charge : revenus catégoriels, abattement de 10 % sur salaires, situations familiales particulières, plafonnements spéciaux, revenus exceptionnels et mécanismes fiscaux complexes. Saisis le <b>revenu net imposable</b>, et non le salaire brut.</p>`;
+ const forecast=$('forecast2027form');
+ if(forecast?.closest('.card'))forecast.closest('.card').insertAdjacentElement('afterend',card);
+ else existing.closest('.card').insertAdjacentElement('afterend',card);
+ let latest=null;
+ const fields=['v262income','v262couple','v262parts','v262deductions','v262credits','v262pas'];
+ function sync(){if(!data)return;const saved=data.fiscalSimulation2027||{};const prof=data.taxProfiles?.['2027']||{};
+ $('v262income').value=saved.income??data.forecast2027?.income??55000;
+ $('v262couple').value=String(saved.couple??0);
+ $('v262parts').value=saved.parts??prof.parts??1;
+ $('v262deductions').value=saved.deductions??0;
+ $('v262credits').value=saved.credits??0;
+ $('v262pas').value=saved.withholding??prof.rate??0;
+ compute();
+ }
+ function compute(){
+  const income=num('v262income'),parts=num('v262parts'),deductions=num('v262deductions'),credits=num('v262credits'),withholding=num('v262pas');
+  const couple=$('v262couple').value==='1';
+  if(parts<(couple?2:1)||income<0||deductions<0||credits<0||withholding<0||withholding>100){
+   latest=null;$('v262status').textContent='Vérifie le nombre de parts et les montants.';return;
+  }
+  latest={income,parts,couple:couple?1:0,deductions,credits,withholding};
+  const res=calculate({...latest,baseParts:couple?2:1});
+  $('v262annual').textContent=eur(res.annual);
+  $('v262monthly').textContent=eur(res.monthly);
+  $('v262average').textContent=res.average.toFixed(2).replace('.',',')+' %';
+  $('v262balance').textContent=eur(res.balance);
+  $('v262detail').textContent=`Revenu imposable retenu : ${eur(res.taxable)} · Décote estimée : ${eur(res.discount)} · PAS théorique annuel : ${eur(res.pas)}. Un écart positif indique un impôt estimé supérieur au PAS théorique.`;
+  $('v262status').textContent='';
+ }
+ fields.forEach(id=>$(id).addEventListener('input',compute));
+ $('v262calc').onclick=compute;
+ $('v262apply').onclick=async()=>{
+  compute();if(!latest||!data)return;
+  const tax=calculate({...latest,baseParts:latest.couple?2:1}).annual;
+  if(!confirm('Enregistrer cette estimation ('+eur(tax)+') comme impôt annuel prévisionnel 2027 ? Cela remplace uniquement le montant de prévision fiscale, sans créer de dépense ni modifier les opérations existantes.'))return;
+  const beforeForecast=structuredClone(data.forecast2027||{}),beforeSim=structuredClone(data.fiscalSimulation2027||{});
+  data.fiscalSimulation2027={...latest,barème:'2026-revenus-2025'};
+  data.forecast2027={...data.forecast2027,income:latest.income,tax:Math.round(tax*100)/100};
+  try{await save();render();$('v262status').textContent='Estimation enregistrée dans les prévisions 2027 (sans double comptage).'}
+  catch(e){data.forecast2027=beforeForecast;data.fiscalSimulation2027=beforeSim;$('v262status').textContent='Erreur de sauvegarde, aucune prévision modifiée.'}
+ };
+ const oldRender=render;
+ render=function(){oldRender();if(data&&!card.contains(document.activeElement))sync()};
+ if(data)sync();
+}
+const version=document.createElement('p');version.className='v262-version';version.textContent='Mon Budget Privé · Version 2.6.2 test · Données chiffrées localement';
+$('settings')?.append(version);
+const header=document.querySelector('header');
+const button=$('v25settings');
+if(button&&header){header.append(button);button.textContent='⚙';button.setAttribute('aria-label','Ouvrir les réglages');button.title='Réglages'}
+const oldTab=tab;
+tab=function(which){oldTab(which);if(button)button.style.display=which==='settings'?'none':''};
+})();
+</script>
+</body></html>
