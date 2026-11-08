@@ -343,7 +343,37 @@ body:has(#app:not(.hidden) #add:not(.hidden)) main{height:100dvh!important;max-h
  #v263homepanel{display:none!important}
 }
 </style>
-</head><body><main><header><div class="eyebrow">Personnel · Chiffré · Hors ligne</div><h1>Mon Budget <span style="color:#3de2b7">Privé</span></h1><p id="subtitle">Ton budget, uniquement sur ton appareil.</p></header>
+<style id="v264-polish">
+/* Navigation principale limitée à cinq rubriques. */
+#nav{display:flex;justify-content:space-around;gap:2px}
+#nav button{font-size:clamp(10px,3vw,13px)!important;flex:1!important}
+#v264settings{position:absolute;right:0;top:50%;transform:translateY(-50%);
+ width:34px;height:34px;border-radius:10px;border:1px solid #4e486e;
+ background:#28253f;color:#f0eaff;font-size:20px;display:flex;align-items:center;justify-content:center;
+ z-index:10;cursor:pointer}
+header{position:relative!important;padding-right:45px!important}
+#v264settings.v264-active{background:#a58aff;color:#171326}
+body:has(#app.hidden) #v264settings{display:none}
+#v263homepanel,#v263addpanel{display:none!important}
+#v264budgetpanel{background:#1b2031;border:1px solid #373b53;border-radius:15px;
+ padding:14px 16px;flex:1 1 auto;min-height:0;overflow:hidden;margin-top:10px}
+#v264budgetpanel h3{font-size:15px;margin:0}
+.v264-panelhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+#v264catlabel{font-size:12px;color:#a9a6c9}
+.v264-budgetnumbers{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px}
+.v264-budgetnumbers span{color:#b9b7c8;font-size:13px}
+.v264-budgetnumbers strong{font-size:clamp(20px,4vw,28px);color:#36dbac}
+.v264-budgetnumbers strong.v264-over{color:#ffa6aa}
+.v264-track{height:9px;border-radius:20px;background:#353a52;margin:10px 0;overflow:hidden}
+.v264-track span{height:100%;display:block;background:#36dbac;border-radius:20px}
+.v264-sub{font-size:12px;color:#b0aec4}
+.v264-placeholder{font-size:13px;line-height:1.5;color:#b0aec4;margin-top:14px}
+#add:not(.hidden) #v24quick{flex:none!important}
+#add:not(.hidden) #v264budgetpanel{flex:1 1 0!important}
+#v26home{height:auto!important;min-height:0!important}
+body:has(#app:not(.hidden) #home:not(.hidden)) #home{overflow:hidden!important}
+@media(max-height:760px){#v264budgetpanel{padding:9px 12px}.v264-budgetnumbers{margin-top:6px}.v264-track{margin:5px 0}}
+</style></head><body><main><header><div class="eyebrow">Personnel · Chiffré · Hors ligne</div><h1>Mon Budget <span style="color:#3de2b7">Privé</span></h1><p id="subtitle">Ton budget, uniquement sur ton appareil.</p></header>
 <section id="setup" class="card hidden"><h2>Créer mon coffre privé</h2><p>Choisis une phrase secrète d'au moins 12 caractères. Elle servira à chiffrer tes données sur cet appareil. <b>Nous ne pouvons pas la récupérer.</b></p><label>Phrase secrète<input id="newpass" type="password" autocomplete="new-password" minlength="12" placeholder="12 caractères minimum"></label><label>Confirmer<input id="confpass" type="password" autocomplete="new-password"></label><button class="btn" id="create">Créer mon coffre</button><p id="setupmsg" class="muted"></p><div class="notice">Aucune donnée financière n'est incluse dans les fichiers hébergés. Fais une sauvegarde chiffrée après tes premières saisies.</div></section>
 <section id="unlock" class="card hidden"><h2>Déverrouiller mon budget</h2><form id="unlockform" autocomplete="on"><input aria-label="Identifiant du coffre" type="text" name="username" autocomplete="username" value="mon-budget" readonly style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0"><label>Phrase secrète<input id="pass" name="password" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"></label><button class="btn" id="open" type="submit">Déverrouiller</button></form><p id="unlockmsg" class="muted"></p><p class="muted">Si tu oublies ta phrase secrète, seul un export sauvegardé avec son mot de passe te permettra de retrouver tes données.</p></section>
 <section id="app" class="hidden"><div id="add" class="view hidden"></div><div id="home" class="view"><button type="button" class="btn secondary" style="float:right;margin-bottom:10px" onclick="tab('settings')">⚙ Réglages</button><div style="clear:both"></div><div class="card hero"><span class="pill" id="monthlabel"></span><div class="muted" style="margin-top:15px">Reste prévisionnel mensuel</div><div class="amount" id="available">0,00 €</div><div class="grid"><div class="stat"><small>Revenus du mois</small><strong id="income">0 €</strong></div><div class="stat"><small>Sorties du mois</small><strong id="outgoing">0 €</strong></div></div></div><div class="card" id="cashflowcard"><h2>Reste à vivre · suivi</h2><div id="cashflowview"></div><p class="muted" style="font-size:12px">Projection budgétaire, pas un solde bancaire. Les revenus non encaissés et les tickets restaurant ne sont pas des liquidités disponibles.</p></div><div class="card"><h2>Mes budgets restants</h2><div id="homeTracking"></div></div><div class="card analytics"><div class="section-title"><h2>Répartition du budget</h2><span class="muted">Prévisions</span></div><div class="analytic-layout"><div class="donut" id="budgetDonut"><div class="donut-center"><small>Reste prévu</small><strong id="donutRemaining">0 €</strong></div></div><div class="legend" id="budgetLegend"></div></div><p class="muted" style="margin-bottom:0">Les montants sont prévisionnels et ne représentent pas tes dépenses réelles.</p></div><div class="card"><div class="section-title"><h2>Ajout express</h2><span class="muted">Une dépense en quelques secondes</span></div><div class="quick-actions"><button class="btn secondary" data-quick="Courses" data-quick-cat="Variables">🛒 Courses</button><button class="btn secondary" data-quick="Restaurant" data-quick-cat="Provisions">🍽️ Restaurant</button><button class="btn secondary" data-quick="Maison" data-quick-cat="Variables">🏠 Maison</button><button class="btn secondary" data-quick="Loisirs" data-quick-cat="Provisions">🎟️ Loisirs</button></div></div><div class="card"><h2>Vue d'ensemble</h2><div id="overview"></div><div class="actions" style="margin-top:16px"><button class="btn" id="addExpense">+ Ajouter une dépense</button><button class="btn secondary" id="addIncome">+ Revenu</button></div></div><div class="card"><div class="section-title"><h2>Dernières opérations</h2><span class="muted">Ce mois-ci</span></div><div id="recent"></div></div></div>
@@ -1013,37 +1043,74 @@ tab=function(which){oldTab(which);if(button)button.style.display=which==='settin
 })();
 </script>
 
-<script id="v263-interface">
+<script id="v264-interface">
 (()=>{
  const nav=document.getElementById('nav');
- // Réglages = 6e onglet natif, même comportement que les autres.
+ nav.querySelector('[data-tab="settings"]')?.remove();
  document.getElementById('v25settings')?.remove();
- if(nav&&!nav.querySelector('[data-tab="settings"]')){
-  const b=document.createElement('button');b.type='button';b.dataset.tab='settings';b.innerHTML='⚙<br>Réglages';
-  b.setAttribute('aria-label','Réglages et sauvegardes');
-  b.onclick=()=>tab('settings');nav.append(b);
+ const header=document.querySelector('header');
+ if(header&&!document.getElementById('v264settings')){
+  const b=document.createElement('button');b.id='v264settings';b.type='button';
+  b.textContent='⚙';b.title='Réglages';b.setAttribute('aria-label','Ouvrir les réglages');
+  b.onclick=()=>tab('settings');header.append(b);
  }
- const add=document.getElementById('add'),quick=document.getElementById('v24quick');
- const panel=document.createElement('section');panel.id='v263addpanel';panel.setAttribute('aria-label','Dernières opérations');
- panel.innerHTML='<h3>Dernières opérations</h3><div id="v263addrecent"></div>';
+ document.getElementById('v263homepanel')?.remove();
+ document.getElementById('v263addpanel')?.remove();
+ const add=document.getElementById('add');
+ const panel=document.createElement('section');panel.id='v264budgetpanel';
+ panel.innerHTML='<div class="v264-panelhead"><h3>Budget de la catégorie</h3><span id="v264catlabel"></span></div><div id="v264budgetcontent"></div>';
  add.append(panel);
- const home=document.getElementById('v26home');
- if(home){
-  const hp=document.createElement('section');hp.id='v263homepanel';hp.innerHTML='<h3>Activité récente</h3><div id="v263homerecent"></div>';
-  home.append(hp);
+ function getCurrentMonth(){
+  return new Date().toLocaleDateString('sv-SE').slice(0,7);
  }
- const safe=s=>escapeHtml(String(s??''));
- const money=n=>fmt(Number(n)||0);
- function recent(target,max){
-  const el=document.getElementById(target);if(!el||!data)return;
-  const tx=(data.transactions||[]).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,max);
-  el.innerHTML=tx.length?tx.map(t=>`<div class="v263-line"><span><b>${safe(t.name||'Opération')}</b><div class="v263-meta">${safe(t.date||'')} · ${safe(t.cat||'')}</div></span><b style="color:${t.type==='income'?'#36dbac':'#ffaaa8'}">${t.type==='income'?'+':'−'}${money(t.amount)}</b></div>`).join(''):'<p class="muted">Tes dernières dépenses et revenus apparaîtront ici.</p>';
+ function activeCategory(){
+  const isIncome=document.getElementById('v24income')?.classList.contains('active');
+  const key=document.querySelector('#v24cats [data-v24cat].active')?.dataset.v24cat||'courses';
+  return {key,isIncome};
  }
- const previous=render;
- render=function(){previous();const root=document.getElementById('v26home');if(root&&!document.getElementById('v263homepanel')){const hp=document.createElement('section');hp.id='v263homepanel';hp.innerHTML='<h3>Activité récente</h3><div id="v263homerecent"></div>';root.append(hp)}recent('v263addrecent',4);recent('v263homerecent',3)};
- // Met à jour le libellé de version uniquement dans Réglages.
- const version=document.querySelector('#settings .v262-version');if(version)version.textContent='Mon Budget Privé · Version 2.6.3 test · Données chiffrées localement';
- // Le champ des revenus 2027 et le simulateur fiscal restent des prévisions distinctes.
+ function updateBudget(){
+  if(!data)return;
+  const {key,isIncome}=activeCategory();
+  const labels={courses:'Courses',midi:'Repas du midi',sorties:'Restaurants / sorties',exception:'Imprévu',autre:'Autre',salaire:'Salaire',prime:'Prime'};
+  const name=labels[key]||'Catégorie';
+  const label=document.getElementById('v264catlabel'),content=document.getElementById('v264budgetcontent');
+  if(!content)return;
+  label.textContent=name;
+  if(isIncome){
+   content.innerHTML='<div class="v264-placeholder">Les revenus ajoutés seront comptabilisés dans ton bilan du mois.</div>';
+   return;
+  }
+  if(key==='autre'||key==='exception'){
+   content.innerHTML='<div class="v264-placeholder">Cette catégorie ne dispose pas forcément d’une enveloppe dédiée. Tu peux l’affecter à une ligne précise depuis Opérations.</div>';
+   return;
+  }
+  const m=getCurrentMonth();
+  const old=selectedMonth;let plans=[];
+  try{selectedMonth=m;plans=monthPlans().filter(x=>x.cat==='Variables')}
+  finally{selectedMonth=old}
+  const pattern=key==='courses'?/course|participation/i:key==='midi'?/repas du midi|midi/i:/restaurant|sortie/i;
+  const plan=plans.find(x=>pattern.test(x.name));
+  if(!plan){
+   content.innerHTML='<div class="v264-placeholder">Aucun budget correspondant défini pour ce mois. Tu peux en créer un dans Budget.</div>';
+   return;
+  }
+  const used=(data.transactions||[]).filter(t=>t.type==='expense'&&t.date?.startsWith(m)&&
+    (t.planId===plan.id||(!t.planId&&t.cat==='Variables'&&pattern.test(t.name||''))))
+    .reduce((a,t)=>a+Number(t.amount||0),0);
+  const budget=Number(plan.amount)||0,remain=budget-used,pct=budget>0?Math.min(100,Math.max(0,used/budget*100)):0;
+  content.innerHTML=`<div class="v264-budgetnumbers"><span>Reste à dépenser</span><strong class="${remain<0?'v264-over':''}">${fmt(remain)}</strong></div>
+   <div class="v264-track"><span style="width:${pct}%"></span></div>
+   <div class="v264-sub">${fmt(used)} utilisés sur ${fmt(budget)} prévus · ${Math.round(pct)} %</div>`;
+ }
+ const oldRender=render;
+ render=function(){oldRender();document.getElementById('v263homepanel')?.remove();updateBudget()};
+ document.getElementById('v24cats')?.addEventListener('click',()=>queueMicrotask(updateBudget));
+ document.getElementById('v24expense')?.addEventListener('click',()=>queueMicrotask(updateBudget));
+ document.getElementById('v24income')?.addEventListener('click',()=>queueMicrotask(updateBudget));
+ const oldTab=tab;
+ tab=function(id){oldTab(id);document.getElementById('v264settings')?.classList.toggle('v264-active',id==='settings')};
+ const version=document.querySelector('#settings .v262-version');
+ if(version)version.textContent='Mon Budget Privé · Version 2.6.4 test · Données chiffrées localement';
 })();
 </script>
 </body></html>
