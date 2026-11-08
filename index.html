@@ -203,6 +203,72 @@ body:has(#app:not(.hidden) #home:not(.hidden)) header,body:has(#app:not(.hidden)
 .v26-barchart{display:flex;align-items:end;gap:5px;height:75px;margin:12px 0 5px}.v26-barcol{flex:1;min-width:0;text-align:center;font-size:9px;color:#b1b5cb}.v26-bar{min-height:2px;border-radius:4px 4px 0 0;background:#a58aff}
 @media(max-height:690px){#v26home{gap:5px}.v26-panel{padding:7px}.v26-ring{width:83px;height:83px}.v26-stats{gap:5px}.v26-hero{padding:8px}.v26-foot{font-size:9px}#add .v24-switch button{height:35px}#add .v24-amount input{height:45px}}
 @media(max-height:580px){#v26home .v26-foot{display:none}#v26home .v26-ring{width:68px;height:68px}#v26home .v26-hero{padding:6px}#v26home .v26-panel h2{margin-bottom:3px}}
+</style><style id="v261-iphone-fixes">
+/* v2.6.1 — correction iPhone : tailles intrinsèques, aucune superposition */
+html:has(#app:not(.hidden) #home:not(.hidden)),
+html:has(#app:not(.hidden) #add:not(.hidden)){height:100%;overflow:hidden;overscroll-behavior:none}
+body:has(#app:not(.hidden) #home:not(.hidden)),
+body:has(#app:not(.hidden) #add:not(.hidden)){position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+body:has(#app:not(.hidden) #home:not(.hidden)) main,
+body:has(#app:not(.hidden) #add:not(.hidden)) main{
+ height:100%;height:100dvh;max-height:100dvh;overflow:hidden;
+ padding:calc(env(safe-area-inset-top) + 5px) 12px calc(env(safe-area-inset-bottom) + 69px)!important
+}
+body:has(#app:not(.hidden) #home:not(.hidden)) header,
+body:has(#app:not(.hidden) #add:not(.hidden)) header{height:37px;min-height:37px;max-height:37px;overflow:hidden;padding:3px 0!important}
+#v25settings{top:calc(env(safe-area-inset-top) + 5px);height:30px;z-index:15}
+#home:not(.hidden),#add:not(.hidden){min-height:0;overflow:hidden}
+#home>#v21dashboard{min-height:0;overflow:hidden}
+#v26home{height:100%;min-height:0;display:flex;flex-direction:column;gap:clamp(5px,1dvh,9px);overflow:hidden}
+#v26home>.v26-hero,#v26home>.v26-stats,#v26home>.v26-panel{flex:0 0 auto;min-height:0}
+#v26home .v26-hero{padding:9px 13px;border-radius:14px}
+#v26home .v26-hero small{font-size:10px;line-height:1.2}
+#v26home .v26-big{font-size:clamp(23px,4dvh,32px);margin:3px 0;line-height:1.05}
+#v26home .v26-stats{gap:6px}
+#v26home .v26-stat{padding:8px 10px;border-radius:12px}
+#v26home .v26-stat small{font-size:10px}
+#v26home .v26-stat b{font-size:clamp(14px,2.5dvh,18px);margin-top:3px}
+#v26home .v26-panel{padding:8px 11px;border-radius:13px}
+#v26home .v26-panel h2{font-size:12px;margin:0 0 5px;line-height:1.2}
+#v26home .v26-chartrow{display:grid;grid-template-columns:minmax(0,92px) minmax(0,1fr);gap:9px;align-items:center}
+#v26home .v26-ring{width:92px;height:92px;max-width:100%;flex:none}
+#v26home .v26-ring-inner{font-size:9px;line-height:1.1;overflow-wrap:anywhere}
+#v26home .v26-legend{font-size:10px}
+#v26home .v26-legend div{padding:2px 0}
+#v26home .v26-legend b{font-size:10px}
+#v26home .v26-foot{display:none!important}
+#home:not(.hidden)~.footer,
+body:has(#home:not(.hidden)) .footer,
+body:has(#home:not(.hidden)) #msg{display:none!important}
+#home>button[onclick*="settings"],#home>div[style*="clear:both"]{display:none!important}
+#add:not(.hidden) #v24quick{flex:0 0 auto!important;height:auto!important;max-height:100%;padding:10px!important;gap:8px!important;overflow:hidden}
+#add .v24-cats{flex:0 0 auto!important;grid-template-rows:repeat(3,48px)!important;grid-auto-rows:48px!important;gap:7px!important}
+#add .v24-chip{height:48px!important;min-height:0!important;padding:5px!important;font-size:14px!important}
+#add .v24-switch button{height:44px!important}
+#add .v24-amount input{height:58px!important}
+#add .v24-save{height:49px!important}
+#add #v24quick h2{font-size:18px!important;line-height:1.2}
+nav button[data-tab="add"]:not(.active){background:transparent!important;color:#a6a6b9!important}
+nav button[data-tab="add"].active{background:#a58aff!important;color:#151127!important}
+nav button.active:not([data-tab="add"]){background:#a58aff26;color:#c5b4ff}
+@media(max-height:730px){
+ #v26home .v26-ring{height:76px;width:76px}
+ #v26home .v26-chartrow{grid-template-columns:76px minmax(0,1fr)}
+ #v26home .v26-hero{padding:7px 10px}
+ #v26home .v26-stat{padding:6px 8px}
+ #v26home .v26-panel{padding:6px 9px}
+ #add .v24-cats{grid-template-rows:repeat(3,39px)!important;grid-auto-rows:39px!important}
+ #add .v24-chip{height:39px!important}
+ #add .v24-switch button{height:36px!important}
+ #add .v24-amount input{height:46px!important}
+ #add .v24-save{height:42px!important}
+}
+@media(max-height:600px){
+ #v26home .v26-ring{width:60px;height:60px}
+ #v26home .v26-chartrow{grid-template-columns:60px minmax(0,1fr)}
+ #v26home .v26-panel h2{margin-bottom:3px}
+ #v26home .v26-legend div:nth-child(4){display:none}
+}
 </style></head><body><main><header><div class="eyebrow">Personnel · Chiffré · Hors ligne</div><h1>Mon Budget <span style="color:#3de2b7">Privé</span></h1><p id="subtitle">Ton budget, uniquement sur ton appareil.</p></header>
 <section id="setup" class="card hidden"><h2>Créer mon coffre privé</h2><p>Choisis une phrase secrète d'au moins 12 caractères. Elle servira à chiffrer tes données sur cet appareil. <b>Nous ne pouvons pas la récupérer.</b></p><label>Phrase secrète<input id="newpass" type="password" autocomplete="new-password" minlength="12" placeholder="12 caractères minimum"></label><label>Confirmer<input id="confpass" type="password" autocomplete="new-password"></label><button class="btn" id="create">Créer mon coffre</button><p id="setupmsg" class="muted"></p><div class="notice">Aucune donnée financière n'est incluse dans les fichiers hébergés. Fais une sauvegarde chiffrée après tes premières saisies.</div></section>
 <section id="unlock" class="card hidden"><h2>Déverrouiller mon budget</h2><form id="unlockform" autocomplete="on"><input aria-label="Identifiant du coffre" type="text" name="username" autocomplete="username" value="mon-budget" readonly style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0"><label>Phrase secrète<input id="pass" name="password" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"></label><button class="btn" id="open" type="submit">Déverrouiller</button></form><p id="unlockmsg" class="muted"></p><p class="muted">Si tu oublies ta phrase secrète, seul un export sauvegardé avec son mot de passe te permettra de retrouver tes données.</p></section>
@@ -765,7 +831,7 @@ render();
  const wealthCard=document.createElement('div');wealthCard.className='card';wealthCard.id='v26assetgraph';wealthCard.innerHTML='<h2>Répartition de mon patrimoine</h2><div id="v26assetbars"></div>';
  el('wealth').append(wealthCard);
  function renderAssets(){if(!data)return;const groups={};for(const a of data.assets||[])groups[a.type||'Autres']=(groups[a.type||'Autres']||0)+Number(a.amount||0);const rows=Object.entries(groups).sort((a,b)=>b[1]-a[1]);const total=rows.reduce((n,x)=>n+x[1],0);el('v26assetbars').innerHTML=rows.length?rows.map(([k,v])=>`<div style="margin:9px 0"><div style="display:flex;justify-content:space-between;font-size:12px"><span>${safe(k)}</span><b>${money(v)}</b></div><div style="background:#34384b;height:9px;border-radius:9px;margin-top:5px"><div style="width:${total?Math.max(0,Math.min(100,v/total*100)):0}%;height:100%;background:#36dbac;border-radius:9px"></div></div></div>`).join(''):'<p class="muted">Ajoute un actif pour afficher sa répartition.</p>'}
- render=function(){oldRender();renderCompact();renderBars();renderAssets();drawCustom();const footer=document.querySelector('.footer');if(footer)footer.textContent='Mon Budget Privé · Version 2.6 test · Données chiffrées localement'};
+ render=function(){oldRender();renderCompact();renderBars();renderAssets();drawCustom();const footer=document.querySelector('.footer');if(footer)footer.textContent='Mon Budget Privé · Version 2.6.1 test · Données chiffrées localement'};
  render();
 })();
 </script></body></html>
