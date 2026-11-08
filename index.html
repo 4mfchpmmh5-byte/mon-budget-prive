@@ -466,6 +466,26 @@ body:has(#app:not(.hidden) #home:not(.hidden)) main{overflow:hidden!important;di
 body:has(#app:not(.hidden) #home:not(.hidden)) #app{flex:1 1 auto!important;min-height:0!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;}
 body:has(#app:not(.hidden) #home:not(.hidden)) #home:not(.hidden){flex:1 1 auto!important;min-height:0!important;height:auto!important;max-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding-bottom:22px!important;}
 body:has(#app:not(.hidden) #home:not(.hidden)) #home #v21dashboard{height:auto!important;max-height:none!important;overflow:visible!important;flex:none!important;}
+</style><style id="v31-improvements">
+/* Un titre lisible : aucun flou sur le logo ni sur la barre supérieure. */
+#add h1,#home h1,#v30profile h1,#wealth h1,#app header,#app .brand{filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;text-shadow:none!important;opacity:1!important}
+#v25taxbox,#v25taxform{display:none!important}
+#v26customlist .v31-shortrow{display:flex;gap:8px;align-items:center;justify-content:space-between;border-bottom:1px solid #343a50;padding:10px 0;flex-wrap:wrap}
+#v26customlist .v31-shortrow .v31-actions{display:flex;gap:6px}
+#v26customlist .v31-shortrow button{font-size:12px;padding:8px 10px;border-radius:9px;background:#30354d;color:#f3efff;border:0}
+#v26customlist .v31-shortrow button.v31-delete{color:#ff9eaa}
+#v31dialog{border:1px solid #476174;border-radius:18px;background:#152535;color:#f5f4ff;width:min(92vw,440px);max-height:calc(100dvh - 90px);overflow:auto;padding:22px}
+#v31dialog::backdrop{background:#000b}
+#v31dialog label{display:block;margin:14px 0}
+#v31dialog input,#v31dialog select{width:100%;box-sizing:border-box}
+#v31dialog .v31-dialogactions{display:flex;gap:10px;justify-content:space-between;align-items:center}
+#v31dialog .v31-dialogactions button{min-height:44px}
+#v31dialog .v31-dialogactions .secondary{background:#30354d}
+#v31shorthelp{font-size:12px;color:#aeb5c9}
+#v24cats{max-height:42dvh;overflow-y:auto;overscroll-behavior:contain}
+#planlist .row[data-v31plan],#variableTracking .row[data-v31plan],#envelopeTracking .row[data-v31plan]{cursor:pointer}
+#planlist .row[data-v31plan]:focus-visible,#variableTracking .row[data-v31plan]:focus-visible{outline:2px solid #a58aff}
+#v22quickadd>.v19-menu-content>button:not(#newplan){display:none!important}
 </style></head><body><main><header><div class="eyebrow">Personnel · Chiffré · Hors ligne</div><h1>Mon Budget <span style="color:#3de2b7">Privé</span></h1><p id="subtitle">Ton budget, uniquement sur ton appareil.</p></header>
 <section id="setup" class="card hidden"><h2>Créer mon coffre privé</h2><p>Choisis une phrase secrète d'au moins 12 caractères. Elle servira à chiffrer tes données sur cet appareil. <b>Nous ne pouvons pas la récupérer.</b></p><label>Phrase secrète<input id="newpass" type="password" autocomplete="new-password" minlength="12" placeholder="12 caractères minimum"></label><label>Confirmer<input id="confpass" type="password" autocomplete="new-password"></label><button class="btn" id="create">Créer mon coffre</button><p id="setupmsg" class="muted"></p><div class="notice">Aucune donnée financière n'est incluse dans les fichiers hébergés. Fais une sauvegarde chiffrée après tes premières saisies.</div></section>
 <section id="unlock" class="card hidden"><h2>Déverrouiller mon budget</h2><form id="unlockform" autocomplete="on"><input aria-label="Identifiant du coffre" type="text" name="username" autocomplete="username" value="mon-budget" readonly style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0"><label>Phrase secrète<input id="pass" name="password" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"></label><button class="btn" id="open" type="submit">Déverrouiller</button></form><p id="unlockmsg" class="muted"></p><p class="muted">Si tu oublies ta phrase secrète, seul un export sauvegardé avec son mot de passe te permettra de retrouver tes données.</p></section>
@@ -1016,11 +1036,11 @@ render();
  const plansRoot=el('plans');plansRoot.append(budgetGraph);
  function renderBars(){if(!data)return;const tx=data.transactions.filter(t=>t.date?.startsWith(selectedMonth)&&t.type==='expense'&&!['Provisions','Investissements'].includes(t.cat));const groups={};for(const t of tx)groups[t.cat||'Autres']=(groups[t.cat||'Autres']||0)+Number(t.amount||0);const rows=Object.entries(groups).sort((a,b)=>b[1]-a[1]);const max=Math.max(1,...rows.map(x=>x[1]));el('v26budgetbars').innerHTML=rows.length?rows.map(([k,v])=>`<div style="margin:10px 0"><div style="display:flex;justify-content:space-between;gap:10px;font-size:12px"><span>${safe(k)}</span><b>${money(v)}</b></div><div style="background:#34384b;height:9px;border-radius:8px;margin-top:5px;overflow:hidden"><div style="background:#9e85fa;height:100%;width:${Math.min(100,v/max*100)}%"></div></div></div>`).join(''):'<p class="muted">Aucune dépense enregistrée sur cette période.</p>'}
  // Raccourcis configurables, sauvegardés dans le coffre chiffré.
- const box=document.createElement('div');box.className='card';box.id='v26custombox';box.innerHTML='<h3>Mes raccourcis personnalisés</h3><p class="muted">Ajoute tes libellés favoris. Le premier apparaît sur Ajouter ; les autres restent enregistrés pour une prochaine évolution. Le raccourci ouvre la fiche détaillée en Variables.</p><form id="v26customform"><label>Nouveau raccourci<input id="v26custominput" maxlength="40" placeholder="Ex. Essence, Santé, Cadeaux" required></label><button class="btn" type="submit">Ajouter le raccourci</button></form><div id="v26customlist"></div><p id="v26customstatus" class="muted" role="status"></p>';
+ const box=document.createElement('div');box.className='card';box.id='v26custombox';box.innerHTML='<h3>Mes raccourcis personnalisés</h3><p class="muted">Ajoute tes libellés favoris. Ils apparaissent sur Ajouter. Touche un raccourci pour enregistrer une opération ; personnalise son budget avec « Configurer ».</p><form id="v26customform"><label>Nouveau raccourci<input id="v26custominput" maxlength="40" placeholder="Ex. Essence, Santé, Cadeaux" required></label><button class="btn" type="submit">Ajouter le raccourci</button></form><div id="v26customlist"></div><p id="v26customstatus" class="muted" role="status"></p>';
  el('settings').append(box);
  function drawCustom(){if(!data)return;const names=Array.isArray(data.quickLabels)?data.quickLabels:[];el('v26customlist').innerHTML=names.map((n,i)=>`<div class="row"><span>${safe(n)}</span><button type="button" class="v22-action" data-v26remove="${i}">Retirer</button></div>`).join('');
   const cats=el('v24cats');if(!cats)return;cats.querySelectorAll('.v26-custom-chip').forEach(x=>x.remove());
-  for(const n of names.slice(0,1)){const b=document.createElement('button');b.type='button';b.className='v24-chip v26-custom-chip';b.textContent='＋ '+n;b.title='Ouvrir une opération détaillée';b.onclick=()=>{openTx('expense',n,'Variables')};cats.append(b)}
+  for(const n of names.slice(0,12)){const b=document.createElement('button');b.type='button';b.className='v24-chip v26-custom-chip';b.textContent='＋ '+n;b.title='Ouvrir une opération détaillée';b.onclick=()=>{openTx('expense',n,'Variables')};cats.append(b)}
  }
  el('v26customform').onsubmit=async e=>{e.preventDefault();if(!data)return;const name=el('v26custominput').value.trim();if(!name)return;const previous=[...(data.quickLabels||[])];if(previous.some(x=>x.toLowerCase()===name.toLowerCase())){el('v26customstatus').textContent='Ce raccourci existe déjà.';return}data.quickLabels=[...previous,name].slice(0,12);try{await save();el('v26custominput').value='';drawCustom();el('v26customstatus').textContent='Raccourci enregistré.'}catch(err){data.quickLabels=previous;el('v26customstatus').textContent='Échec de l’enregistrement.'}};
  el('v26customlist').onclick=async e=>{const b=e.target.closest('[data-v26remove]');if(!b||!data)return;const previous=[...(data.quickLabels||[])];data.quickLabels=previous.filter((_,i)=>i!==Number(b.dataset.v26remove));try{await save();drawCustom()}catch(err){data.quickLabels=previous;drawCustom()}};
@@ -1261,11 +1281,42 @@ function renameLabels(){document.querySelectorAll('#planlist b,#variableTracking
 const lastRender=render;render=function(){lastRender();renameLabels()};
 // Keep settings and original operations screen available internally for existing edit handlers.
 const oldShow=show;show=function(id){oldShow(id);if(id==='app'){nav.style.display='flex'}};
-const footer=document.querySelector('#settings .v262-version');if(footer)footer.textContent='Mon Budget Privé · Version 3.0 bêta 3 · Données chiffrées localement';
+const footer=document.querySelector('#settings .v262-version');if(footer)footer.textContent='Mon Budget Privé · Version 3.1 bêta 1 · Données chiffrées localement';
 // The original start() still enters the Add screen; the original nav button listeners are preserved by a direct click listener.
 if(data)render();
 })();
 </script><script id="v303-footer-cleanup">
 /* Retire définitivement le pied de page historique, même après les rendus. */
 (function(){const f=document.querySelector("main > .footer");if(f)f.remove();})();
+</script><script id="v31-functional-update">
+(()=>{
+'use strict';
+const by=id=>document.getElementById(id),safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Preserve all existing arrays, encrypted storage key, passphrase, and crypto routines.
+const modal=document.createElement('dialog');modal.id='v31dialog';document.body.append(modal);
+const names=()=>Array.isArray(data?.quickLabels)?data.quickLabels:[];
+const config=()=>data?.v31Shortcuts&&typeof data.v31Shortcuts==='object'?data.v31Shortcuts:{};
+function options(){return (typeof monthPlans==='function'?monthPlans():[]).filter(p=>p.cat==='Variables'||p.cat==='Provisions').map(p=>`<option value="${safe(p.id)}">${safe(p.name)} (${safe(p.cat)})</option>`).join('')}
+function close(){if(modal.open)modal.close()}
+function openShortcut(index){if(!data)return;const name=names()[index];if(!name)return;const c=config()[name]||{};modal.innerHTML=`<h2>Configurer le raccourci</h2><form id="v31shortcutform"><label>Nom<input id="v31shortname" maxlength="40" required value="${safe(name)}"></label><label>Budget ou provision associé<select id="v31shortplan"><option value="">Aucune imputation</option>${options()}</select></label><p id="v31shorthelp">Le budget choisi sera présélectionné quand tu utiliseras ce raccourci.</p><div class="v31-dialogactions"><button type="button" class="btn secondary" id="v31cancel">Annuler</button><button class="btn" type="submit">Enregistrer</button></div></form>`;
+by('v31shortplan').value=c.planId||'';by('v31cancel').onclick=close;
+by('v31shortcutform').onsubmit=async e=>{e.preventDefault();const newName=by('v31shortname').value.trim(),planId=by('v31shortplan').value;const old=names().slice(),oldCfg={...config()};if(!newName||old.some((n,i)=>i!==index&&n.toLowerCase()===newName.toLowerCase())){alert('Nom déjà utilisé ou invalide.');return}data.quickLabels[index]=newName;data.v31Shortcuts={...oldCfg};delete data.v31Shortcuts[name];data.v31Shortcuts[newName]={planId};try{await save();close();render()}catch(err){data.quickLabels=old;data.v31Shortcuts=oldCfg;alert('Impossible d’enregistrer.')}};modal.showModal()}
+function drawRows(){if(!data)return;const list=by('v26customlist');if(!list)return;list.innerHTML=names().map((n,i)=>`<div class="v31-shortrow"><strong>${safe(n)}</strong><div class="v31-actions"><button type="button" data-v31config="${i}">Configurer</button><button type="button" data-v31up="${i}" ${i===0?'disabled':''}>↑</button><button type="button" data-v31down="${i}" ${i===names().length-1?'disabled':''}>↓</button><button type="button" class="v31-delete" data-v31delete="${i}">Supprimer</button></div></div>`).join('')}
+// Keep old quick-label save and rendering; extend the visible list and controls.
+const previousRender=render;render=function(){previousRender();drawRows();markPlans()};
+by('v26customform')?.addEventListener('submit',()=>queueMicrotask(drawRows));
+by('v26customlist')?.addEventListener('click',async e=>{const b=e.target.closest('[data-v31config],[data-v31up],[data-v31down],[data-v31delete]');if(!b||!data)return;e.preventDefault();e.stopImmediatePropagation();if(b.dataset.v31config!==undefined){openShortcut(+b.dataset.v31config);return}const old=names().slice(),idx=Number(b.dataset.v31up??b.dataset.v31down??b.dataset.v31delete);if(b.dataset.v31delete!==undefined){if(!confirm('Supprimer ce raccourci ? Les opérations enregistrées seront conservées.'))return;data.quickLabels.splice(idx,1)}else{const other=idx+(b.dataset.v31up!==undefined?-1:1);if(other<0||other>=old.length)return;[data.quickLabels[idx],data.quickLabels[other]]=[data.quickLabels[other],data.quickLabels[idx]]}try{await save();render()}catch(err){data.quickLabels=old;render();alert('Enregistrement impossible')}},true);
+// Apply associated budget when a personalized shortcut opens the existing operation modal.
+by('v24cats')?.addEventListener('click',e=>{const chip=e.target.closest('.v26-custom-chip');if(!chip||!data)return;const name=chip.textContent.replace(/^\s*[+＋]\s*/,'').trim();const planId=config()[name]?.planId;if(!planId)return;queueMicrotask(()=>{const field=by('txbudget');if(field&&[...field.options].some(o=>o.value===planId)){field.value=planId;field.dispatchEvent(new Event('change',{bubbles:true}))}})},true);
+function markPlans(){if(!data)return;const plans=monthPlans();for(const root of ['planlist','variableTracking','envelopeTracking']){const el=by(root);if(!el)continue;el.querySelectorAll('.row').forEach(row=>{const title=row.querySelector('b')?.textContent?.trim();if(!title)return;const p=plans.find(x=>x.name===title||(title==='Courses'&&/participation aux courses/i.test(x.name)));if(p){row.dataset.v31plan=p.id;row.tabIndex=0;row.title='Toucher pour modifier cette catégorie'}})}}
+function editPlan(id){const b=by('planlist')?.querySelector(`[data-edit-plan="${CSS.escape(id)}"]`);if(b)b.click();else{const p=monthPlans().find(x=>x.id===id);if(!p)return;const other=[...document.querySelectorAll('[data-edit-plan]')].find(x=>x.dataset.editPlan===id);other?.click()}}
+by('plans')?.addEventListener('click',e=>{if(e.target.closest('button,summary,select,input,form'))return;const row=e.target.closest('[data-v31plan]');if(row)editPlan(row.dataset.v31plan)});
+by('plans')?.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-v31plan]')){e.preventDefault();editPlan(e.target.dataset.v31plan)}});
+// In summary, touching a category reveals history; a dedicated edit button opens its budget editor.
+const extras=by('v30summaryextras');extras?.addEventListener('click',e=>{const b=e.target.closest('[data-v31editbudget]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();editPlan(b.dataset.v31editbudget)},true);
+const prior=render;render=function(){prior();extras?.querySelectorAll('[data-v30cat]').forEach(el=>{if(el.nextElementSibling?.classList.contains('v31-editbudget'))return;const b=document.createElement('button');b.type='button';b.className='btn secondary v31-editbudget';b.style.cssText='margin:5px 0 9px;padding:8px 12px;font-size:12px';b.textContent='Modifier ce budget';b.dataset.v31editbudget=el.dataset.v30cat;el.insertAdjacentElement('afterend',b)})};
+// Remove duplicate fiscal profile; only simulator remains. Version displayed only in settings.
+by('v25taxbox')?.remove();const v=by('settings')?.querySelector('.v262-version');if(v)v.textContent='Mon Budget Privé · Version 3.1 bêta 1 · Données chiffrées localement';
+render();
+})();
 </script></body></html>
