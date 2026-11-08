@@ -373,6 +373,23 @@ body:has(#app.hidden) #v264settings{display:none}
 #v26home{height:auto!important;min-height:0!important}
 body:has(#app:not(.hidden) #home:not(.hidden)) #home{overflow:hidden!important}
 @media(max-height:760px){#v264budgetpanel{padding:9px 12px}.v264-budgetnumbers{margin-top:6px}.v264-track{margin:5px 0}}
+</style><style id="v265-corrections">
+/* Bouton entier, dans la ligne du titre, sans déborder sur l'écran. */
+header{box-sizing:border-box!important;position:relative!important;padding-right:52px!important;overflow:visible!important}
+#v264settings{box-sizing:border-box!important;right:8px!important;top:50%!important;transform:translateY(-50%)!important;
+width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;
+padding:0!important;line-height:1!important;font-size:23px!important;flex-shrink:0!important;
+border-radius:11px!important;box-shadow:none!important}
+header h1{padding-right:0!important;max-width:100%!important}
+/* La barre occupe aussi la zone de sécurité iPhone, sans bande vide. */
+#nav{box-sizing:border-box!important;bottom:0!important;padding:8px 5px calc(8px + env(safe-area-inset-bottom))!important;
+min-height:calc(62px + env(safe-area-inset-bottom))!important;background:#141725!important}
+#nav::after{display:none!important}
+html,body{background-color:#0d101c}
+body:has(#app:not(.hidden) #add:not(.hidden)) main,
+body:has(#app:not(.hidden) #home:not(.hidden)) main{
+padding-bottom:calc(65px + env(safe-area-inset-bottom))!important}
+#v264budgetpanel{margin-bottom:0!important}
 </style></head><body><main><header><div class="eyebrow">Personnel · Chiffré · Hors ligne</div><h1>Mon Budget <span style="color:#3de2b7">Privé</span></h1><p id="subtitle">Ton budget, uniquement sur ton appareil.</p></header>
 <section id="setup" class="card hidden"><h2>Créer mon coffre privé</h2><p>Choisis une phrase secrète d'au moins 12 caractères. Elle servira à chiffrer tes données sur cet appareil. <b>Nous ne pouvons pas la récupérer.</b></p><label>Phrase secrète<input id="newpass" type="password" autocomplete="new-password" minlength="12" placeholder="12 caractères minimum"></label><label>Confirmer<input id="confpass" type="password" autocomplete="new-password"></label><button class="btn" id="create">Créer mon coffre</button><p id="setupmsg" class="muted"></p><div class="notice">Aucune donnée financière n'est incluse dans les fichiers hébergés. Fais une sauvegarde chiffrée après tes premières saisies.</div></section>
 <section id="unlock" class="card hidden"><h2>Déverrouiller mon budget</h2><form id="unlockform" autocomplete="on"><input aria-label="Identifiant du coffre" type="text" name="username" autocomplete="username" value="mon-budget" readonly style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0"><label>Phrase secrète<input id="pass" name="password" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"></label><button class="btn" id="open" type="submit">Déverrouiller</button></form><p id="unlockmsg" class="muted"></p><p class="muted">Si tu oublies ta phrase secrète, seul un export sauvegardé avec son mot de passe te permettra de retrouver tes données.</p></section>
@@ -1052,7 +1069,7 @@ tab=function(which){oldTab(which);if(button)button.style.display=which==='settin
  if(header&&!document.getElementById('v264settings')){
   const b=document.createElement('button');b.id='v264settings';b.type='button';
   b.textContent='⚙';b.title='Réglages';b.setAttribute('aria-label','Ouvrir les réglages');
-  b.onclick=()=>tab('settings');header.append(b);
+  b.onclick=()=>{if(!document.getElementById('settings').classList.contains('hidden'))tab(window.v265previousTab||'add');else{window.v265previousTab=[...document.querySelectorAll('#nav button')].find(x=>x.classList.contains('active'))?.dataset.tab||'add';tab('settings')}};header.append(b);
  }
  document.getElementById('v263homepanel')?.remove();
  document.getElementById('v263addpanel')?.remove();
