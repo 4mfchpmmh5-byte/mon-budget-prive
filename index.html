@@ -298,6 +298,51 @@ body:has(#app:not(.hidden) #add:not(.hidden)) main{
 #v262taxbox .v262-buttons button{font-size:12px;padding:12px 6px}
 @media(max-width:390px){#v262taxbox .v262-grid{grid-template-columns:1fr}}
 </style>
+
+<style id="v263-responsive">
+/* Un accès aux réglages intégré à la navigation, sans bouton flottant. */
+#v25settings{display:none!important}
+header h1{padding-right:0!important}
+#nav{z-index:100!important;bottom:0!important;left:0!important;right:0!important;
+ padding:9px 4px calc(10px + env(safe-area-inset-bottom))!important;
+ background:#141725!important}
+#nav::after{content:"";position:absolute;left:0;right:0;top:100%;height:160px;background:#141725;pointer-events:none}
+#nav button{min-width:0!important;flex:1 1 0!important;padding:8px 1px!important;font-size:clamp(9px,2.6vw,11px)!important;white-space:nowrap}
+#nav button[data-tab="add"]{min-width:0!important}
+html{background:#141725}
+body{background:radial-gradient(ellipse 90% 50% at 50% -10%,#2a2452 0,transparent 75%),#0d101c}
+body:has(#app:not(.hidden) #home:not(.hidden)),
+body:has(#app:not(.hidden) #add:not(.hidden)){position:static!important;inset:auto!important;height:100dvh!important;min-height:100dvh!important}
+body:has(#app:not(.hidden) #home:not(.hidden)) main,
+body:has(#app:not(.hidden) #add:not(.hidden)) main{height:100dvh!important;max-height:100dvh!important;
+ padding-bottom:calc(75px + env(safe-area-inset-bottom))!important}
+#add:not(.hidden) #v24quick{flex:0 0 auto!important;height:auto!important;max-height:none!important;gap:8px!important}
+#add:not(.hidden) .v24-cats{flex:none!important;grid-template-rows:repeat(3,49px)!important;grid-auto-rows:49px!important}
+#add:not(.hidden) .v24-chip{height:49px!important}
+#add:not(.hidden) .v24-switch button{height:44px!important}
+#add:not(.hidden) .v24-amount input{height:58px!important}
+#add:not(.hidden) .v24-save{height:50px!important}
+#add:not(.hidden) .v24-hint:not(#v24feedback){display:none!important}
+#v263addpanel{flex:1 1 0!important;min-height:0!important;overflow:hidden;background:#1b2031;border:1px solid #373b53;border-radius:16px;padding:12px 14px;margin-top:10px}
+#v263addpanel h3,#v263homepanel h3{margin:0 0 9px;font-size:14px}
+.v263-line{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:12px;padding:7px 0;border-bottom:1px solid #36394d}
+.v263-line:last-child{border-bottom:0}.v263-line b{white-space:nowrap}
+.v263-meta{font-size:11px;color:#a8a9be;margin-top:3px}
+#v263homepanel{flex:1 1 0;min-height:0;overflow:hidden;background:#1b2031;border:1px solid #373b53;border-radius:13px;padding:9px 12px}
+#v26home{height:100%!important}
+#v263homepanel .v263-line{padding:5px 0}
+.v263-abatement{display:flex;align-items:center;gap:10px;background:#262b40;padding:11px;border-radius:12px;font-size:13px!important}
+.v263-abatement input{width:20px!important;min-height:20px!important;height:20px!important;margin:0!important;flex:none}
+@media(max-height:760px){
+ #add:not(.hidden) .v24-cats{grid-template-rows:repeat(3,40px)!important;grid-auto-rows:40px!important}
+ #add:not(.hidden) .v24-chip{height:40px!important}
+ #add:not(.hidden) .v24-switch button{height:36px!important}
+ #add:not(.hidden) .v24-amount input{height:46px!important}
+ #add:not(.hidden) .v24-save{height:42px!important}
+ #v263addpanel{padding:8px 11px}
+ #v263homepanel{display:none!important}
+}
+</style>
 </head><body><main><header><div class="eyebrow">Personnel · Chiffré · Hors ligne</div><h1>Mon Budget <span style="color:#3de2b7">Privé</span></h1><p id="subtitle">Ton budget, uniquement sur ton appareil.</p></header>
 <section id="setup" class="card hidden"><h2>Créer mon coffre privé</h2><p>Choisis une phrase secrète d'au moins 12 caractères. Elle servira à chiffrer tes données sur cet appareil. <b>Nous ne pouvons pas la récupérer.</b></p><label>Phrase secrète<input id="newpass" type="password" autocomplete="new-password" minlength="12" placeholder="12 caractères minimum"></label><label>Confirmer<input id="confpass" type="password" autocomplete="new-password"></label><button class="btn" id="create">Créer mon coffre</button><p id="setupmsg" class="muted"></p><div class="notice">Aucune donnée financière n'est incluse dans les fichiers hébergés. Fais une sauvegarde chiffrée après tes premières saisies.</div></section>
 <section id="unlock" class="card hidden"><h2>Déverrouiller mon budget</h2><form id="unlockform" autocomplete="on"><input aria-label="Identifiant du coffre" type="text" name="username" autocomplete="username" value="mon-budget" readonly style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0"><label>Phrase secrète<input id="pass" name="password" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"></label><button class="btn" id="open" type="submit">Déverrouiller</button></form><p id="unlockmsg" class="muted"></p><p class="muted">Si tu oublies ta phrase secrète, seul un export sauvegardé avec son mot de passe te permettra de retrouver tes données.</p></section>
@@ -874,7 +919,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const BRACKETS=[[11600,0],[29579,.11],[84577,.30],[181917,.41],[Infinity,.45]];
 function progressive(x){let prev=0,total=0;for(const [limit,rate] of BRACKETS){const portion=Math.max(0,Math.min(x,limit)-prev);total+=portion*rate;prev=limit;if(x<=limit)break}return total}
 function calculate({income,parts,baseParts,couple,deductions,credits,withholding}){
- const taxable=Math.max(0,income-deductions),q=Math.max(.5,parts);
+ const taxable=Math.max(0,income-(arguments[0].abatement?Math.min(14555,Math.max(504,income*.10)):0)-deductions),q=Math.max(.5,parts);
  const raw=progressive(taxable/q)*q;
  // Plafond indicatif de l'avantage familial : 1 807 € par demi-part supplémentaire (revenus 2025).
  const normal=progressive(taxable/baseParts)*baseParts;
@@ -892,13 +937,15 @@ if(existing){
  card.innerHTML=`<h3>🧮 Simulateur d'impôt · prévisions 2027</h3>
  <p class="v262-note">Calcul indicatif basé sur le <b>barème 2026 (revenus 2025)</b>. Le barème applicable aux revenus 2027 n'est pas encore publié. Ce simulateur ne remplace pas celui des impôts.</p>
  <div class="v262-grid">
- <label>Revenu net imposable annuel (€)<input id="v262income" type="number" min="0" step="0.01" inputmode="decimal"></label>
+ <label>Salaires nets fiscaux annuels avant abattement (€)<input id="v262income" type="number" min="0" step="0.01" inputmode="decimal"></label>
  <label>Situation fiscale<select id="v262couple"><option value="0">Imposition individuelle</option><option value="1">Couple imposé conjointement</option></select></label>
  <label>Parts fiscales<input id="v262parts" type="number" min=".5" max="20" step=".5" value="1"></label>
  <label>Déductions supplémentaires (€)<input id="v262deductions" type="number" min="0" step="0.01" value="0"></label>
  <label>Réductions / crédits d'impôt (€)<input id="v262credits" type="number" min="0" step="0.01" value="0"></label>
  <label>Taux de prélèvement à la source (%)<input id="v262pas" type="number" min="0" max="100" step=".01" value="0"></label>
  </div>
+ <label class="v263-abatement"><input type="checkbox" id="v263abatement" checked> Appliquer automatiquement la déduction forfaitaire de 10 % pour frais professionnels</label>
+ <p class="v262-note" id="v263abatementnote">Activée par défaut pour les salaires. Désactive-la si tu renseignes un revenu déjà net après frais professionnels ou si tu optes pour les frais réels.</p>
  <div class="v262-results" aria-live="polite">
  <div class="v262-result"><small>Impôt annuel estimé</small><strong id="v262annual">—</strong></div>
  <div class="v262-result"><small>Équivalent mensuel</small><strong id="v262monthly">—</strong></div>
@@ -908,7 +955,7 @@ if(existing){
  <p class="v262-note" id="v262detail">Le prélèvement à la source est comparé à l'impôt estimé, jamais ajouté une seconde fois. Son calcul réel dépend de l'assiette et du calendrier de prélèvement.</p>
  <div class="v262-buttons"><button class="btn secondary" id="v262calc" type="button">Recalculer</button><button class="btn" id="v262apply" type="button">Utiliser pour 2027</button></div>
  <p class="v262-note" id="v262status" role="status"></p>
- <p class="v262-note">Cas non entièrement pris en charge : revenus catégoriels, abattement de 10 % sur salaires, situations familiales particulières, plafonnements spéciaux, revenus exceptionnels et mécanismes fiscaux complexes. Saisis le <b>revenu net imposable</b>, et non le salaire brut.</p>`;
+ <p class="v262-note">Déduction forfaitaire de 10 % plafonnée selon le barème de référence. Simulation simplifiée : revenus catégoriels, abattements particuliers, frais réels, situations familiales et revenus exceptionnels ne sont pas tous gérés. Ne saisis pas ton salaire brut.</p>`;
  const forecast=$('forecast2027form');
  if(forecast?.closest('.card'))forecast.closest('.card').insertAdjacentElement('afterend',card);
  else existing.closest('.card').insertAdjacentElement('afterend',card);
@@ -921,6 +968,7 @@ if(existing){
  $('v262deductions').value=saved.deductions??0;
  $('v262credits').value=saved.credits??0;
  $('v262pas').value=saved.withholding??prof.rate??0;
+ $('v263abatement').checked=saved.abatement??true;
  compute();
  }
  function compute(){
@@ -929,7 +977,7 @@ if(existing){
   if(parts<(couple?2:1)||income<0||deductions<0||credits<0||withholding<0||withholding>100){
    latest=null;$('v262status').textContent='Vérifie le nombre de parts et les montants.';return;
   }
-  latest={income,parts,couple:couple?1:0,deductions,credits,withholding};
+  latest={income,parts,couple:couple?1:0,deductions,credits,withholding,abatement:$('v263abatement').checked};
   const res=calculate({...latest,baseParts:couple?2:1});
   $('v262annual').textContent=eur(res.annual);
   $('v262monthly').textContent=eur(res.monthly);
@@ -939,6 +987,7 @@ if(existing){
   $('v262status').textContent='';
  }
  fields.forEach(id=>$(id).addEventListener('input',compute));
+ $('v263abatement').addEventListener('change',compute);
  $('v262calc').onclick=compute;
  $('v262apply').onclick=async()=>{
   compute();if(!latest||!data)return;
@@ -961,6 +1010,40 @@ const button=$('v25settings');
 if(button&&header){header.append(button);button.textContent='⚙';button.setAttribute('aria-label','Ouvrir les réglages');button.title='Réglages'}
 const oldTab=tab;
 tab=function(which){oldTab(which);if(button)button.style.display=which==='settings'?'none':''};
+})();
+</script>
+
+<script id="v263-interface">
+(()=>{
+ const nav=document.getElementById('nav');
+ // Réglages = 6e onglet natif, même comportement que les autres.
+ document.getElementById('v25settings')?.remove();
+ if(nav&&!nav.querySelector('[data-tab="settings"]')){
+  const b=document.createElement('button');b.type='button';b.dataset.tab='settings';b.innerHTML='⚙<br>Réglages';
+  b.setAttribute('aria-label','Réglages et sauvegardes');
+  b.onclick=()=>tab('settings');nav.append(b);
+ }
+ const add=document.getElementById('add'),quick=document.getElementById('v24quick');
+ const panel=document.createElement('section');panel.id='v263addpanel';panel.setAttribute('aria-label','Dernières opérations');
+ panel.innerHTML='<h3>Dernières opérations</h3><div id="v263addrecent"></div>';
+ add.append(panel);
+ const home=document.getElementById('v26home');
+ if(home){
+  const hp=document.createElement('section');hp.id='v263homepanel';hp.innerHTML='<h3>Activité récente</h3><div id="v263homerecent"></div>';
+  home.append(hp);
+ }
+ const safe=s=>escapeHtml(String(s??''));
+ const money=n=>fmt(Number(n)||0);
+ function recent(target,max){
+  const el=document.getElementById(target);if(!el||!data)return;
+  const tx=(data.transactions||[]).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,max);
+  el.innerHTML=tx.length?tx.map(t=>`<div class="v263-line"><span><b>${safe(t.name||'Opération')}</b><div class="v263-meta">${safe(t.date||'')} · ${safe(t.cat||'')}</div></span><b style="color:${t.type==='income'?'#36dbac':'#ffaaa8'}">${t.type==='income'?'+':'−'}${money(t.amount)}</b></div>`).join(''):'<p class="muted">Tes dernières dépenses et revenus apparaîtront ici.</p>';
+ }
+ const previous=render;
+ render=function(){previous();const root=document.getElementById('v26home');if(root&&!document.getElementById('v263homepanel')){const hp=document.createElement('section');hp.id='v263homepanel';hp.innerHTML='<h3>Activité récente</h3><div id="v263homerecent"></div>';root.append(hp)}recent('v263addrecent',4);recent('v263homerecent',3)};
+ // Met à jour le libellé de version uniquement dans Réglages.
+ const version=document.querySelector('#settings .v262-version');if(version)version.textContent='Mon Budget Privé · Version 2.6.3 test · Données chiffrées localement';
+ // Le champ des revenus 2027 et le simulateur fiscal restent des prévisions distinctes.
 })();
 </script>
 </body></html>
