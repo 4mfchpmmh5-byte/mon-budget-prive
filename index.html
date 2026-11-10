@@ -568,7 +568,7 @@ function updateMonthPickers(){
   el.value=selectedMonth;
  }
 }
-function render(){if(!data)return;const m=selectedMonth,tx=data.transactions.filter(t=>t.date?.startsWith(m)),sum=(arr)=>arr.reduce((a,b)=>a+Number(b.amount||0),0),rev=sum(tx.filter(t=>t.type==='income'&&!t.nonCash&&!t.nonCash)),spent=sum(tx.filter(t=>t.type==='expense'));const planBy=cat=>sum(monthPlans().filter(p=>p.cat===cat));const plannedIncome=planBy('Revenus'),plannedOut=['Fixes','Variables','Provisions','Impôts','Investissements'].reduce((s,c)=>s+planBy(c),0);$('monthlabel').textContent=new Date(m+'-02').toLocaleDateString('fr-FR',{month:'long',year:'numeric'});$('available').textContent=fmt(plannedIncome-plannedOut);$('income').textContent=fmt(rev);$('outgoing').textContent=fmt(spent);$('overview').innerHTML=[['Revenus prévus',plannedIncome],['Charges fixes',planBy('Fixes')],['Dépenses variables prévues',planBy('Variables')],['Provisions',planBy('Provisions')],['Impôts',planBy('Impôts')],['Investissements',planBy('Investissements')]].map(([a,b])=>`<div class="row"><span>${a}</span><b>${fmt(b)}</b></div>`).join('');const item=t=>`<div class="row"><div><b>${escapeHtml(t.name)}</b><div class="muted">${escapeHtml(t.date)} · ${escapeHtml(t.cat)}</div></div><div class="right"><b class="${t.type==='income'?'positive':'negative'}">${t.type==='income'?'+':'−'}${fmt(t.amount)}</b><div><button class="btn secondary" style="padding:5px 8px;font-size:11px" data-edit-tx="${t.id}">Modifier</button> <button class="btn secondary" style="padding:5px 8px;font-size:11px" data-delete-tx="${t.id}">Supprimer</button></div></div></div>`;$('recent').innerHTML=tx.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5).map(item).join('')||'<p>Aucune opération pour ce mois.</p>';$('txsummary').textContent=`${tx.length} opération(s) · Dépenses : ${fmt(spent)} · Revenus : ${fmt(rev)}`;$('txlist').innerHTML=tx.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(item).join('')||'<p>Aucune opération.</p>';$('planlist').innerHTML=monthPlans().map(p=>`<div class="row"><div><b>${escapeHtml(p.name)}</b><div class="muted">${escapeHtml(p.cat)}</div></div><div class="right"><b>${fmt(p.amount)}</b><div><button class="btn secondary" style="padding:5px 8px;font-size:11px" data-edit-plan="${p.id}">Modifier</button> <button class="btn secondary" style="padding:5px 8px;font-size:11px" data-delete-plan="${p.id}">Supprimer</button></div></div></div>`).join('')||'<p>Aucune ligne. Ajoute tes montants mensuels.</p>';renderRecurring();renderPayments();$('wealthtotal').textContent=fmt(sum(data.assets));renderWealthExtras();renderHistory();$('wealthlist').innerHTML=data.assets.map(a=>`<div class="row"><div><b>${escapeHtml(a.name)}</b><div class="muted">${escapeHtml(a.type||'Autres')}${a.invested!==null&&a.invested!==undefined?' · Versé : '+fmt(a.invested):''}</div></div><div class="right"><b>${fmt(a.amount)}</b><div><button class="btn secondary" style="padding:5px 8px;font-size:11px" data-edit-asset="${a.id}">Modifier</button> <button class="btn secondary" style="padding:5px 8px;font-size:11px" data-delete-asset="${a.id}">×</button></div></div></div>`).join('')||'<p>Aucun compte ou actif renseigné.</p>';const donutCats=[['Fixes','Charges fixes','#7d8fb1'],['Variables','Variables','#f0a44c'],['Provisions','Provisions','#a58aff'],['Impôts','Impôts','#4ec2c5'],['Investissements','Investissements','#538cff']];const remain=Math.max(0,plannedIncome-plannedOut);const pieces=donutCats.map(([k,n,c])=>[n,Math.max(0,planBy(k)),c]);if(remain>0)pieces.push(['Reste disponible',remain,'#43dca8']);const totalParts=pieces.reduce((a,p)=>a+p[1],0);let angle=0;const stops=pieces.filter(p=>p[1]>0).map(([n,v,c])=>{const start=angle;angle+=v/totalParts*100;return `${c} ${start.toFixed(2)}% ${angle.toFixed(2)}%`});$('budgetDonut').style.background=stops.length?'conic-gradient('+stops.join(',')+')':'#34394d';$('donutRemaining').textContent=fmt(plannedIncome-plannedOut);$('budgetLegend').innerHTML=pieces.map(([n,v,c])=>'<div class="legend-line"><span class="legend-label"><i class="legend-dot" style="background:'+c+'"></i>'+n+'</span><b>'+fmt(v)+'</b></div>').join('');const sel=$('txmonth');if(!sel.options.length){for(let i=-12;i<=12;i++){let d=new Date();d.setDate(2);d.setMonth(d.getMonth()+i);const v=d.toISOString().slice(0,7);sel.add(new Option(d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'}),v))}}sel.value=selectedMonth}
+function render(){if(!data)return;const m=selectedMonth,tx=data.transactions.filter(t=>t.date?.startsWith(m)),sum=(arr)=>arr.reduce((a,b)=>a+Number(b.amount||0),0),rev=sum(tx.filter(t=>t.type==='income'&&!t.nonCash)),spent=sum(tx.filter(t=>t.type==='expense'));const planBy=cat=>sum(monthPlans().filter(p=>p.cat===cat));const plannedIncome=planBy('Revenus'),plannedOut=['Fixes','Variables','Provisions','Impôts','Investissements'].reduce((s,c)=>s+planBy(c),0);$('monthlabel').textContent=new Date(m+'-02').toLocaleDateString('fr-FR',{month:'long',year:'numeric'});$('available').textContent=fmt(plannedIncome-plannedOut);$('income').textContent=fmt(rev);$('outgoing').textContent=fmt(spent);$('overview').innerHTML=[['Revenus prévus',plannedIncome],['Charges fixes',planBy('Fixes')],['Dépenses variables prévues',planBy('Variables')],['Provisions',planBy('Provisions')],['Impôts',planBy('Impôts')],['Investissements',planBy('Investissements')]].map(([a,b])=>`<div class="row"><span>${a}</span><b>${fmt(b)}</b></div>`).join('');const item=t=>`<div class="row"><div><b>${escapeHtml(t.name)}</b><div class="muted">${escapeHtml(t.date)} · ${escapeHtml(t.cat)}</div></div><div class="right"><b class="${t.type==='income'?'positive':'negative'}">${t.type==='income'?'+':'−'}${fmt(t.amount)}</b><div><button class="btn secondary" style="padding:5px 8px;font-size:11px" data-edit-tx="${t.id}">Modifier</button> <button class="btn secondary" style="padding:5px 8px;font-size:11px" data-delete-tx="${t.id}">Supprimer</button></div></div></div>`;$('recent').innerHTML=tx.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5).map(item).join('')||'<p>Aucune opération pour ce mois.</p>';$('txsummary').textContent=`${tx.length} opération(s) · Dépenses : ${fmt(spent)} · Revenus : ${fmt(rev)}`;$('txlist').innerHTML=tx.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(item).join('')||'<p>Aucune opération.</p>';$('planlist').innerHTML=monthPlans().map(p=>`<div class="row"><div><b>${escapeHtml(p.name)}</b><div class="muted">${escapeHtml(p.cat)}</div></div><div class="right"><b>${fmt(p.amount)}</b><div><button class="btn secondary" style="padding:5px 8px;font-size:11px" data-edit-plan="${p.id}">Modifier</button> <button class="btn secondary" style="padding:5px 8px;font-size:11px" data-delete-plan="${p.id}">Supprimer</button></div></div></div>`).join('')||'<p>Aucune ligne. Ajoute tes montants mensuels.</p>';renderRecurring();renderPayments();$('wealthtotal').textContent=fmt(sum(data.assets));renderWealthExtras();renderHistory();$('wealthlist').innerHTML=data.assets.map(a=>`<div class="row"><div><b>${escapeHtml(a.name)}</b><div class="muted">${escapeHtml(a.type||'Autres')}${a.invested!==null&&a.invested!==undefined?' · Versé : '+fmt(a.invested):''}</div></div><div class="right"><b>${fmt(a.amount)}</b><div><button class="btn secondary" style="padding:5px 8px;font-size:11px" data-edit-asset="${a.id}">Modifier</button> <button class="btn secondary" style="padding:5px 8px;font-size:11px" data-delete-asset="${a.id}">×</button></div></div></div>`).join('')||'<p>Aucun compte ou actif renseigné.</p>';const donutCats=[['Fixes','Charges fixes','#7d8fb1'],['Variables','Variables','#f0a44c'],['Provisions','Provisions','#a58aff'],['Impôts','Impôts','#4ec2c5'],['Investissements','Investissements','#538cff']];const remain=Math.max(0,plannedIncome-plannedOut);const pieces=donutCats.map(([k,n,c])=>[n,Math.max(0,planBy(k)),c]);if(remain>0)pieces.push(['Reste disponible',remain,'#43dca8']);const totalParts=pieces.reduce((a,p)=>a+p[1],0);let angle=0;const stops=pieces.filter(p=>p[1]>0).map(([n,v,c])=>{const start=angle;angle+=v/totalParts*100;return `${c} ${start.toFixed(2)}% ${angle.toFixed(2)}%`});$('budgetDonut').style.background=stops.length?'conic-gradient('+stops.join(',')+')':'#34394d';$('donutRemaining').textContent=fmt(plannedIncome-plannedOut);$('budgetLegend').innerHTML=pieces.map(([n,v,c])=>'<div class="legend-line"><span class="legend-label"><i class="legend-dot" style="background:'+c+'"></i>'+n+'</span><b>'+fmt(v)+'</b></div>').join('');const sel=$('txmonth');if(!sel.options.length){for(let i=-12;i<=12;i++){let d=new Date();d.setDate(2);d.setMonth(d.getMonth()+i);const v=d.toISOString().slice(0,7);sel.add(new Option(d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'}),v))}}sel.value=selectedMonth}
 function renderRecurring(){if(!data)return;const el=$('recurringlist');if(!el)return;const list=data.recurring||[];el.innerHTML=list.map(r=>`<div class="row"><div><b>${escapeHtml(r.name)}</b><div class="muted">${escapeHtml(r.cat)} · le ${Number(r.day)} du mois</div></div><div class="right"><b>${fmt(r.amount)}</b><div><button class="btn secondary smallbtn" data-edit-recurring="${r.id}">Modifier</button> <button class="btn secondary smallbtn" data-delete-recurring="${r.id}">Supprimer</button></div></div></div>`).join('')||'<p class="muted">Aucun modèle récurrent.</p>';$('recurringmonth').textContent='Mois cible : '+new Date(selectedMonth+'-02').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})+' (modifiable dans Opérations).'}
 let editingPlan=null,editingAsset=null,editingRecurring=null;
 $('newrecurring').onclick=()=>{editingRecurring=null;$('recurringform').reset();$('recurringtitle').textContent='Nouvelle opération récurrente';$('recurringdialog').showModal()};
@@ -591,7 +591,7 @@ const v17OriginalPlanSubmit=$('planform').onsubmit;$('planform').onsubmit=async 
 // Extend edit dialog without changing the original handlers.
 document.addEventListener('click',e=>{const edit=e.target.closest('[data-edit-plan]');if(edit){const p=data?.plans.find(x=>x.id===edit.dataset.editPlan);if(p){$('plangroup').value=p.group||'auto';const r=(data.recurring||[]).find(x=>x.planId===p.id);$('planrecurring').checked=!!r;$('planrecurringday').value=r?.day||5;$('planrecurringdaywrap').classList.toggle('hidden',!r)}}});
 const v17OpenTx=openTx;openTx=function(...args){v17OpenTx(...args);v17FillTxBudgets()};
-function v17FillTxBudgets(){const s=$('txbudget');s.innerHTML='<option value="">Aucune imputation</option>'+monthPlans().filter(p=>p.cat==='Variables'||p.cat==='Provisions').map(p=>`<option value="${p.id}">${escapeHtml(p.name)} (${escapeHtml(p.cat)})</option>`).join('');s.value=''}
+function v17FillTxBudgets(){const s=$('txbudget');s.innerHTML='<option value="">Aucune imputation</option>'+monthPlans().filter(p=>p.cat==='Variables'||p.cat==='Revenus').map(p=>`<option value="${p.id}">${escapeHtml(p.name)} (${escapeHtml(p.cat)})</option>`).join('');s.value=''}
 const v17TxSubmit=$('txform').onsubmit;$('txform').onsubmit=async function(e){const chosen=$('txbudget').value,oldId=editingTx;await v17TxSubmit(e);const t=oldId?data.transactions.find(t=>t.id===oldId):data.transactions.at(-1);if(t){if(chosen)t.planId=chosen;else delete t.planId;await save();render()}};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-edit-tx]');if(!b)return;const t=data?.transactions.find(x=>x.id===b.dataset.editTx);if(t){v17FillTxBudgets();$('txbudget').value=t.planId||''}});
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-v17fund],[data-v17expense]');if(!b||!data)return;const id=b.dataset.v17fund||b.dataset.v17expense,p=data.plans.find(p=>p.id===id);if(!p)return;if(b.dataset.v17expense){openTx('expense',p.name,p.cat);$('txbudget').value=p.id;return}const value=await mbpPrompt(`Montant réellement mis de côté pour « ${p.name} » (€) :`,String(p.amount));if(value===null)return;const amount=Number(value.replace(',','.'));if(!Number.isFinite(amount)||amount<=0){alertMsg('Montant invalide');return}const date=await mbpPrompt('Date de la contribution (AAAA-MM-JJ) :',new Date().toLocaleDateString('sv-SE'));if(date===null)return;if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(new Date(date).getTime())){alertMsg('Date invalide');return}v17Ensure();data.envelopeMoves.push({id:uid(),planId:p.id,kind:'fund',amount,date});await save();render();alertMsg('Provision enregistrée (sans modifier tes comptes bancaires).')});
@@ -697,7 +697,7 @@ function renderPayments(){
  if(el)el.innerHTML=`<div class="row"><span>Déjà enregistré</span><b>${fmt(paid)}</b></div><div class="row"><span>Encore prévu</span><b>${fmt(due)}</b></div>`+list.map(({p,r,match,day})=>`<div class="row"><div><b>${escapeHtml(p.name)}</b><div class="muted">${day?'Le '+day+' du mois':'Date non renseignée'} · ${match?'✓ Payé':'À payer'}</div></div><div class="right"><b>${fmt(p.amount)}</b>${!match?`<div><button class="btn secondary smallbtn" data-pay-plan="${p.id}">Marquer payé</button></div>`:''}</div></div>`).join('')||'<p class="muted">Aucune charge fixe ou impôt prévu.</p>';
  const cash=document.getElementById('cashflowview');if(!cash)return;
  const tx=data.transactions.filter(t=>t.date?.startsWith(selectedMonth));
- const income=tx.filter(t=>t.type==='income'&&!t.nonCash&&!t.nonCash).reduce((s,t)=>s+Number(t.amount),0);
+ const income=tx.filter(t=>t.type==='income'&&!t.nonCash).reduce((s,t)=>s+Number(t.amount),0);
  const expenses=tx.filter(t=>t.type==='expense').reduce((s,t)=>s+Number(t.amount),0);
  const plannedIncome=monthPlans().filter(p=>p.cat==='Revenus'&&!/ticket.?resto|titre.?resto/i.test(p.name)).reduce((s,p)=>s+Number(p.amount),0);
  const unpaidIncome=Math.max(0,plannedIncome-income);
@@ -865,7 +865,7 @@ document.addEventListener('click',async e=>{
   txlist.querySelectorAll('[data-edit-tx]').forEach(btn=>{const t=monthItems.find(x=>x.id===btn.dataset.editTx);if(t&&isFixed(t)){btn.closest('.row')?.classList.add('v19-hidden');hiddenFixed++}});
   const manual=monthItems.filter(t=>!isFixed(t));
   const expense=manual.filter(t=>t.type==='expense').reduce((a,t)=>a+Number(t.amount||0),0);
-  const income=manual.filter(t=>t.type==='income'&&!t.nonCash&&!t.nonCash).reduce((a,t)=>a+Number(t.amount||0),0);
+  const income=manual.filter(t=>t.type==='income'&&!t.nonCash).reduce((a,t)=>a+Number(t.amount||0),0);
   summary.textContent=`${manual.length} opération(s) manuelle(s) · Dépenses : ${fmt(expense)} · Revenus : ${fmt(income)}`;
   let note=document.getElementById('v23fixednote');
   if(!note){note=document.createElement('p');note.id='v23fixednote';note.className='muted';summary.after(note)}
@@ -920,7 +920,7 @@ document.addEventListener('click',async e=>{
    const inc=sum(plans.filter(p=>p.cat==='Revenus'&&!/ticket.?resto|titre.?resto/i.test(p.name)));
    const fixed=sum(plans.filter(p=>['Fixes','Impôts'].includes(p.cat))),variable=sum(plans.filter(p=>p.cat==='Variables')),savings=sum(plans.filter(p=>['Provisions','Investissements'].includes(p.cat)));
    forecastIncome+=inc;forecastOut+=fixed+variable+savings;
-   const earned=sum(tx.filter(t=>t.type==='income'&&!t.nonCash&&!t.nonCash));const variableSpent=sum(tx.filter(t=>t.type==='expense'&&(t.cat==='Variables'||plans.some(p=>p.cat==='Variables'&&p.id===t.planId))));
+   const earned=sum(tx.filter(t=>t.type==='income'&&!t.nonCash));const variableSpent=sum(tx.filter(t=>t.type==='expense'&&(t.cat==='Variables'||plans.some(p=>p.cat==='Variables'&&p.id===t.planId))));
    const fixedEntries=tx.filter(t=>t.type==='expense'&&plans.some(p=>['Fixes','Impôts'].includes(p.cat)&&(p.id===t.planId||p.name?.trim().toLowerCase()===t.name?.trim().toLowerCase())));
    const fixedIds=new Set(fixedEntries.map(t=>t.id));const other=sum(tx.filter(t=>t.type==='expense'&&!fixedIds.has(t.id)&&t.cat!=='Variables'&&!plans.some(p=>p.cat==='Variables'&&p.id===t.planId)&&!['Provisions','Investissements'].includes(t.cat)));
    if(m<=now){realIncome+=earned;realVariable+=variableSpent;realOther+=other;realFixed+=sum(fixedEntries)}
@@ -989,7 +989,7 @@ function annualBudget(year){
  else if(p.cat==='Fixes')fixed+=amount;else if(p.cat==='Impôts')taxes+=amount;else if(p.cat==='Variables'){variable+=amount;cats.set(p.name,(cats.get(p.name)||0)+amount)}
  else if(p.cat==='Provisions')provisions+=amount;else if(p.cat==='Investissements')investments+=amount;
  }}
- const tx=(data.transactions||[]).filter(t=>t.date?.startsWith(year));const actualIncome=sum(tx.filter(t=>t.type==='income'&&!t.nonCash&&!t.nonCash));
+ const tx=(data.transactions||[]).filter(t=>t.date?.startsWith(year));const actualIncome=sum(tx.filter(t=>t.type==='income'&&!t.nonCash));
  const actualVariable=sum(tx.filter(t=>t.type==='expense'&&t.cat==='Variables'));
  const actualProvisions=sum(tx.filter(t=>t.type==='expense'&&t.cat==='Provisions'));
  const actualInvestments=sum(tx.filter(t=>t.type==='expense'&&t.cat==='Investissements'));
@@ -1001,7 +1001,7 @@ function annualBudget(year){
  '<h3>Réalisé enregistré</h3>'+row('Revenus saisis',actualIncome)+row('Dépenses variables saisies',actualVariable)+row('Mouvements de provisions saisis',actualProvisions)+row('Investissements saisis',actualInvestments)+
  '<p class="muted">Les provisions et investissements prévus figurent une seule fois dans le budget. Les mouvements saisis sont affichés séparément et ne sont pas soustraits une deuxième fois. Le suivi des charges fixes reste prévisionnel tant qu’elles ne sont pas pointées.</p>';
 }
-function annualOperations(year){const tx=(data.transactions||[]).filter(t=>t.date?.startsWith(year)).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));const income=sum(tx.filter(t=>t.type==='income'&&!t.nonCash&&!t.nonCash)),expenses=sum(tx.filter(t=>t.type==='expense'));
+function annualOperations(year){const tx=(data.transactions||[]).filter(t=>t.date?.startsWith(year)).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));const income=sum(tx.filter(t=>t.type==='income'&&!t.nonCash)),expenses=sum(tx.filter(t=>t.type==='expense'));
  txReport.innerHTML='<h2>Opérations '+year+'</h2><p class="muted">Historique annuel des opérations manuelles, sans les charges fixes simplement prévues. Pour modifier ou supprimer une opération, sélectionne son mois.</p><div class="v244-grid">'+stat('Revenus saisis',income)+stat('Sorties saisies',expenses)+'</div><h3>'+tx.length+' opération(s)</h3>'+(tx.length?tx.map(t=>'<div class="v244-row"><span><b>'+escapeHtml(t.name||'Opération')+'</b><br><small class="muted">'+escapeHtml(t.date||'')+' · '+escapeHtml(t.cat||'')+'</small></span><b style="color:'+(t.type==='income'?'#45e5b6':'#ffaaa8')+'">'+(t.type==='income'?'+':'−')+euro(t.amount)+'</b></div>').join(''):'<p class="muted">Aucune opération saisie pour cette année.</p>');
 }
 const baseRender=render;
@@ -1052,7 +1052,7 @@ render();
   }
   const net=income-fixed-fixedDiff-variable-saving-extra;
   const remain=Math.max(0,variable-spent);
-  const colors=['#9e85fa','#36dbac','#e9b16c','#f17d9b'];
+  const colors=['#a9b9ce','#86b0e6','#668fca','#efba73'];
   const portions=[fixed+fixedDiff,variable,saving,extra].map(v=>Math.max(0,v));
   const total=portions.reduce((a,b)=>a+b,0), pct=total?portions.map(v=>100*v/total):[0,0,0,0];
   let at=0;const stops=pct.map((v,i)=>{const part=`${colors[i]} ${at.toFixed(2)}% ${(at+v).toFixed(2)}%`;at+=v;return part}).join(',');
@@ -1068,13 +1068,13 @@ render();
  // Les graphiques du budget et les graphiques patrimoniaux historiques restent séparés.
  const budgetGraph=document.createElement('div');budgetGraph.className='card';budgetGraph.id='v26budgetgraph';budgetGraph.innerHTML='<h2>Dépenses par catégorie · réalisé</h2><div id="v26budgetbars"></div>';
  const plansRoot=el('plans');plansRoot.append(budgetGraph);
- function renderBars(){if(!data)return;const tx=data.transactions.filter(t=>t.date?.startsWith(selectedMonth)&&t.type==='expense'&&!['Provisions','Investissements'].includes(t.cat));const groups={};for(const t of tx)groups[t.cat||'Autres']=(groups[t.cat||'Autres']||0)+Number(t.amount||0);const rows=Object.entries(groups).sort((a,b)=>b[1]-a[1]);const max=Math.max(1,...rows.map(x=>x[1]));el('v26budgetbars').innerHTML=rows.length?rows.map(([k,v])=>`<div style="margin:10px 0"><div style="display:flex;justify-content:space-between;gap:10px;font-size:12px"><span>${safe(k)}</span><b>${money(v)}</b></div><div style="background:#34384b;height:9px;border-radius:8px;margin-top:5px;overflow:hidden"><div style="background:#9e85fa;height:100%;width:${Math.min(100,v/max*100)}%"></div></div></div>`).join(''):'<p class="muted">Aucune dépense enregistrée sur cette période.</p>'}
+ function renderBars(){if(!data)return;const tx=data.transactions.filter(t=>t.date?.startsWith(selectedMonth)&&t.type==='expense'&&!['Provisions','Investissements'].includes(t.cat));const groups={};for(const t of tx)groups[t.cat||'Autres']=(groups[t.cat||'Autres']||0)+Number(t.amount||0);const rows=Object.entries(groups).sort((a,b)=>b[1]-a[1]);const max=Math.max(1,...rows.map(x=>x[1]));el('v26budgetbars').innerHTML=rows.length?rows.map(([k,v])=>`<div style="margin:10px 0"><div style="display:flex;justify-content:space-between;gap:10px;font-size:12px"><span>${safe(k)}</span><b>${money(v)}</b></div><div style="background:#34384b;height:9px;border-radius:8px;margin-top:5px;overflow:hidden"><div style="background:#8eb7e7;height:100%;width:${Math.min(100,v/max*100)}%"></div></div></div>`).join(''):'<p class="muted">Aucune dépense enregistrée sur cette période.</p>'}
  // Raccourcis configurables, sauvegardés dans le coffre chiffré.
  const box=document.createElement('div');box.className='card';box.id='v26custombox';box.innerHTML='<h3>Mes raccourcis personnalisés</h3><p class="muted">Ajoute tes libellés favoris. Ils apparaissent sur Ajouter. Touche un raccourci pour enregistrer une opération ; personnalise son budget avec « Configurer ».</p><form id="v26customform"><label>Nouveau raccourci<input id="v26custominput" maxlength="40" placeholder="Ex. Essence, Santé, Cadeaux" required></label><button class="btn" type="submit">Ajouter le raccourci</button></form><div id="v26customlist"></div><p id="v26customstatus" class="muted" role="status"></p>';
  el('settings').append(box);
  function drawCustom(){if(!data)return;const names=Array.isArray(data.quickLabels)?data.quickLabels:[];el('v26customlist').innerHTML=names.map((n,i)=>`<div class="row"><span>${safe(n)}</span><button type="button" class="v22-action" data-v26remove="${i}">Retirer</button></div>`).join('');
   const cats=el('v24cats');if(!cats)return;cats.querySelectorAll('.v26-custom-chip').forEach(x=>x.remove());
-  for(const n of names.slice(0,12)){const c=data.v31Shortcuts?.[n]||{};if(c.visible===false)continue;const activeType=el('v24income')?.classList.contains('active')?'income':'expense';if((c.type||'expense')!==activeType)continue;const b=document.createElement('button');b.type='button';b.className='v24-chip v26-custom-chip';b.textContent='＋ '+n;b.title='Ouvrir une opération détaillée';b.onclick=()=>{const cat=(c.type==='income'?'Revenus':/essence|carburant|transport/i.test(n)?'Transport':/santé|médecin/i.test(n)?'Santé':/cadeau/i.test(n)?'Cadeaux':'Variables');openTx(c.type||'expense',n,cat)};cats.append(b)}
+  for(const n of names.slice(0,12)){const c=data.v31Shortcuts?.[n]||{};if(c.visible===false)continue;const activeType=el('v24income')?.classList.contains('active')?'income':'expense';if((c.type||'expense')!==activeType)continue;const b=document.createElement('button');b.type='button';b.className='v24-chip v26-custom-chip';b.textContent='＋ '+n;b.title='Ouvrir une opération détaillée';b.onclick=()=>{const cat=c.category||(c.type==='income'?'Revenus':/essence|carburant|transport/i.test(n)?'Transport':/santé|médecin/i.test(n)?'Santé':/cadeau/i.test(n)?'Cadeaux':'Variables');openTx(c.type||'expense',n,cat)};cats.append(b)}
  }
  el('v26customform').onsubmit=async e=>{e.preventDefault();if(!data)return;const name=el('v26custominput').value.trim();if(!name)return;const previous=[...(data.quickLabels||[])];if(previous.some(x=>x.toLowerCase()===name.toLowerCase())){el('v26customstatus').textContent='Ce raccourci existe déjà.';return}data.quickLabels=[...previous,name].slice(0,12);try{await save();el('v26custominput').value='';drawCustom();el('v26customstatus').textContent='Raccourci enregistré.'}catch(err){data.quickLabels=previous;el('v26customstatus').textContent='Échec de l’enregistrement.'}};
  el('v26customlist').onclick=async e=>{const b=e.target.closest('[data-v26remove]');if(!b||!data)return;const previous=[...(data.quickLabels||[])];data.quickLabels=previous.filter((_,i)=>i!==Number(b.dataset.v26remove));try{await save();drawCustom()}catch(err){data.quickLabels=previous;drawCustom()}};
@@ -1291,7 +1291,7 @@ let expanded=null;
 function getPlans(){try{return monthPlans()}catch{return []}}
 function groups(){return getPlans().filter(p=>p.cat==='Variables')}
 function match(t,p){return t.type==='expense'&&t.date?.startsWith(selectedMonth)&&(t.planId===p.id||(!t.planId&&t.cat==='Variables'&&(t.name||'').toLowerCase()===(p.name||'').toLowerCase()))}
-function summary(){if(!data)return;const current=data.transactions.filter(t=>t.date?.startsWith(selectedMonth));const income=current.filter(t=>t.type==='income'&&!t.nonCash&&!t.nonCash).reduce((a,t)=>a+Number(t.amount||0),0),out=current.filter(t=>t.type==='expense').reduce((a,t)=>a+Number(t.amount||0),0);const cats=groups();let alerts=[];
+function summary(){if(!data)return;const current=data.transactions.filter(t=>t.date?.startsWith(selectedMonth));const income=current.filter(t=>t.type==='income'&&!t.nonCash).reduce((a,t)=>a+Number(t.amount||0),0),out=current.filter(t=>t.type==='expense').reduce((a,t)=>a+Number(t.amount||0),0);const cats=groups();let alerts=[];
  const plannedIncome=getPlans().filter(p=>p.cat==='Revenus').reduce((a,p)=>a+Number(p.amount||0),0),plannedOut=getPlans().filter(p=>p.cat!=='Revenus').reduce((a,p)=>a+Number(p.amount||0),0);
  if(plannedIncome-plannedOut<0)alerts.push('Le budget prévu dépasse les revenus prévus de '+eur(plannedOut-plannedIncome)+'.');
  for(const p of cats){const used=current.filter(t=>match(t,p)).reduce((a,t)=>a+Number(t.amount||0),0);if(Number(p.amount)>0&&used/Number(p.amount)>=.8)alerts.push((used>Number(p.amount)?'Dépassement':'Budget presque épuisé')+' : '+p.name+' ('+Math.round(used/Number(p.amount)*100)+' %).')}
@@ -1331,11 +1331,11 @@ const by=id=>document.getElementById(id),safe=s=>String(s??'').replace(/[&<>"']/
 const modal=document.createElement('dialog');modal.id='v31dialog';document.body.append(modal);
 const names=()=>Array.isArray(data?.quickLabels)?data.quickLabels:[];
 const config=()=>data?.v31Shortcuts&&typeof data.v31Shortcuts==='object'?data.v31Shortcuts:{};
-function options(){return (typeof monthPlans==='function'?monthPlans():[]).filter(p=>p.cat==='Variables'||p.cat==='Provisions').map(p=>`<option value="${safe(p.id)}">${safe(p.name)} (${safe(p.cat)})</option>`).join('')}
+function options(){return (typeof monthPlans==='function'?monthPlans():[]).filter(p=>p.cat==='Variables'||p.cat==='Revenus').map(p=>`<option value="${safe(p.id)}">${safe(p.name)} (${safe(p.cat)})</option>`).join('')}
 function close(){if(modal.open)modal.close()}
 function openShortcut(index){if(!data)return;const name=names()[index];if(!name)return;const c=config()[name]||{};modal.innerHTML=`<h2>Configurer le raccourci</h2><form id="v31shortcutform"><label>Nom<input id="v31shortname" maxlength="40" required value="${safe(name)}"></label><label>Budget ou provision associé<select id="v31shortplan"><option value="">Aucune imputation</option>${options()}</select></label><p id="v31shorthelp">Le budget choisi sera présélectionné quand tu utiliseras ce raccourci.</p><div class="v31-dialogactions"><button type="button" class="btn secondary" id="v31cancel">Annuler</button><button class="btn" type="submit">Enregistrer</button></div></form>`;
 by('v31shortplan').value=c.planId||'';by('v31cancel').onclick=close;
-by('v31shortcutform').onsubmit=async e=>{e.preventDefault();const newName=by('v31shortname').value.trim(),planId=by('v31shortplan').value;const old=names().slice(),oldCfg={...config()};if(!newName||old.some((n,i)=>i!==index&&n.toLowerCase()===newName.toLowerCase())){mbpAlert('Nom déjà utilisé ou invalide.');return}data.quickLabels[index]=newName;data.v31Shortcuts={...oldCfg};delete data.v31Shortcuts[name];data.v31Shortcuts[newName]={...(data.v31Shortcuts[newName]||{}),planId};try{await save();close();render()}catch(err){data.quickLabels=old;data.v31Shortcuts=oldCfg;mbpAlert('Impossible d’enregistrer.')}};modal.showModal()}
+by('v31shortcutform').onsubmit=async e=>{e.preventDefault();const newName=by('v31shortname').value.trim(),planId=by('v31shortplan').value;const old=names().slice(),oldCfg={...config()};if(!newName||old.some((n,i)=>i!==index&&n.toLowerCase()===newName.toLowerCase())){mbpAlert('Nom déjà utilisé ou invalide.');return}data.quickLabels[index]=newName;data.v31Shortcuts={...oldCfg};delete data.v31Shortcuts[name];data.v31Shortcuts[newName]={...(oldCfg[name]||{}),...(data.v31Shortcuts[newName]||{}),planId,type:by('v36shorttype')?.value||oldCfg[name]?.type||'expense',icon:by('v36shorticon')?.value||oldCfg[name]?.icon||'wallet',visible:by('v36shortshow')?.checked!==false,category:by('v362shortcutcategory')?.value||oldCfg[name]?.category||''};try{await save();close();render()}catch(err){data.quickLabels=old;data.v31Shortcuts=oldCfg;mbpAlert('Impossible d’enregistrer.')}};modal.showModal()}
 function drawRows(){if(!data)return;const list=by('v26customlist');if(!list)return;list.innerHTML=names().map((n,i)=>`<div class="v31-shortrow"><strong>${safe(n)}</strong><div class="v31-actions"><button type="button" data-v31config="${i}">Configurer</button><button type="button" data-v31up="${i}" ${i===0?'disabled':''}>↑</button><button type="button" data-v31down="${i}" ${i===names().length-1?'disabled':''}>↓</button><button type="button" class="v31-delete" data-v31delete="${i}">Supprimer</button></div></div>`).join('')}
 // Keep old quick-label save and rendering; extend the visible list and controls.
 const previousRender=render;render=function(){previousRender();drawRows();markPlans()};
@@ -1471,7 +1471,7 @@ by('v32tasks').innerHTML=html;
 const recentTx=data.transactions.filter(t=>t.date?.slice(0,7)===m).slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
 by('v32recent').innerHTML='<div class="v32-head"><h2>Dernières opérations</h2><span class="v32-muted">Ce mois-ci</span></div>'+(recentTx.map(t=>'<div class="v32-line"><div><strong>'+safe(t.name)+'</strong><div class="v32-muted">'+safe(t.date)+'</div></div><div style="text-align:right"><strong style="color:'+(t.type==='income'?'#43d6ad':'#ffa0a6')+'">'+(t.type==='income'?'+':'−')+money(t.amount)+'</strong><div><button class="v32-taskbutton" data-v32edit="'+safe(t.id)+'">Modifier</button> <button class="v32-taskbutton" data-v32delete="'+safe(t.id)+'">×</button></div></div></div>').join('')||'<p class="v32-muted">Aucune opération ce mois-ci.</p>');
 }
-function drawSummary(){if(!data)return;const m=selectedMonth,plans=plansFor(m),tx=data.transactions.filter(t=>t.date?.slice(0,7)===m),expenses=tx.filter(t=>t.type==='expense'),revenues=tx.filter(t=>t.type==='income'&&!t.nonCash&&!t.nonCash);const income=sum(plans.filter(p=>p.cat==='Revenus')),out=sum(plans.filter(p=>p.cat!=='Revenus'));let html='<div class="v32-card"><div class="v32-head"><h2>Budget du mois</h2><span class="v32-muted">Prévisions</span></div><div class="v32-kpis"><div><small>Revenus prévus</small><strong>'+money(income)+'</strong></div><div><small>Reste prévisionnel</small><strong style="color:'+(income-out<0?'#ff9da6':'#43d6ad')+'">'+money(income-out)+'</strong></div><div><small>Dépenses enregistrées</small><strong>'+money(sum(expenses))+'</strong></div><div><small>Revenus encaissés</small><strong>'+money(sum(revenues))+'</strong></div></div></div>';
+function drawSummary(){if(!data)return;const m=selectedMonth,plans=plansFor(m),tx=data.transactions.filter(t=>t.date?.slice(0,7)===m),expenses=tx.filter(t=>t.type==='expense'),revenues=tx.filter(t=>t.type==='income'&&!t.nonCash);const income=sum(plans.filter(p=>p.cat==='Revenus')),out=sum(plans.filter(p=>p.cat!=='Revenus'));let html='<div class="v32-card"><div class="v32-head"><h2>Budget du mois</h2><span class="v32-muted">Prévisions</span></div><div class="v32-kpis"><div><small>Revenus prévus</small><strong>'+money(income)+'</strong></div><div><small>Reste prévisionnel</small><strong style="color:'+(income-out<0?'#ff9da6':'#43d6ad')+'">'+money(income-out)+'</strong></div><div><small>Dépenses enregistrées</small><strong>'+money(sum(expenses))+'</strong></div><div><small>Revenus encaissés</small><strong>'+money(sum(revenues))+'</strong></div></div></div>';
 html+='<div class="v32-card"><h2>Avancement des dépenses</h2><p class="v32-sub">Dépenses réelles rapportées aux budgets variables. Les virements d’épargne ne sont pas des dépenses de consommation.</p>';
 const vars=plans.filter(p=>p.cat==='Variables');for(const p of vars){const used=sum(expenses.filter(t=>t.planId===p.id||(!t.planId&&t.name?.toLowerCase()===p.name?.toLowerCase()))),max=Number(p.amount),pct=max?used/max*100:0;html+='<div class="v32-line"><div style="width:100%"><div class="v32-monthrow"><strong>'+safe(p.name)+'</strong><span class="v32-muted">'+money(used)+' / '+money(max)+'</span></div><div class="v32-track"><div class="v32-fill '+(pct>=100?'v32-over':pct>=80?'v32-warn':'')+'" style="width:'+Math.min(100,pct)+'%"></div></div><div class="v32-muted">'+(max?Math.round(pct)+' % utilisés · ':'')+(max-used>=0?money(max-used)+' restants':'Dépassement '+money(used-max))+'</div></div></div>'}if(!vars.length)html+='<p class="v32-muted">Aucun budget variable configuré pour ce mois.</p>';html+='</div>';
 const year=m.slice(0,4),end=m<=currentMonth()?m:currentMonth();const allPlans=plansFor(end).filter(p=>['Provisions','Investissements'].includes(p.cat));html+='<div class="v32-card"><h2>Épargne et investissements · '+safe(year)+'</h2><p class="v32-sub">Objectifs cumulés jusqu’au mois sélectionné, versements réels et écart. Les dépenses prélevées sur une provision n’effacent pas les versements effectués.</p>';
@@ -2269,7 +2269,7 @@ function plansForPeriod(){if(!isAnnual())return monthPlansAt(selectedMonth);retu
 function ledgerForPeriod(){const period=sourcePeriod();return (data.transactions||[]).filter(t=>String(t.date||'').startsWith(period))}
 function buildSummary(){
  if(!data)return;
- const yearMode=isAnnual(),period=sourcePeriod(),plans=plansForPeriod(),ledger=ledgerForPeriod(),spent=ledger.filter(t=>t.type==='expense'),received=ledger.filter(t=>t.type==='income'&&!t.nonCash&&!t.nonCash);
+ const yearMode=isAnnual(),period=sourcePeriod(),plans=plansForPeriod(),ledger=ledgerForPeriod(),spent=ledger.filter(t=>t.type==='expense'),received=ledger.filter(t=>t.type==='income'&&!t.nonCash);
  const val=cat=>sum(plans.filter(p=>p.cat===cat)),income=val('Revenus'),fixed=val('Fixes')+val('Impôts'),variable=val('Variables'),saving=val('Provisions')+val('Investissements'),out=fixed+variable+saving,left=income-out;
  const label=yearMode?'Bilan '+selectedYear():mname(selectedMonth);
  const metric=(name,value)=>`<div class="mb35-metric"><small>${h(name)}</small><strong>${euro(value)}</strong></div>`;
@@ -2812,8 +2812,10 @@ const icons=['wallet','fuel','shopping-cart','utensils','car','heart','gift','br
 const renderExtra=()=>{if(!configDialog?.open||!q('v31shortcutform')||q('v36shorttype'))return;const form=q('v31shortcutform'),name=q('v31shortname')?.value||'',existing=data?.v31Shortcuts?.[name]||{};
  const elt=document.createElement('div');elt.className='v36-shortgrid';elt.innerHTML=`<label>Type<select id="v36shorttype"><option value="expense">Dépense</option><option value="income">Revenu</option></select></label><label>Icône<select id="v36shorticon">${icons.map(k=>`<option value="${k}">${k}</option>`).join('')}</select></label>`;
  q('v31shortplan')?.closest('label')?.before(elt);q('v36shorttype').value=existing.type||'expense';q('v36shorticon').value=icons.includes(existing.icon)?existing.icon:'wallet';
+ const categoryBox=document.createElement('label');categoryBox.textContent='Catégorie de l’opération';categoryBox.innerHTML+=`<select id="v362shortcutcategory"></select>`;elt.after(categoryBox);const categories={expense:['','Alimentation','Restaurants','Transport','Logement','Santé','Shopping','Loisirs','Cadeaux','Éducation','Autres'],income:['','Salaire','Prime','Titres-restaurant','Remboursement','Vente','Autres']};const categorySelect=q('v362shortcutcategory');const updateCategories=()=>{const kind=q('v36shorttype').value;const old=categorySelect.value||existing.category||'';categorySelect.innerHTML=categories[kind].map(v=>`<option value="${v}">${v||'Catégorie automatique'}</option>`).join('');categorySelect.value=categories[kind].includes(old)?old:'';const plans=q('v31shortplan');for(const opt of plans.options){if(!opt.value)continue;const plan=(typeof monthPlans==='function'?monthPlans():[]).find(x=>String(x.id)===opt.value);opt.hidden=!!plan&&(kind==='income'?plan.cat!=='Revenus':plan.cat!=='Variables');}if(plans.selectedOptions[0]?.hidden)plans.value='';};q('v36shorttype').addEventListener('change',updateCategories);updateCategories();
  const lab=document.createElement('label');lab.className='inline-check';lab.innerHTML='<input id="v36shortshow" type="checkbox" checked> Afficher sur l’accueil';q('v31shorthelp')?.before(lab);q('v36shortshow').checked=existing.visible!==false;
- form.addEventListener('submit',()=>{const oldName=name,newName=q('v31shortname').value.trim();const prior=data.v31Shortcuts?.[oldName]||{};data.v31Shortcuts={...data.v31Shortcuts,[oldName]:{...prior,type:q('v36shorttype').value,icon:q('v36shorticon').value,visible:q('v36shortshow').checked}};if(newName!==oldName){const x=data.v31Shortcuts[oldName];data.v31Shortcuts[newName]={...x};}}, {capture:true,once:true});
+ // The canonical shortcut save handler persists all fields atomically.
+
 };
 configDialog&&new MutationObserver(renderExtra).observe(configDialog,{childList:true,subtree:false});
 // Directly open the existing edit form when tapping a recent transaction: no intermediate action sheet.
@@ -2847,7 +2849,107 @@ function decorateExtras(){const root=q('v24cats');if(!root)return;for(const b of
 const priorRender=render;
 render=function(){priorRender();if(!data)return;decorateExtras();drawGoals();redrawRecurrings();enableDrag();const dlg=q('v31dialog');if(dlg?.open)renderExtra()};
 if(data)render();
-const updateVer=()=>{document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(el=>el.textContent=el.textContent.replace(/Version\s+3\.5\s+bêta\s+\d+/gi,'Version 3.6 bêta 1'))};updateVer();
+const updateVer=()=>{document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(el=>el.textContent=el.textContent.replace(/Version\s+3\.5\s+bêta\s+\d+/gi,'Version 3.6 bêta 2'))};updateVer();
+})();
+</script>
+<style id="mbp362-palette-and-layout">
+/* MBP 3.6 beta 2: interface accent is not financial status. */
+:root{--mbp-accent:#9bc7f6;--mbp-positive:#4ed0aa;--mbp-negative:#f19ba9;--mbp-warning:#efba73}
+#nav button.active,nav button.active,#nav button[data-tab="add"].active{background:linear-gradient(150deg,#273f5a,#1c2b40)!important;color:#d9e9fe!important;border:1px solid #526e91!important}
+#v24save,#add .v24-save,.btn:not(.secondary):not(.danger),button.btn:not(.secondary):not(.danger){background:linear-gradient(135deg,#416991,#315674)!important;border:1px solid #759dca!important;color:#f6f9ff!important}
+#add .v24-switch button.active,#add .v24-chip.active,.v30-subnav button.active{background:#2a3d56!important;border-color:#83aedd!important;color:#eff6ff!important}
+#v24cats .v30-ico svg{stroke:#c3ddfa!important}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #a7c8f0!important;outline-offset:2px!important}
+input[type=checkbox]{accent-color:#9bc7f6!important}
+#mbp-ui-dialog .mbpu-actions .mbpu-primary,#mbp-ui-dialog .mbpu-primary{background:#3c658f!important;border-color:#779cc8!important;color:#fff!important}
+#v30profile .notice,#settings .notice{border-left-color:#81a9d5!important}
+#wealthchart svg polyline{stroke:#94bef0!important}
+#v32tasks .v36-goal .v32-fill.v36-complete,.mbp-goal-complete{background:#4ed0aa!important}
+#v32tasks .v36-goal .v32-fill:not(.v36-complete){background:#8eb7e7!important}
+#v31dialog #v31shortcutform{gap:8px}
+#v31dialog #v31shortcutform label{margin-bottom:5px!important}
+#v31dialog #v31shortcutform input,#v31dialog #v31shortcutform select{min-height:43px}
+#v36recurrings,.v36-goal,#v32tasks .v36-goal{scroll-margin-top:12px}
+#v30profile .v262-results>div{background:#253448!important}
+#v26budgetbars .v26-bar,#v30profile #v26budgetbars .v26-bar{background:#90b9e8!important}
+#v32taskdialog .actions button.secondary{display:none!important}
+#v32taskdialog .actions button:not(.secondary){width:100%!important}
+#v32taskdialog{padding:16px!important;width:min(94vw,420px)!important}
+#v32taskdialog .v32-muted{font-size:11px!important}
+#v32taskdialog h2{font-size:19px!important}
+#mbp-ui-dialog .mbpu-calendar-grid button[aria-current=date],#mbp-ui-dialog .mbp35-monthgrid button[aria-current=date]{background:#304a68!important;color:#e7f2ff!important;border-color:#89b4e8!important}
+#mbp-ui-dialog .mbpu-calendar-grid button{min-height:36px!important}
+#v32recent .mb35-recentline{padding-top:10px!important;padding-bottom:10px!important}
+#wealthlist .row:focus:not(:focus-visible),.mb35-budgetline:focus:not(:focus-visible){box-shadow:none!important;outline:none!important}
+@media (max-width:390px){#v31dialog #v31shortcutform .v36-shortgrid{grid-template-columns:1fr 1fr!important}#mbp36goaldialog .v36-goalmetrics{gap:7px}}
+</style>
+<script id="mbp362-functionality">
+(()=>{
+ 'use strict';
+ const q=id=>document.getElementById(id);
+ const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const money=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(Number(n)||0);
+ const today=()=>new Date().toLocaleDateString('sv-SE');
+ // Cumulative goal contributions: plan identifiers usually persist across months, but resolve
+ // renamed month-budget copies against their original name/category when ids differ.
+ function matchingGoalIds(p,month){
+   const ids=new Set([String(p.id)]);const same=x=>x&&(String(x.id)===String(p.id)||(x.cat===p.cat&&x.name===p.name));
+   for(const x of data.plans||[])if(same(x))ids.add(String(x.id));
+   for(const [ym,items] of Object.entries(data.monthBudgets||{}))if(ym<=month)for(const x of items||[])if(same(x))ids.add(String(x.id));
+   return ids;
+ }
+ function goalDetails(p,until){
+   const ids=matchingGoalIds(p,until),from=data.envelopeStart||'2026-11';
+   const funds=(data.envelopeMoves||[]).filter(e=>ids.has(String(e.planId))&&e.kind==='fund'&&e.date?.slice(0,7)<=until);
+   const spent=(data.transactions||[]).filter(t=>ids.has(String(t.planId))&&t.type==='expense'&&t.date?.slice(0,7)<=until&&t.date?.slice(0,7)>=from);
+   const allFunds=funds.filter(e=>e.date?.slice(0,7)>=from);
+   return {month:funds.filter(x=>x.date?.slice(0,7)===until).reduce((a,x)=>a+Number(x.amount||0),0),total:allFunds.reduce((a,x)=>a+Number(x.amount||0),0),spent:spent.reduce((a,x)=>a+Number(x.amount||0),0),funds,expenses:spent};
+ }
+ // Replace goal dialog detail content after it opens, without changing or persisting any data.
+ const dlg=q('mbp36goaldialog');
+ function refreshGoalDetail(){if(!dlg?.open||!data)return;
+   const p=(typeof monthPlans==='function'?monthPlans():[]).find(x=>x.name===dlg.querySelector('h2')?.textContent&&['Provisions','Investissements'].includes(x.cat));if(!p)return;
+   const m=today().slice(0,7),s=goalDetails(p,m),cards=dlg.querySelectorAll('.v36-goalmetrics b');
+   if(cards.length>=4){cards[0].textContent=money(p.amount);cards[1].textContent=money(s.month);cards[2].textContent=money(s.total);cards[3].textContent=money(s.total-s.spent)}
+   const hist=dlg.querySelector('.v36-history');if(hist){const lines=[...s.funds.map(x=>({date:x.date,name:'Versement',amount:x.amount,positive:true})),...s.expenses.map(x=>({date:x.date,name:x.name,amount:x.amount,positive:false}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,35);hist.innerHTML=lines.map(x=>`<div><span>${escape(x.date)} · ${escape(x.name)}</span><b style="color:${x.positive?'#4ed0aa':'#f19ba9'}">${x.positive?'+':'−'}${money(x.amount)}</b></div>`).join('')||'<p class="muted">Aucun mouvement enregistré.</p>'}
+ }
+ new MutationObserver(()=>queueMicrotask(refreshGoalDetail)).observe(dlg,{attributes:true,attributeFilter:['open']});
+ // A budget type is different from the category of a transaction. We do not silently rewrite
+ // old records or relabel existing financial calculations.
+ const shortcut=q('v31dialog');
+ shortcut&&new MutationObserver(()=>{
+   const select=q('v362shortcutcategory');if(!select)return;
+   const note=q('v31shorthelp');if(note)note.textContent='Le raccourci préremplit le libellé, la catégorie et, si choisi, un budget compatible.';
+ }).observe(shortcut,{childList:true});
+ // Reconcile an associated monthly budget by name and category, not an obsolete identifier.
+ q('v24cats')?.addEventListener('click',e=>{
+   const btn=e.target.closest('.v26-custom-chip');if(!btn||!data)return;
+   const name=btn.textContent.replace(/^\s*[+＋]\s*/,'').trim(),cfg=data.v31Shortcuts?.[name];if(!cfg?.planId)return;
+   const baseline=[...(data.plans||[]),...Object.values(data.monthBudgets||{}).flat()].find(p=>String(p.id)===String(cfg.planId));
+   if(!baseline)return;
+   queueMicrotask(()=>{const target=q('txbudget');if(!target)return;const old=target.value;
+     const active=typeof monthPlans==='function'?monthPlans():[];const p=active.find(x=>x.cat===baseline.cat&&x.name===baseline.name);
+     if(p&&[...target.options].some(o=>o.value===String(p.id))){target.value=p.id;target.dispatchEvent(new Event('change',{bubbles:true}))}
+     else if(![...target.options].some(o=>o.value===String(cfg.planId))){target.value=old;document.getElementById('msg')&&(document.getElementById('msg').textContent='Budget associé indisponible ce mois : aucune imputation automatique.')}
+   });
+ },true);
+ // Keep the financial meaning of colors independent from app navigation. Only status bars
+ // use green for completed targets, amber for warnings, pink for overspend.
+ function paintProgress(){
+   for(const root of [q('v32summary'),q('v30profile')])if(root)for(const line of root.querySelectorAll('.v32-line,.tracker,.v26-budgetrow')){
+     const fill=line.querySelector('.v32-fill,.trackfill,.v26-bar');if(!fill)continue;
+     let amount=0,planned=0;const text=line.textContent.replace(/\s/g,'');const match=text.match(/([\d.,]+)€\/([\d.,]+)€/);if(match){amount=Number(match[1].replace(',','.'));planned=Number(match[2].replace(',','.'))}
+     if(planned>0){fill.style.setProperty('background',amount>=planned?'#4ed0aa':amount/planned>=.8?'#efba73':'#8eb7e7','important')}
+   }
+ }
+ const originalRender=render;
+ render=function(){originalRender();paintProgress()};
+ if(data)render();
+ // On iOS suppress the visible accessory-bar double navigation only when focused amount is in
+ // the built-in contribution form. Never prevent the native keyboard from working.
+ const contribution=q('v32taskdialog');if(contribution){const cancel=q('v32taskcancel');if(cancel){cancel.style.display='none';let close=contribution.querySelector('[data-ice-close]');if(!close){close=document.createElement('button');close.type='button';close.dataset.iceClose='1';close.className='v36-close-mini';close.textContent='×';close.setAttribute('aria-label','Fermer sans enregistrer');close.style.cssText='position:absolute;right:14px;top:11px;background:transparent;border:0;color:#c5d8eb;font-size:25px';contribution.append(close);close.onclick=()=>contribution.close()}}}
+ // Compact secondary labels and one version string.
+ document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(el=>{el.textContent=el.textContent.replace(/Version\s+3\.\d\s+bêta\s+\d+/gi,'Version 3.6 bêta 2')});
 })();
 </script>
 </body></html>
