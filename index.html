@@ -2522,4 +2522,96 @@ dialog,dialog[open],#mbp-ui-dialog,#plandialog,#txdialog,#v32taskdialog,#v312fun
 .mb35-overview .mb35-hero strong.neutral{color:#f3f5fa!important}
 </style>
 
+
+<style id="mbp35b5-ice-glass-finish">
+/* MBP 3.5 B5: FINITION VISUELLE, ne touche ni au stockage ni aux calculs. */
+:root{--mbp-ui-accent:#a7cffb;--mbp-ui-highlight:#c8e4ff;--mbp-ice:#a7cffb;--mbp-green:#56d5b3;--mbp-danger:#f4a4ac}
+/* Strong contrast for the wordmark without blur or transform. */
+#mbp-unified-brand .mbp-brand-text{color:#ffffff!important;text-shadow:none!important;font-weight:800!important;filter:none!important;opacity:1!important}
+#mbp-unified-brand .mbp-brand-text span{color:#8dc8ff!important;text-shadow:none!important;opacity:1!important}
+body>main>header h1{color:#fff!important;filter:none!important;text-shadow:none!important;font-weight:800!important}
+body>main>header h1 span{color:#8dc8ff!important;text-shadow:none!important;opacity:1!important}
+/* Lock and first-time setup share a unified, high-contrast ice visual system. */
+body:has(#unlock:not(.hidden)),body:has(#setup:not(.hidden)){background:#0b1120!important}
+body:has(#unlock:not(.hidden)) main,
+body:has(#setup:not(.hidden)) main{
+ background:radial-gradient(ellipse 78% 35% at 50% 11%,rgba(90,156,233,.24),transparent 75%),
+ radial-gradient(ellipse 110% 80% at 85% 100%,rgba(37,78,133,.11),transparent 78%),#0b1120!important;
+ min-height:100dvh;
+}
+body:has(#unlock:not(.hidden)) main>header,
+body:has(#setup:not(.hidden)) main>header{display:block!important;position:relative!important;text-align:center!important;padding-top:8vh!important;filter:none!important}
+body:has(#unlock:not(.hidden)) main>header:before,
+body:has(#setup:not(.hidden)) main>header:before{
+ content:'◇'!important;color:#bedfff!important;font-size:34px!important;
+ background:linear-gradient(155deg,rgba(113,166,228,.22),rgba(33,51,86,.42))!important;
+ border:1px solid rgba(171,210,255,.45)!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.13),0 10px 32px rgba(3,14,33,.30)!important;
+ border-radius:21px!important;
+}
+body:has(#unlock:not(.hidden)) main>header h1,
+body:has(#setup:not(.hidden)) main>header h1{font-size:clamp(25px,5.6vw,32px)!important;letter-spacing:-.025em!important}
+#unlock:not(.hidden),#setup:not(.hidden){
+ background:linear-gradient(148deg,rgba(38,55,80,.96),rgba(21,31,49,.98) 85%)!important;
+ border:1px solid rgba(149,191,236,.35)!important;
+ border-radius:23px!important;
+ box-shadow:0 16px 42px rgba(2,10,25,.29),inset 0 1px rgba(255,255,255,.055)!important;
+ color:#f5f9ff!important;
+}
+#unlock h2,#setup h2{color:#f8fbff!important;letter-spacing:-.018em!important}
+#unlock p,#setup p,#unlock label,#setup label{color:#bdcbdc!important}
+#unlock input,#setup input{background:#111c30!important;color:#fff!important;border:1px solid #4a617e!important;border-radius:13px!important;box-shadow:inset 0 1px 2px rgba(0,0,0,.11)!important}
+#unlock input:focus,#setup input:focus{outline:2px solid #9dcaff!important;outline-offset:1px!important;border-color:#95bde8!important}
+#unlock #open,#setup #create{
+ width:100%!important;min-height:47px!important;
+ background:linear-gradient(145deg,#4d769e,#3a5b84)!important;
+ border:1px solid #749ac1!important;
+ color:#f7fbff!important;font-weight:700!important;
+ border-radius:13px!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.15),0 5px 15px rgba(8,26,47,.18)!important;
+}
+#unlock #open:active,#setup #create:active{background:#557fa9!important}
+.v32-lock-footer{color:#a7bad0!important;line-height:1.6!important}
+/* Ice Glass – additional depth without broad blur or massive colored slabs. */
+#add .v24-quick,#v24quick,.v32-card,.mb35-overview,.mb35-budget-repartition,#v30profile .v30-card,#wealth .card{
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
+}
+#add #v24save{
+ background:linear-gradient(135deg,#45678e,#365778)!important;
+ border:1px solid #7199c2!important;color:#f5faff!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.11)!important;
+}
+#add .v24-switch button.active,#add .v24-chip.active,#add .v26-custom-chip.active{
+ background:linear-gradient(145deg,rgba(115,170,236,.24),rgba(89,138,199,.13))!important;
+ border-color:#729ccb!important;color:#eff7ff!important;
+}
+#nav button.active,#nav button[data-tab="add"].active,nav button.active{
+ background:linear-gradient(155deg,rgba(112,158,213,.22),rgba(67,100,146,.12))!important;
+ border-color:rgba(162,204,248,.28)!important;
+ color:#dcedff!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.09)!important;
+}
+#mbp-ui-dialog .mbpu-actions .mbpu-primary,#mbp-ui-dialog .mbpu-pad-save{
+ background:linear-gradient(135deg,#456b96,#36587d)!important;
+ border-color:#729bc4!important;color:#f9fbff!important;
+}
+/* Semantic protection: positives remain green; negatives remain coral. */
+.positive,.mbp-positive,.v33-status.done,#v32tasks .v33-status.done{color:#56d5b3!important}
+.negative,.mbp-negative,.v32-over{color:#f4a4ac!important}
+.v33-status.done{background:#203c37!important;border-color:#3a7062!important}
+.v32-fill.mbp-goal-complete{background:#56d5b3!important}
+</style>
+<script id="mbp35b5-version-fix">
+(()=>{
+ const update=()=>{
+  document.querySelectorAll('.v32-lock-footer').forEach(el=>{
+   el.innerHTML=el.innerHTML.replace(/Version\s+3\.5\s+bêta\s+\d+/gi,'Version 3.5 bêta 5');
+  });
+  document.querySelectorAll('#settings .v262-version').forEach(el=>{
+   el.textContent=el.textContent.replace(/Version\s+3\.5\s+bêta\s+\d+/gi,'Version 3.5 bêta 5');
+  });
+ };
+ update();
+})();
+</script>
 </body></html>
