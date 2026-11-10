@@ -1482,8 +1482,8 @@ const addNav=document.querySelector('#nav [data-tab="add"]');if(addNav)addNav.in
 const summaryNav=document.querySelector('#nav [data-tab="home"]');if(summaryNav)summaryNav.innerHTML='▥<br>Synthèse';
 const addHeading=by('v24quick')?.querySelector('h2');if(addHeading)addHeading.textContent='Ajouter une opération';
 // Remove duplicated actions from Synthèse; all entry points remain on Accueil.
-const footer=document.createElement('div');footer.className='v32-lock-footer';footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 2';by('unlock')?.insertAdjacentElement('afterend',footer);
-const settingsVersion=by('settings')?.querySelector('.v262-version');if(settingsVersion)settingsVersion.textContent='Mon Budget Privé · Version 3.4 bêta 2 · Données chiffrées localement';
+const footer=document.createElement('div');footer.className='v32-lock-footer';footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 3';by('unlock')?.insertAdjacentElement('afterend',footer);
+const settingsVersion=by('settings')?.querySelector('.v262-version');if(settingsVersion)settingsVersion.textContent='Mon Budget Privé · Version 3.4 bêta 3 · Données chiffrées localement';
 const lockFooter=()=>{footer.style.display=by('unlock')?.classList.contains('hidden')?'none':'block'};
 const originalShow=show;show=function(id){originalShow(id);lockFooter()};lockFooter();
 // Do not disable pinch zoom: keep accessibility. Prevent automatic iOS focus zoom with 16px inputs.
@@ -1529,8 +1529,8 @@ el('v33openwealth').onclick=()=>tab('wealth');
 const previousRender=render;render=function(){previousRender();updateTask()};
 // The existing "Enregistrer la valeur du jour" action adds a dated historical snapshot.
 // The task is completed from that encrypted snapshot, not from an unrelated checkbox.
-const version=el('settings')?.querySelector('.v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 2 · Données chiffrées localement';
-const footer=document.querySelector('.v32-lock-footer');if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 2';
+const version=el('settings')?.querySelector('.v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 3 · Données chiffrées localement';
+const footer=document.querySelector('.v32-lock-footer');if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 3';
 if(data)render();
 })();
 </script><style id="v34-consolidation">
@@ -1594,9 +1594,9 @@ const updateLabels=()=>{
  const task=by('v32tasks');
  if(task)task.querySelectorAll('button').forEach(b=>{if(b.textContent.trim()==='+ Verser')b.textContent='+ Contribution'});
  const version=by('settings')?.querySelector('.v262-version');
- if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 2 · Données chiffrées localement';
+ if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 3 · Données chiffrées localement';
  const footer=document.querySelector('.v32-lock-footer');
- if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 2';
+ if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 3';
 };
 // Reuse original existing update functions rather than mutate amounts or historical records.
 if(typeof render==='function'){
@@ -1665,4 +1665,152 @@ button,.btn,summary,nav button,.v24-chip { touch-action:manipulation; }
   // CSS controls the computed font-size; do not set inline sizes or auto-focus fields.
 })();
 </script>
+
+<style id="v35-ios-ui-fix">
+/* V3.4 beta 3: unify top headers and remove the blurry global title on app screens. */
+body:has(#app:not(.hidden)) > main > header{display:none!important}
+body:has(#unlock:not(.hidden)) > main > header,
+body:has(#setup:not(.hidden)) > main > header{display:block!important}
+body:has(#app:not(.hidden)) main{padding-top:calc(env(safe-area-inset-top) + 10px)!important}
+body:has(#app:not(.hidden)) main,
+body:has(#app:not(.hidden)) #app,
+body:has(#app:not(.hidden)) #add,
+body:has(#app:not(.hidden)) #home{height:auto!important;max-height:none!important;overflow:visible!important;}
+body:has(#app:not(.hidden) #add:not(.hidden)),
+body:has(#app:not(.hidden) #home:not(.hidden)){position:static!important;inset:auto!important;width:auto!important;overflow-y:auto!important;overscroll-behavior:auto!important}
+body:has(#app:not(.hidden) #add:not(.hidden)) main,
+body:has(#app:not(.hidden) #home:not(.hidden)) main{display:block!important;overflow:visible!important;}
+#add:not(.hidden),#home:not(.hidden){display:block!important;min-height:0!important;overflow:visible!important}
+#add:not(.hidden) #v24quick,#home:not(.hidden) #v21dashboard,#home:not(.hidden) #v32summary,#home:not(.hidden) #v32tasks,#home:not(.hidden) #v32recent,#home:not(.hidden) #v32monthnav{overflow:visible!important;max-height:none!important}
+.v35-viewhead{margin:0 0 12px!important;padding:0 2px}
+.v35-viewhead h2{margin:0 0 6px!important;font-size:18px!important;line-height:1.15;color:#f6f5ff}
+.v35-viewhead p{margin:0!important;font-size:13px!important;color:#aaafc2!important;line-height:1.45}
+#add>.v35-viewhead + *,#home>.v35-viewhead + *{margin-top:0!important}
+/* Themed modal UI */
+#v35modal{background:linear-gradient(180deg,#23263a 0%,#171b2b 100%)!important;border:1px solid #5b5578!important;border-radius:22px!important;padding:18px!important;color:#f7f4ff!important;width:min(92vw,430px)!important;max-width:min(92vw,430px)!important;box-shadow:0 24px 60px rgba(0,0,0,.45)!important}
+#v35modal::backdrop{background:rgba(8,10,20,.82)!important}
+#v35modal h2{margin:0 0 8px!important;font-size:19px!important}
+#v35modal p{margin:0 0 14px!important;color:#c5c8d8!important}
+#v35modal .v35-field{margin:12px 0}
+#v35modal .v35-field input{margin:0!important;width:100%!important}
+#v35modal .v35-actions{display:flex;gap:10px;margin-top:10px}
+#v35modal .v35-actions button{flex:1 1 0;min-height:46px;border-radius:14px;border:1px solid #5c537a;background:#312b47;color:#f7f3ff;font-weight:700}
+#v35modal .v35-actions .primary{background:linear-gradient(180deg,#b89bff,#9b7fff);color:#181224;border-color:#b89bff}
+#v35modal .v35-actions .danger{background:#4f2d3a;color:#ffe7ef;border-color:#7b4559}
+/* Custom keypad */
+#v35keypad{background:linear-gradient(180deg,#25283d 0%,#191d2d 100%)!important;border:1px solid #5b5578!important;border-radius:24px 24px 20px 20px!important;padding:16px!important;color:#f7f4ff!important;width:min(96vw,430px)!important;max-width:min(96vw,430px)!important;box-shadow:0 26px 70px rgba(0,0,0,.48)!important}
+#v35keypad::backdrop{background:rgba(8,10,20,.72)!important}
+#v35keypad h2{margin:0 0 10px!important;font-size:18px!important}
+#v35keypad .v35-pad-display{display:flex;align-items:center;justify-content:flex-end;min-height:70px;background:#121628;border:1px solid #5b4d8a;border-radius:18px;padding:10px 14px;margin-bottom:12px;font-size:clamp(32px,8vw,52px);font-weight:800;letter-spacing:-1px;color:#efebff}
+#v35keypad .v35-pad-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#v35keypad .v35-pad-grid button{min-height:60px;border-radius:16px;border:1px solid #4d4668;background:#30344c;color:#fff;font-size:26px;font-weight:700}
+#v35keypad .v35-pad-grid button[data-action="back"]{font-size:20px}
+#v35keypad .v35-pad-grid button[data-action="clear"]{font-size:15px}
+#v35keypad .v35-pad-grid button[data-action="ok"]{background:linear-gradient(180deg,#b89bff,#9b7fff);color:#181224;border-color:#b89bff;font-size:18px}
+#v35keypad .v35-pad-grid button[data-action="cancel"]{background:#23283c;color:#cfd3e6;font-size:16px}
+#v35keypad .v35-pad-note{margin:10px 2px 0;color:#aaafc2;font-size:12px;line-height:1.35}
+</style>
+<script id="v35-ios-ui-fix">
+(()=>{
+'use strict';
+const by=id=>document.getElementById(id),safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function ensureHeader(rootId,title,subtitle){
+ const root=by(rootId); if(!root) return;
+ let head=root.querySelector(':scope > .v35-viewhead');
+ if(!head){ head=document.createElement('section'); head.className='v35-viewhead'; root.prepend(head); }
+ head.innerHTML=`<h2>${safe(title)}</h2><p>${safe(subtitle)}</p>`;
+}
+function refreshHeaders(){
+ ensureHeader('add','Mon Budget Privé','Accueil, saisie rapide et suivi du mois.');
+ ensureHeader('home','Mon Budget Privé','Synthèse du budget, prévisions et dépenses du mois.');
+}
+// Generic MBP-styled confirm/prompt/alert modal.
+const modal=document.createElement('dialog');
+modal.id='v35modal';
+document.body.append(modal);
+function closeModal(){ if(modal.open) modal.close(); }
+function openNotice(opts){
+ return new Promise(resolve=>{
+  const title=opts.title||'Mon Budget Privé',message=opts.message||'',ok=opts.ok||'OK',cancel=opts.cancel;
+  const wantsInput=opts.input!==undefined;
+  modal.innerHTML=`<h2>${safe(title)}</h2><p>${safe(message).replace(/\n/g,'<br>')}</p>${wantsInput?`<div class="v35-field"><input id="v35modalinput" ${opts.type==='password'?'type="password"':'type="text"'} inputmode="${safe(opts.inputmode||'text')}" placeholder="${safe(opts.placeholder||'')}" value="${safe(opts.input||'')}"></div>`:''}<div class="v35-actions">${cancel?`<button type="button" id="v35cancel">${safe(cancel)}</button>`:''}<button type="button" id="v35ok" class="${opts.danger?'danger ':'primary '}primary">${safe(ok)}</button></div>`;
+  modal.showModal();
+  const input=by('v35modalinput'); if(input){ queueMicrotask(()=>input.focus({preventScroll:true})); }
+  by('v35cancel')?.addEventListener('click',()=>{ closeModal(); resolve(null); },{once:true});
+  by('v35ok')?.addEventListener('click',()=>{ const value=input?input.value:null; closeModal(); resolve(value!==null?value:true); },{once:true});
+  modal.addEventListener('cancel',e=>{e.preventDefault(); closeModal(); resolve(null);},{once:true});
+ });
+}
+window.v35Confirm=(title,message,ok='OK',cancel='Annuler',danger=false)=>openNotice({title,message,ok,cancel,danger});
+window.v35Prompt=(title,message,input='',placeholder='',type='text',inputmode='text',ok='Valider',cancel='Annuler')=>openNotice({title,message,input,placeholder,type,inputmode,ok,cancel});
+window.v35Alert=(title,message)=>openNotice({title,message,ok:'OK',cancel:null});
+// Custom numeric keypad for the main amount fields to avoid the native iOS keypad.
+const keypad=document.createElement('dialog');
+keypad.id='v35keypad';
+keypad.innerHTML=`<h2>Saisir un montant</h2><div class="v35-pad-display" id="v35paddisplay">0,00</div><div class="v35-pad-grid">${['1','2','3','4','5','6','7','8','9',',','0','⌫'].map(v=>`<button type="button" ${v==='⌫'?'data-action="back"':v===','?'data-value=","':`data-value="${v}"`}>${v}</button>`).join('')}<button type="button" data-action="clear">Effacer</button><button type="button" data-action="cancel">Annuler</button><button type="button" data-action="ok">Valider</button></div><p class="v35-pad-note">Clavier MBP pour les montants, afin d’éviter l’interface blanche d’iOS sur l’écran d’accueil.</p>`;
+let activeField=null,padValue='';
+document.body.append(keypad);
+function normalizeSeed(v){ const cleaned=String(v??'').replace(/[^0-9,\.]/g,'').replace('.',','); return cleaned; }
+function renderPad(){ const d=by('v35paddisplay'); if(d) d.textContent=padValue||'0,00'; }
+function openKeypad(field){ activeField=field; padValue=normalizeSeed(field.value); renderPad(); keypad.showModal(); }
+function closeKeypad(){ if(keypad.open) keypad.close(); activeField=null; }
+function commitKeypad(){ if(!activeField) return closeKeypad(); activeField.value=padValue; activeField.dispatchEvent(new Event('input',{bubbles:true})); activeField.dispatchEvent(new Event('change',{bubbles:true})); closeKeypad(); }
+keypad.addEventListener('click',e=>{
+ const b=e.target.closest('button'); if(!b) return;
+ const action=b.dataset.action, val=b.dataset.value;
+ if(val!==undefined){
+  if(val===',' && padValue.includes(',')) return;
+  padValue += val; renderPad(); return;
+ }
+ if(action==='back'){ padValue=padValue.slice(0,-1); renderPad(); return; }
+ if(action==='clear'){ padValue=''; renderPad(); return; }
+ if(action==='cancel'){ closeKeypad(); return; }
+ if(action==='ok'){ commitKeypad(); }
+});
+keypad.addEventListener('cancel',e=>{e.preventDefault();closeKeypad()});
+function hookAmountField(id){
+ const field=by(id); if(!field || field.dataset.v35Keypad==='1') return;
+ field.dataset.v35Keypad='1';
+ field.setAttribute('readonly','readonly');
+ field.setAttribute('inputmode','none');
+ field.addEventListener('focus',e=>{e.target.blur();openKeypad(field)});
+ field.addEventListener('click',e=>{e.preventDefault();openKeypad(field)});
+}
+function hookAmountFields(){ ['v24amount','v32taskamount','v312fundamount','txamount','planamount','assetamount','assetinvested','recurringamount'].forEach(hookAmountField); }
+// Replace native white delete confirms with MBP dialogs.
+async function deleteRecord(kind,id,successMsg){
+ if(!data || !Array.isArray(data[kind])) return;
+ const before=data[kind].slice();
+ data[kind]=data[kind].filter(x=>x.id!==id);
+ try{ await save(); render(); if(typeof alertMsg==='function') alertMsg(successMsg||'Élément supprimé.'); }
+ catch(err){ data[kind]=before; if(typeof alertMsg==='function') alertMsg('Suppression impossible.'); }
+}
+document.addEventListener('click',async e=>{
+ const deleteBtn=e.target.closest('[data-delete-tx],[data-delete-plan],[data-delete-asset],[data-v32delete],[data-delete-recurring]');
+ if(deleteBtn){
+  e.preventDefault(); e.stopImmediatePropagation();
+  const ok=await window.v35Confirm('Supprimer cet élément ?','Cette suppression est définitive pour les données locales enregistrées dans MBP.','Supprimer','Annuler',true);
+  if(!ok) return;
+  if(deleteBtn.dataset.deleteTx || deleteBtn.dataset.v32delete) return deleteRecord('transactions',deleteBtn.dataset.deleteTx||deleteBtn.dataset.v32delete,'Opération supprimée.');
+  if(deleteBtn.dataset.deletePlan) return deleteRecord('plans',deleteBtn.dataset.deletePlan,'Ligne du budget supprimée.');
+  if(deleteBtn.dataset.deleteAsset) return deleteRecord('assets',deleteBtn.dataset.deleteAsset,'Actif supprimé.');
+  if(deleteBtn.dataset.deleteRecurring) return deleteRecord('recurring',deleteBtn.dataset.deleteRecurring,'Modèle supprimé.');
+ }
+},true);
+// Replace the reset confirmation and quick custom label prompt where useful.
+const oldSaveQuick = by('v24save');
+if(oldSaveQuick && !oldSaveQuick.dataset.v35Hooked){
+ oldSaveQuick.dataset.v35Hooked='1';
+}
+// Keep headers and keypad hooks after each render.
+if(typeof render==='function'){
+ const prev=render;
+ render=function(){ prev(); refreshHeaders(); hookAmountFields(); };
+}
+refreshHeaders(); hookAmountFields();
+// Update visible version strings.
+document.querySelectorAll('#settings .v262-version,.v32-lock-footer').forEach(el=>{ el.innerHTML=el.innerHTML.replace(/3\.4 bêta 2/g,'3.4 bêta 3'); });
+})();
+</script>
+
 </body></html>
