@@ -1372,4 +1372,88 @@ render();
  };
 })();
 </script>
-</body></html>
+<style id="v32-redesign">
+/* Refonte 3.2 : navigation et écrans séparés, sans changer le coffre chiffré. */
+header{height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;transform:none!important;filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;contain:none!important}
+header h1{transform:none!important;filter:none!important;text-shadow:none!important;letter-spacing:normal!important;line-height:1.2!important;overflow:visible!important;white-space:normal!important}
+#add:not(.hidden){overflow-y:auto!important;max-height:100%!important;-webkit-overflow-scrolling:touch}
+#v264budgetpanel{display:none!important}#v264budgetpanel.v32-selected{display:block!important}
+#v32tasks,#v32recent,#v32summary,#v32monthnav{margin-top:12px}
+.v32-card{background:#1b2031;border:1px solid #383d55;border-radius:15px;padding:14px;margin:12px 0;color:#f3f1ff}
+.v32-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}.v32-head h2{font-size:17px;margin:0}.v32-sub{font-size:12px;color:#aeb4c9;margin:5px 0 10px}.v32-line{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-top:1px solid #353a50}.v32-line:first-of-type{border-top:0}.v32-line strong{font-size:13px}.v32-track{height:9px;background:#3a4057;border-radius:10px;overflow:hidden;margin-top:8px}.v32-fill{height:100%;background:#43d6ad;border-radius:10px}.v32-warn{background:#efb464}.v32-over{background:#fa858e}.v32-taskbutton{background:#343054;color:#eee8ff;border:1px solid #64558b;border-radius:10px;padding:9px 12px;font-size:12px;min-height:38px}.v32-taskbutton:disabled{opacity:.55}.v32-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}.v32-kpis>div{background:#252a40;border-radius:12px;padding:12px}.v32-kpis strong{display:block;font-size:18px;margin-top:6px}.v32-monthrow{display:flex;align-items:center;justify-content:space-between;gap:10px}.v32-monthrow button{background:#30354c;color:#fff;border:1px solid #4b516d;border-radius:10px;min-width:42px;min-height:40px}.v32-muted{font-size:12px;color:#b7b9cc}.v32-version{font-size:11px;color:#a7a5c1;text-align:center;margin-top:20px}
+#home .analytics,#home #v30summaryextras,#home #v26budgetgraph,#home #v24annual,#home #cashflowcard,#home #homeTracking,#home #recent,#home #overview,#home #budgetDonut,#home #budgetLegend{display:none!important}
+#home #v21dashboard>.card:not(.hero){display:none!important}#home #v21dashboard>.card.hero{display:none!important}
+#v30profile #plans #variableTracking,#v30profile #plans #envelopeTracking{display:none!important}
+#v30profile #plans [data-v17fund],#v30profile #plans [data-v17expense],#v30profile #plans #resetEnvelopes,#v30profile #plans #applyrecurring{display:none!important}
+#v32taskdialog{background:#172135;color:#fff;border:1px solid #555078;border-radius:18px;padding:20px;width:min(92vw,440px);max-height:calc(100dvh - 120px);overflow:auto;box-sizing:border-box}
+#v32taskdialog input{width:100%;box-sizing:border-box;font-size:16px}#v32taskdialog .actions{display:flex;gap:8px;margin-top:15px}#v32taskdialog .actions button{flex:1}
+body:has(#unlock:not(.hidden)) main,body:has(#setup:not(.hidden)) main{background:radial-gradient(ellipse at 50% 22%,#31244d 0%,#111529 48%,#0c101d 90%);min-height:100dvh}
+body:has(#unlock:not(.hidden)) header,body:has(#setup:not(.hidden)) header{text-align:center;padding-top:8vh!important}
+body:has(#unlock:not(.hidden)) header:before,body:has(#setup:not(.hidden)) header:before{content:'♢';display:grid;place-items:center;font-size:32px;color:#b8a0ff;width:65px;height:65px;margin:0 auto 16px;border-radius:18px;background:#2a2545;border:1px solid #51426c}
+#unlock:not(.hidden),#setup:not(.hidden){background:linear-gradient(135deg,#26223d,#191d30)!important;border:1px solid #51446c!important;border-radius:20px!important;box-shadow:0 14px 50px #0004}
+#unlock .btn,#setup .btn{width:100%;background:#ae94f6;color:#1b1530}
+#unlock input,#setup input{font-size:16px!important}
+.v32-lock-footer{text-align:center;font-size:12px;color:#aaa6bd;margin:24px 0 10px}
+@media(max-width:450px){#v32tasks,#v32recent,#v32summary{margin-left:0;margin-right:0}.v32-line{flex-wrap:wrap}}
+</style><script id="v32-functional">
+(()=>{
+'use strict';
+const by=id=>document.getElementById(id),safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(Number(n)||0);
+const today=()=>new Date().toLocaleDateString('sv-SE'),currentMonth=()=>today().slice(0,7);
+const sum=arr=>arr.reduce((s,x)=>s+Number(x.amount||0),0);
+const monthLabel=m=>new Date(m+'-02T12:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+const monthsDelta=(m,n)=>{const d=new Date(m+'-02T12:00:00');d.setMonth(d.getMonth()+n);return d.toLocaleDateString('sv-SE').slice(0,7)};
+const plansFor=m=>{const before=selectedMonth;try{selectedMonth=m;return monthPlans().slice()}finally{selectedMonth=before}};
+const monthlyTasks=m=>plansFor(m).filter(p=>['Provisions','Investissements'].includes(p.cat)&&Number(p.amount)>0);
+const movesFor=(p,m)=>Array.isArray(data.envelopeMoves)?data.envelopeMoves.filter(x=>x.planId===p.id&&x.kind==='fund'&&x.date?.slice(0,7)===m):[];
+function target(p,m){return sum(movesFor(p,m))}
+function addMonthTaskPanel(){const add=by('add');if(!add)return;const t=document.createElement('section');t.id='v32tasks';t.className='v32-card';add.append(t);const r=document.createElement('section');r.id='v32recent';r.className='v32-card';add.append(r)}
+addMonthTaskPanel();
+// Hide category budget until a deliberate category tap. Render does not reopen it.
+const catPanel=by('v264budgetpanel');catPanel?.classList.remove('v32-selected');
+by('v24cats')?.addEventListener('click',e=>{if(e.target.closest('[data-v24cat]'))catPanel?.classList.add('v32-selected')});
+by('v24expense')?.addEventListener('click',()=>catPanel?.classList.remove('v32-selected'));
+by('v24income')?.addEventListener('click',()=>catPanel?.classList.remove('v32-selected'));
+// Keep quick entry and existing operation modal; make recent operations editable here.
+const recent=by('v32recent');recent.addEventListener('click',e=>{const b=e.target.closest('[data-v32edit],[data-v32delete]');if(!b)return;const id=b.dataset.v32edit||b.dataset.v32delete;const original=[...document.querySelectorAll(b.dataset.v32edit?'[data-edit-tx]':'[data-delete-tx]')].find(x=>(b.dataset.v32edit?x.dataset.editTx:x.dataset.deleteTx)===id);if(original)original.click()});
+// Confirm a real transfer into the encrypted envelope movement ledger (never a consumption transaction).
+const dlg=document.createElement('dialog');dlg.id='v32taskdialog';dlg.innerHTML='<h2 id="v32tasktitle">Confirmer un versement</h2><p class="v32-muted" id="v32taskstatus"></p><form id="v32taskform"><label>Montant réellement versé (€)<input id="v32taskamount" type="number" inputmode="decimal" min="0.01" step="0.01" required></label><label>Date du versement<input id="v32taskdate" type="date" required></label><div class="actions"><button class="btn secondary" type="button" id="v32taskcancel">Annuler</button><button class="btn" type="submit">Confirmer</button></div></form>';document.body.append(dlg);
+let taskId=null;by('v32taskcancel').onclick=()=>dlg.close();
+by('v32tasks').addEventListener('click',e=>{const b=e.target.closest('[data-v32task]');if(!b||!data)return;const p=monthlyTasks(currentMonth()).find(x=>x.id===b.dataset.v32task);if(!p)return;taskId=p.id;const left=Math.max(.01,Number(p.amount)-target(p,currentMonth()));by('v32tasktitle').textContent='Versement · '+p.name;by('v32taskstatus').textContent='Tu peux confirmer un montant partiel. Il sera conservé dans le cumul annuel.';by('v32taskamount').value=left.toFixed(2);by('v32taskdate').value=today();dlg.showModal()});
+by('v32taskform').onsubmit=async e=>{e.preventDefault();if(!data||!taskId)return;const amount=Number(by('v32taskamount').value),date=by('v32taskdate').value;if(!Number.isFinite(amount)||amount<=0||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(date)){by('v32taskstatus').textContent='Montant ou date invalide.';return}const p=data.plans.find(x=>x.id===taskId);if(!p)return;if(!Array.isArray(data.envelopeMoves))data.envelopeMoves=[];const entry={id:uid(),planId:taskId,kind:'fund',amount,date};data.envelopeMoves.push(entry);try{await save();dlg.close();render();alertMsg('Versement confirmé et enregistré une seule fois.')}catch(err){data.envelopeMoves=data.envelopeMoves.filter(x=>x!==entry);by('v32taskstatus').textContent='Erreur de sauvegarde : réessaie.'}};
+// Remove redundant actions from settings without removing configuration or encrypted data.
+const profile=by('v30profile');profile?.querySelectorAll('[data-v17fund],[data-v17expense]').forEach(b=>b.style.display='none');
+const monthnav=document.createElement('section');monthnav.id='v32monthnav';monthnav.className='v32-card';monthnav.innerHTML='<div class="v32-monthrow"><button id="v32prev" aria-label="Mois précédent">‹</button><strong id="v32monthtitle"></strong><button id="v32next" aria-label="Mois suivant">›</button></div>';
+const home=by('home');home.prepend(monthnav);
+by('v32prev').onclick=()=>{selectedMonth=monthsDelta(selectedMonth,-1);render()};by('v32next').onclick=()=>{selectedMonth=monthsDelta(selectedMonth,1);render()};
+const summary=document.createElement('section');summary.id='v32summary';home.append(summary);
+function drawTasks(){if(!data)return;const m=currentMonth(),tasks=monthlyTasks(m),done=tasks.filter(p=>target(p,m)>=Number(p.amount)),todo=tasks.filter(p=>target(p,m)<Number(p.amount));let html='<div class="v32-head"><h2>Mes tâches du mois</h2><span class="v32-muted">'+safe(monthLabel(m))+'</span></div><p class="v32-sub">'+done.length+' / '+tasks.length+' objectifs atteints · Versements réels uniquement</p>';
+const row=(p,finished)=>{const goal=Number(p.amount),real=target(p,m),pct=Math.min(100,Math.max(0,real/goal*100));return '<div class="v32-line"><div style="flex:1;min-width:150px"><strong>'+safe(p.name)+'</strong><div class="v32-muted">'+money(real)+' / '+money(goal)+(real<goal?' · Reste '+money(goal-real):' · Terminé')+'</div><div class="v32-track"><div class="v32-fill" style="width:'+pct+'%"></div></div></div>'+(finished?'<span style="color:#43d6ad">✓</span>':'<button class="v32-taskbutton" data-v32task="'+safe(p.id)+'">+ Verser</button>')+'</div>'};
+html+=todo.map(p=>row(p,false)).join('')||'<p class="v32-muted">Toutes les tâches du mois sont terminées !</p>';
+if(done.length)html+='<details style="margin-top:10px"><summary class="v32-muted">✓ Effectuées ('+done.length+')</summary>'+done.map(p=>row(p,true)).join('')+'</details>';
+if(!tasks.length)html='<h2>Mes tâches du mois</h2><p class="v32-muted">Configure tes provisions et investissements dans Profil pour créer automatiquement les tâches mensuelles.</p>';
+by('v32tasks').innerHTML=html;
+const recentTx=data.transactions.filter(t=>t.date?.slice(0,7)===m).slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+by('v32recent').innerHTML='<div class="v32-head"><h2>Dernières opérations</h2><span class="v32-muted">Ce mois-ci</span></div>'+(recentTx.map(t=>'<div class="v32-line"><div><strong>'+safe(t.name)+'</strong><div class="v32-muted">'+safe(t.date)+'</div></div><div style="text-align:right"><strong style="color:'+(t.type==='income'?'#43d6ad':'#ffa0a6')+'">'+(t.type==='income'?'+':'−')+money(t.amount)+'</strong><div><button class="v32-taskbutton" data-v32edit="'+safe(t.id)+'">Modifier</button> <button class="v32-taskbutton" data-v32delete="'+safe(t.id)+'">×</button></div></div></div>').join('')||'<p class="v32-muted">Aucune opération ce mois-ci.</p>');
+}
+function drawSummary(){if(!data)return;const m=selectedMonth,plans=plansFor(m),tx=data.transactions.filter(t=>t.date?.slice(0,7)===m),expenses=tx.filter(t=>t.type==='expense'),revenues=tx.filter(t=>t.type==='income');const income=sum(plans.filter(p=>p.cat==='Revenus')),out=sum(plans.filter(p=>p.cat!=='Revenus'));let html='<div class="v32-card"><div class="v32-head"><h2>Budget du mois</h2><span class="v32-muted">Prévisions</span></div><div class="v32-kpis"><div><small>Revenus prévus</small><strong>'+money(income)+'</strong></div><div><small>Reste prévisionnel</small><strong style="color:'+(income-out<0?'#ff9da6':'#43d6ad')+'">'+money(income-out)+'</strong></div><div><small>Dépenses enregistrées</small><strong>'+money(sum(expenses))+'</strong></div><div><small>Revenus encaissés</small><strong>'+money(sum(revenues))+'</strong></div></div></div>';
+html+='<div class="v32-card"><h2>Avancement des dépenses</h2><p class="v32-sub">Dépenses réelles rapportées aux budgets variables. Les virements d’épargne ne sont pas des dépenses de consommation.</p>';
+const vars=plans.filter(p=>p.cat==='Variables');for(const p of vars){const used=sum(expenses.filter(t=>t.planId===p.id||(!t.planId&&t.name?.toLowerCase()===p.name?.toLowerCase()))),max=Number(p.amount),pct=max?used/max*100:0;html+='<div class="v32-line"><div style="width:100%"><div class="v32-monthrow"><strong>'+safe(p.name)+'</strong><span class="v32-muted">'+money(used)+' / '+money(max)+'</span></div><div class="v32-track"><div class="v32-fill '+(pct>=100?'v32-over':pct>=80?'v32-warn':'')+'" style="width:'+Math.min(100,pct)+'%"></div></div><div class="v32-muted">'+(max?Math.round(pct)+' % utilisés · ':'')+(max-used>=0?money(max-used)+' restants':'Dépassement '+money(used-max))+'</div></div></div>'}if(!vars.length)html+='<p class="v32-muted">Aucun budget variable configuré pour ce mois.</p>';html+='</div>';
+const year=m.slice(0,4),end=m<=currentMonth()?m:currentMonth();const allPlans=plansFor(end).filter(p=>['Provisions','Investissements'].includes(p.cat));html+='<div class="v32-card"><h2>Épargne et investissements · '+safe(year)+'</h2><p class="v32-sub">Objectifs cumulés jusqu’au mois sélectionné, versements réels et écart. Les dépenses prélevées sur une provision n’effacent pas les versements effectués.</p>';
+for(const p of allPlans){let expected=0,real=0;for(let k=1;k<=12;k++){const mm=year+'-'+String(k).padStart(2,'0');if(mm>end)break;const matching=plansFor(mm).find(x=>x.id===p.id)||plansFor(mm).find(x=>x.name===p.name&&x.cat===p.cat);if(matching)expected+=Number(matching.amount)||0;real+=sum(movesFor(p,mm))}const pct=expected?real/expected*100:0;html+='<div class="v32-line"><div style="width:100%"><div class="v32-monthrow"><strong>'+safe(p.name)+'</strong><span class="v32-muted">'+money(real)+' / '+money(expected)+'</span></div><div class="v32-track"><div class="v32-fill '+(real<expected?'v32-warn':'')+'" style="width:'+Math.min(100,pct)+'%"></div></div><div class="v32-muted">Écart : '+(real>=expected?'+':'−')+money(Math.abs(real-expected))+'</div></div></div>'}if(!allPlans.length)html+='<p class="v32-muted">Aucun objectif de provision ou d’investissement.</p>';html+='</div>';summary.innerHTML=html;by('v32monthtitle').textContent=monthLabel(m)}
+const oldRender=render;render=function(){oldRender();if(!data)return;drawTasks();drawSummary()};
+// Navigation and names: retain internal IDs for compatibility.
+const addNav=document.querySelector('#nav [data-tab="add"]');if(addNav)addNav.innerHTML='⌂<br>Accueil';
+const summaryNav=document.querySelector('#nav [data-tab="home"]');if(summaryNav)summaryNav.innerHTML='▥<br>Synthèse';
+const addHeading=by('v24quick')?.querySelector('h2');if(addHeading)addHeading.textContent='Ajouter une opération';
+// Remove duplicated actions from Synthèse; all entry points remain on Accueil.
+const footer=document.createElement('div');footer.className='v32-lock-footer';footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.2 bêta 1';by('unlock')?.insertAdjacentElement('afterend',footer);
+const settingsVersion=by('settings')?.querySelector('.v262-version');if(settingsVersion)settingsVersion.textContent='Mon Budget Privé · Version 3.2 bêta 1 · Données chiffrées localement';
+const lockFooter=()=>{footer.style.display=by('unlock')?.classList.contains('hidden')?'none':'block'};
+const originalShow=show;show=function(id){originalShow(id);lockFooter()};lockFooter();
+// Do not disable pinch zoom: keep accessibility. Prevent automatic iOS focus zoom with 16px inputs.
+document.querySelectorAll('input,select,textarea').forEach(x=>{x.style.fontSize='max(16px, 1em)'});
+render();
+})();
+</script></body></html>
