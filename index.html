@@ -1456,4 +1456,47 @@ const originalShow=show;show=function(id){originalShow(id);lockFooter()};lockFoo
 document.querySelectorAll('input,select,textarea').forEach(x=>{x.style.fontSize='max(16px, 1em)'});
 render();
 })();
+</script><style id="v33-styles">
+#v33wealthtask{border:1px solid #565078;background:linear-gradient(120deg,#26243e,#1b2235)}
+#v33wealthtask .v33-taskheading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.v33-status{font-size:12px;font-weight:700;border-radius:30px;padding:5px 10px;background:#3a304e;color:#d8c4ff;white-space:nowrap}
+.v33-status.done{background:#193e36;color:#69e8bd}
+.v33-action{border:1px solid #8876bb;background:#51416f;color:#fff;border-radius:11px;padding:11px 14px;font-weight:700;cursor:pointer;min-height:44px}
+#v33wealthtask p{color:#bfc2d4;margin:9px 0;font-size:13px}
+#v33profiletools{border:1px solid #47435e;background:#1b1e30;border-radius:16px;padding:14px;margin:12px 0}
+#v33profiletools h3{margin:0 0 6px;font-size:16px}
+#v33profiletools p{font-size:13px;color:#b3b8c9;margin:0 0 12px}
+.v33-toolgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.v33-toolgrid button{padding:12px 7px;min-height:48px;font-size:13px;border:1px solid #675c89;border-radius:12px;background:#342c4f;color:#f7f3ff;font-weight:700;cursor:pointer}
+#v33profilestatus{font-size:12px;color:#bbb7ce;margin-top:10px}
+@media(max-width:360px){.v33-toolgrid{grid-template-columns:1fr}}
+</style>
+<script id="v33-update">
+(()=>{
+'use strict';
+const el=id=>document.getElementById(id);
+const clean=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const prettyDate=date=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return date;return new Date(date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})};
+const profileTools=document.createElement('section');profileTools.id='v33profiletools';
+profileTools.innerHTML='<h3>Gérer mes budgets</h3><p>Crée ou modifie les budgets du mois sélectionné. Les dépenses réelles restent dans Accueil.</p><div class="v33-toolgrid"><button type="button" id="v33newvariable">+ Budget variable</button><button type="button" id="v33newprovision">+ Provision</button><button type="button" id="v33allplans">Voir toutes les lignes</button><button type="button" id="v33newfixed">+ Charge fixe</button></div><div id="v33profilestatus">Les modifications concernent le mois du budget affiché.</div>';
+const plans=el('plans'),picker=el('budgetmonth')?.closest('.card');
+if(plans){if(picker)picker.after(profileTools);else plans.prepend(profileTools)}
+function startNew(cat){if(!data)return;el('newplan')?.click();const dialog=el('plandialog');if(dialog?.open){el('plancat').value=cat;el('plancat').dispatchEvent(new Event('change',{bubbles:true}));el('planrecurring').checked=false;el('planrecurringdaywrap')?.classList.add('hidden');}}
+el('v33newvariable').onclick=()=>startNew('Variables');
+el('v33newprovision').onclick=()=>startNew('Provisions');
+el('v33newfixed').onclick=()=>startNew('Fixes');
+el('v33allplans').onclick=()=>{const list=el('planlist');if(!list)return;const panel=list.closest('details');if(panel)panel.open=true;list.scrollIntoView({behavior:'smooth',block:'start'});};
+const card=document.createElement('section');card.id='v33wealthtask';card.className='v32-card';
+const tasks=el('v32tasks');if(tasks)tasks.before(card);else el('add')?.append(card);
+function updateTask(){if(!data)return;const m=selectedMonth;const snapshots=Array.isArray(data.snapshots)?data.snapshots:[];const forMonth=snapshots.filter(s=>typeof s.date==='string'&&s.date.startsWith(m)).sort((a,b)=>b.date.localeCompare(a.date));const done=forMonth.length>0;const last=snapshots.filter(s=>typeof s.date==='string').sort((a,b)=>b.date.localeCompare(a.date))[0];const current=m===new Date().toLocaleDateString('sv-SE').slice(0,7);
+card.innerHTML='<div class="v33-taskheading"><h2 style="margin:0">Actualiser mon patrimoine</h2><span class="v33-status '+(done?'done':'')+'">'+(done?'✓ Terminé':'À faire')+'</span></div><p>'+(done?'Instantané du '+clean(prettyDate(forMonth[0].date))+'.':last?'Dernier instantané : '+clean(prettyDate(last.date))+'.':'Aucun instantané enregistré pour le moment.')+'</p><button type="button" class="v33-action" id="v33openwealth">'+(done?'Consulter mon patrimoine':'Ouvrir mon patrimoine')+'</button>'+(current?'':'<p>Pour valider un objectif, enregistre un instantané pendant le mois concerné.</p>');
+el('v33openwealth').onclick=()=>tab('wealth');
+}
+const previousRender=render;render=function(){previousRender();updateTask()};
+// The existing "Enregistrer la valeur du jour" action adds a dated historical snapshot.
+// The task is completed from that encrypted snapshot, not from an unrelated checkbox.
+const version=el('settings')?.querySelector('.v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.3 bêta 1 · Données chiffrées localement';
+const footer=document.querySelector('.v32-lock-footer');if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.3 bêta 1';
+if(data)render();
+})();
 </script></body></html>
