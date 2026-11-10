@@ -1482,8 +1482,8 @@ const addNav=document.querySelector('#nav [data-tab="add"]');if(addNav)addNav.in
 const summaryNav=document.querySelector('#nav [data-tab="home"]');if(summaryNav)summaryNav.innerHTML='▥<br>Synthèse';
 const addHeading=by('v24quick')?.querySelector('h2');if(addHeading)addHeading.textContent='Ajouter une opération';
 // Remove duplicated actions from Synthèse; all entry points remain on Accueil.
-const footer=document.createElement('div');footer.className='v32-lock-footer';footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 4';by('unlock')?.insertAdjacentElement('afterend',footer);
-const settingsVersion=by('settings')?.querySelector('.v262-version');if(settingsVersion)settingsVersion.textContent='Mon Budget Privé · Version 3.4 bêta 4 · Données chiffrées localement';
+const footer=document.createElement('div');footer.className='v32-lock-footer';footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 5';by('unlock')?.insertAdjacentElement('afterend',footer);
+const settingsVersion=by('settings')?.querySelector('.v262-version');if(settingsVersion)settingsVersion.textContent='Mon Budget Privé · Version 3.4 bêta 5 · Données chiffrées localement';
 const lockFooter=()=>{footer.style.display=by('unlock')?.classList.contains('hidden')?'none':'block'};
 const originalShow=show;show=function(id){originalShow(id);lockFooter()};lockFooter();
 // Do not disable pinch zoom: keep accessibility. Prevent automatic iOS focus zoom with 16px inputs.
@@ -1529,8 +1529,8 @@ el('v33openwealth').onclick=()=>tab('wealth');
 const previousRender=render;render=function(){previousRender();updateTask()};
 // The existing "Enregistrer la valeur du jour" action adds a dated historical snapshot.
 // The task is completed from that encrypted snapshot, not from an unrelated checkbox.
-const version=el('settings')?.querySelector('.v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 4 · Données chiffrées localement';
-const footer=document.querySelector('.v32-lock-footer');if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 4';
+const version=el('settings')?.querySelector('.v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 5 · Données chiffrées localement';
+const footer=document.querySelector('.v32-lock-footer');if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 5';
 if(data)render();
 })();
 </script><style id="v34-consolidation">
@@ -1594,9 +1594,9 @@ const updateLabels=()=>{
  const task=by('v32tasks');
  if(task)task.querySelectorAll('button').forEach(b=>{if(b.textContent.trim()==='+ Verser')b.textContent='+ Contribution'});
  const version=by('settings')?.querySelector('.v262-version');
- if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 4 · Données chiffrées localement';
+ if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 5 · Données chiffrées localement';
  const footer=document.querySelector('.v32-lock-footer');
- if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 4';
+ if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 5';
 };
 // Reuse original existing update functions rather than mutate amounts or historical records.
 if(typeof render==='function'){
@@ -1706,4 +1706,61 @@ body:has(#app:not(.hidden) #home:not(.hidden)) #mbp-unified-brand {position:rela
  main.insertBefore(brand,app);
 })();
 </script>
+
+<style id="v345-unified-page-scroll">
+/* V3.4 Bêta 5 — ONE native page scroller in all four tabs.
+   Earlier home/add versions locked body and scrolled nested views, causing
+   the brand/header to remain immobile and rasterize differently on iOS. */
+html:has(#app:not(.hidden) #add:not(.hidden)),
+html:has(#app:not(.hidden) #home:not(.hidden)){
+ height:auto!important;min-height:100%!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ overscroll-behavior-y:auto!important;
+}
+body:has(#app:not(.hidden) #add:not(.hidden)),
+body:has(#app:not(.hidden) #home:not(.hidden)){
+ position:static!important;inset:auto!important;
+ width:100%!important;height:auto!important;max-height:none!important;
+ min-height:100dvh!important;
+ overflow-x:hidden!important;overflow-y:visible!important;
+ overscroll-behavior-y:auto!important;
+}
+body:has(#app:not(.hidden) #add:not(.hidden)) main,
+body:has(#app:not(.hidden) #home:not(.hidden)) main{
+ display:block!important;position:static!important;
+ height:auto!important;max-height:none!important;
+ min-height:100dvh!important;
+ overflow:visible!important;
+ padding-top:calc(12px + env(safe-area-inset-top))!important;
+ padding-bottom:calc(126px + env(safe-area-inset-bottom))!important;
+}
+body:has(#app:not(.hidden) #add:not(.hidden)) #app,
+body:has(#app:not(.hidden) #home:not(.hidden)) #app{
+ display:block!important;position:static!important;
+ height:auto!important;max-height:none!important;min-height:0!important;
+ flex:none!important;overflow:visible!important;
+}
+body:has(#app:not(.hidden) #add:not(.hidden)) #add:not(.hidden),
+body:has(#app:not(.hidden) #home:not(.hidden)) #home:not(.hidden){
+ display:block!important;position:static!important;
+ height:auto!important;max-height:none!important;min-height:0!important;
+ flex:none!important;
+ overflow:visible!important;
+ padding-bottom:0!important;
+ overscroll-behavior-y:auto!important;
+}
+body:has(#app:not(.hidden) #home:not(.hidden)) #home #v21dashboard,
+body:has(#app:not(.hidden) #home:not(.hidden)) #v26home,
+body:has(#app:not(.hidden) #add:not(.hidden)) #add #v24quick{
+ height:auto!important;max-height:none!important;min-height:0!important;
+ flex:none!important;overflow:visible!important;
+}
+body:has(#app:not(.hidden) #home:not(.hidden)) #home #v21dashboard{display:block!important}
+body:has(#app:not(.hidden) #home:not(.hidden)) #v26home{display:flex!important;flex-direction:column!important}
+body:has(#app:not(.hidden) #add:not(.hidden)) #v24quick{display:flex!important;flex-direction:column!important}
+/* Preserve internal scrolling only on deliberate small controls, not whole screens. */
+#mbp-unified-brand{position:static!important;transform:none!important;filter:none!important;
+ backface-visibility:visible!important;will-change:auto!important;}
+#nav{position:fixed!important;bottom:0!important;z-index:100!important}
+</style>
 </body></html>
