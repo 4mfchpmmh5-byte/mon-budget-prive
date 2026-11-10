@@ -3056,4 +3056,83 @@ dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,86
  document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(n=>n.textContent=n.textContent.replace(/Version\s+3\.6\s+bêta\s+\d+/gi,'Version 3.6 bêta 3'));
 })();
 </script>
+
+<!-- MBP V3.6 bêta 4 — alignement profil, états financiers, édition ergonomique -->
+<style id="mbp364-refinements">
+/* Trois colonnes stables pour les lignes du profil : titre / montant / chevron. */
+#mb35budgets .mb35-bgroup summary{
+ display:grid!important;grid-template-columns:minmax(0,1fr) minmax(100px,auto) 18px!important;
+ align-items:center!important;column-gap:10px!important;min-height:51px!important;
+ padding:10px 14px!important;
+}
+#mb35budgets .mb35-bgroup summary > span:first-child{min-width:0;overflow-wrap:anywhere;line-height:1.3}
+#mb35budgets .mb35-bgroup summary > span:nth-child(2){margin:0!important;justify-self:end!important;text-align:right!important;font-size:12px!important;font-variant-numeric:tabular-nums!important;white-space:nowrap!important}
+#mb35budgets .mb35-bgroup summary .mb35-arrow{margin:0!important;width:18px!important;text-align:center!important;justify-self:end!important;color:#a3b3c6!important}
+#mb35budgets .mb35-groupcontent{padding:2px 13px!important}
+#mb35budgets .mb35-budgetline{
+ display:grid!important;grid-template-columns:minmax(0,1fr) minmax(94px,auto) 14px!important;
+ align-items:center!important;column-gap:8px!important;padding:10px 2px!important;
+ min-height:46px!important;
+}
+#mb35budgets .mb35-budgetline b{min-width:0!important;overflow-wrap:anywhere!important;line-height:1.3!important}
+#mb35budgets .mb35-budgetline span:nth-child(2){justify-self:end!important;text-align:right!important;font-variant-numeric:tabular-nums!important;white-space:nowrap!important}
+#mb35budgets .mb35-budgetline span:last-child{justify-self:end!important}
+@media(max-width:375px){#mb35budgets .mb35-bgroup summary{grid-template-columns:minmax(0,1fr) 108px 16px!important;column-gap:7px!important}}
+/* Montants comparatifs: échelle descriptive et non alerte de dépassement. */
+#v26budgetgraph h2{font-size:18px!important;line-height:1.25!important}
+#v26budgetbars>div>div:last-child>div{background:#a5adb9!important}
+#v26budgetbars>div:nth-child(2n)>div:last-child>div{background:#d3b38e!important}
+/* Palette financière : le bleu glacier reste uniquement pour les éléments interactifs. */
+:root{--mbp364-positive:#4dc69f;--mbp364-warning:#e9ae65;--mbp364-warning-strong:#e88c55;--mbp364-negative:#ed8794;--mbp364-unstarted:#77879a}
+#v32tasks .v36-goal .v32-fill.mbp364-state,
+#v32summary .v32-fill.mbp364-state,
+.mb35-section .v32-fill.mbp364-state,
+#v30profile .v32-fill.mbp364-state,
+#v30profile .trackfill.mbp364-state{background:var(--mbp364-color)!important;background-color:var(--mbp364-color)!important}
+/* Opérations : les trois points signalent l'ouverture directe de l'édition. */
+#v32recent .mb35-recentline{display:flex!important;align-items:center!important;gap:9px!important;padding:10px 11px!important;min-height:61px!important}
+#v32recent .mb35-recentline:after{content:'•••';display:block;flex:0 0 17px;margin-left:0;line-height:1;font-size:10px;letter-spacing:1px;color:#a7b6c8;text-align:right;align-self:center}
+#v32recent .mb35-recentname{min-width:0!important;flex:1 1 auto!important}
+#v32recent .mb35-recentsum{white-space:nowrap!important;flex:0 0 auto!important;margin-left:auto!important;font-variant-numeric:tabular-nums!important}
+/* La grande fenêtre d'édition est recentrée, avec défilement intérieur si nécessaire. */
+#txdialog,#txdialog[open]{
+ position:fixed!important;inset:0!important;margin:auto!important;
+ width:min(calc(100vw - 28px),440px)!important;
+ max-height:min(82dvh,710px)!important;overflow-y:auto!important;overflow-x:hidden!important;
+ padding:17px!important;overscroll-behavior:contain!important;
+}
+#txdialog form{max-height:none!important;overflow:visible!important}
+#txdialog form>h2{font-size:19px!important;line-height:1.25!important;margin:0 0 16px!important;padding-right:48px!important}
+#txdialog .v36-delete-tx{width:auto!important;display:block;margin:11px auto 0!important;min-height:41px!important;padding:9px 14px!important;font-size:12px!important}
+#txdialog .v36-delete-tx[style*="display: none"]{display:none!important}
+#txdialog button.close,#txdialog button[data-close]{position:sticky!important;float:right!important;top:0!important;right:0!important;margin:0 0 0 8px!important;width:35px!important;height:35px!important;z-index:5!important}
+@media(max-height:670px){#txdialog,#txdialog[open]{max-height:76dvh!important}}
+</style>
+<script id="mbp364-states-and-labels">
+(()=>{
+ 'use strict';
+ const rootIds=['v32summary','v32tasks','v30profile'];
+ const read=(value)=>Number(String(value).replace(/[\s\u00a0\u202f]/g,'').replace(/[^0-9,.-]/g,'').replace(',','.'));
+ function updateIndicators(){
+  document.querySelectorAll('#v32summary .v32-line,#v32tasks .v36-goal,.mb35-section .v32-line,#v30profile .v32-line,#v30profile .tracker').forEach(row=>{
+   const fill=row.querySelector('.v32-fill,.trackfill');if(!fill)return;
+   const text=(row.querySelector('.v32-monthrow,.tracker-top')||row).textContent||'';
+   const match=text.match(/([\d\s\u00a0\u202f.,]+)\s*€\s*\/\s*([\d\s\u00a0\u202f.,]+)\s*€/);
+   if(!match)return;const actual=read(match[1]),limit=read(match[2]);if(!(limit>0)||!Number.isFinite(actual))return;
+   const savings=!!row.closest('#v32tasks')||/épargne|provisions|investissements|objectifs/i.test(row.closest('.mb35-section')?.querySelector('h2')?.textContent||'');
+   const ratio=actual/limit;
+   // Épargne : 0 neutre, 1-49% rouge doux, 50-99% orange, objectif atteint vert.
+   // Dépenses : <60% vert, 60-84% ambre, 85-99% orange soutenu, >=100% rouge.
+   const color=savings?(actual<=0?'#77879a':ratio>=1?'#4dc69f':ratio>=.5?'#e9ae65':'#ed8794'):(ratio>=1?'#ed8794':ratio>=.85?'#e88c55':ratio>=.60?'#e9ae65':'#4dc69f');
+   if(fill.style.getPropertyValue('--mbp364-color')!==color){fill.style.setProperty('--mbp364-color',color);fill.style.setProperty('background-color',color,'important');fill.style.setProperty('background',color,'important')}
+   fill.classList.add('mbp364-state');
+  });
+ }
+ function labelChart(){const h=document.querySelector('#v26budgetgraph h2');if(h)h.textContent='Dépenses réalisées'}
+ const schedule=()=>{if(schedule.queued)return;schedule.queued=true;requestAnimationFrame(()=>{schedule.queued=false;updateIndicators();labelChart()})};
+ for(const id of rootIds){const root=document.getElementById(id);if(root)new MutationObserver(schedule).observe(root,{childList:true,subtree:true})}
+ schedule();
+ document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(n=>n.textContent=n.textContent.replace(/Version\s+3\.6\s+bêta\s+\d+/gi,'Version 3.6 bêta 4'));
+})();
+</script>
 </body></html>
