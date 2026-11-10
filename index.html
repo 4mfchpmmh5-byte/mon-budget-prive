@@ -1482,8 +1482,8 @@ const addNav=document.querySelector('#nav [data-tab="add"]');if(addNav)addNav.in
 const summaryNav=document.querySelector('#nav [data-tab="home"]');if(summaryNav)summaryNav.innerHTML='▥<br>Synthèse';
 const addHeading=by('v24quick')?.querySelector('h2');if(addHeading)addHeading.textContent='Ajouter une opération';
 // Remove duplicated actions from Synthèse; all entry points remain on Accueil.
-const footer=document.createElement('div');footer.className='v32-lock-footer';footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 8';by('unlock')?.insertAdjacentElement('afterend',footer);
-const settingsVersion=by('settings')?.querySelector('.v262-version');if(settingsVersion)settingsVersion.textContent='Mon Budget Privé · Version 3.4 bêta 8 · Données chiffrées localement';
+const footer=document.createElement('div');footer.className='v32-lock-footer';footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.5 bêta 1';by('unlock')?.insertAdjacentElement('afterend',footer);
+const settingsVersion=by('settings')?.querySelector('.v262-version');if(settingsVersion)settingsVersion.textContent='Mon Budget Privé · Version 3.5 bêta 1 · Données chiffrées localement';
 const lockFooter=()=>{footer.style.display=by('unlock')?.classList.contains('hidden')?'none':'block'};
 const originalShow=show;show=function(id){originalShow(id);lockFooter()};lockFooter();
 // Do not disable pinch zoom: keep accessibility. Prevent automatic iOS focus zoom with 16px inputs.
@@ -1529,8 +1529,8 @@ el('v33openwealth').onclick=()=>tab('wealth');
 const previousRender=render;render=function(){previousRender();updateTask()};
 // The existing "Enregistrer la valeur du jour" action adds a dated historical snapshot.
 // The task is completed from that encrypted snapshot, not from an unrelated checkbox.
-const version=el('settings')?.querySelector('.v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 8 · Données chiffrées localement';
-const footer=document.querySelector('.v32-lock-footer');if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 8';
+const version=el('settings')?.querySelector('.v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.5 bêta 1 · Données chiffrées localement';
+const footer=document.querySelector('.v32-lock-footer');if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.5 bêta 1';
 if(data)render();
 })();
 </script><style id="v34-consolidation">
@@ -1594,9 +1594,9 @@ const updateLabels=()=>{
  const task=by('v32tasks');
  if(task)task.querySelectorAll('button').forEach(b=>{if(b.textContent.trim()==='+ Verser')b.textContent='+ Contribution'});
  const version=by('settings')?.querySelector('.v262-version');
- if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 8 · Données chiffrées localement';
+ if(version)version.textContent='Mon Budget Privé · Version 3.5 bêta 1 · Données chiffrées localement';
  const footer=document.querySelector('.v32-lock-footer');
- if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 8';
+ if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.5 bêta 1';
 };
 // Reuse original existing update functions rather than mutate amounts or historical records.
 if(typeof render==='function'){
@@ -1845,7 +1845,11 @@ function show(html){if(dlg.open){finish(null)}dlg.innerHTML=html;dlg.showModal()
 dlg.addEventListener('cancel',e=>{e.preventDefault();finish(null)});
 const actions=(primary='Valider',cancel='Annuler')=>`<div class="mbpu-actions"><button type="button" data-act="cancel">${esc(cancel)}</button><button type="button" class="mbpu-primary" data-act="accept">${esc(primary)}</button></div>`;
 window.mbpConfirm=async message=>{
- const p=show(`<h2 class="mbpu-title">Confirmation</h2><p class="mbpu-message">${esc(message)}</p>${actions('Confirmer')}`);
+ const destructive=/supprim|effac|réinitialis|definitiv/i.test(message);
+ const title=destructive?'Supprimer cet élément ?':'Confirmation';
+ const buttonLabel=destructive?'Supprimer':'Confirmer';
+ const p=show(`<h2 class="mbpu-title">${title}</h2><p class="mbpu-message">${esc(message)}</p>${actions(buttonLabel)}`);
+ if(destructive)dlg.querySelector('[data-act="accept"]').classList.add('mbpu-destructive');
  dlg.querySelector('[data-act="cancel"]').onclick=()=>finish(false);dlg.querySelector('[data-act="accept"]').onclick=()=>finish(true);
  return !!(await p);
 };
@@ -1888,6 +1892,37 @@ function editAmount(field){
  return p;
 }
 function editSelect(field){
+ // Financial-month picker: compact year navigation + twelve months, no long scrolling sheet.
+ // Reuse each actual SELECT option value; no fabricated periods and no data edits.
+ if(['budgetmonth','v24period','v30period','txmonth'].includes(field.id)){
+  const available=[...field.options].filter(o=>!o.disabled).map(o=>({value:o.value,label:o.textContent.trim()}));
+  const months=available.filter(o=>/^\d{4}-\d{2}$/.test(o.value));
+  if(months.length){
+   let year=Number((/^\d{4}/.exec(field.value)||[])[0]||new Date().getFullYear());
+   const years=[...new Set(months.map(x=>Number(x.value.slice(0,4))))].sort((a,b)=>a-b);
+   if(!years.includes(year))year=years[years.length-1];
+   const annual=available.filter(o=>/^\d{4}$/.test(o.value)||/bilan annuel/i.test(o.label));
+   const p=show('<div class="mbp35-monthsheet"><div class="mbp35-period-head"><h2 class="mbpu-title">Choisir une période</h2><button type="button" data-act="cancel" class="mbp35-close" aria-label="Fermer">×</button></div><div class="mbp35-year-controls"><button type="button" data-year="prev" aria-label="Année précédente">‹</button><strong id="mbp35-year"></strong><button type="button" data-year="next" aria-label="Année suivante">›</button></div><div class="mbp35-monthgrid" id="mbp35-monthgrid"></div><div class="mbp35-yearsummary" id="mbp35-yearsummary"></div></div>');
+   const commit=value=>{field.value=value;field.dispatchEvent(new Event('input',{bubbles:true}));field.dispatchEvent(new Event('change',{bubbles:true}));finish(true)};
+   const names=['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
+   function draw(){
+    dlg.querySelector('#mbp35-year').textContent=year;
+    dlg.querySelector('[data-year="prev"]').disabled=year<=years[0];
+    dlg.querySelector('[data-year="next"]').disabled=year>=years[years.length-1];
+    dlg.querySelector('#mbp35-monthgrid').innerHTML=names.map((name,i)=>{
+      const value=year+'-'+String(i+1).padStart(2,'0'),exists=months.some(o=>o.value===value),selected=field.value===value;
+      return `<button type="button" data-period="${value}" ${exists?'':'disabled'} ${selected?'aria-current="date"':''}>${name}</button>`;
+    }).join('');
+    const annualForYear=annual.find(o=>o.value===String(year)||(o.label.includes(String(year))&&/bilan annuel/i.test(o.label)));
+    dlg.querySelector('#mbp35-yearsummary').innerHTML=annualForYear?`<button type="button" data-annual="${esc(annualForYear.value)}">Voir le bilan annuel ${year}</button>`:'';
+    dlg.querySelectorAll('[data-period]').forEach(b=>b.onclick=()=>commit(b.dataset.period));
+    dlg.querySelectorAll('[data-annual]').forEach(b=>b.onclick=()=>commit(b.dataset.annual));
+   }
+   dlg.querySelector('[data-act="cancel"]').onclick=()=>finish(null);
+   dlg.querySelectorAll('[data-year]').forEach(b=>b.onclick=()=>{year+=b.dataset.year==='next'?1:-1;draw()});
+   draw();return p;
+  }
+ }
  const choices=[...field.options].filter(o=>!o.disabled).map((o,i)=>({value:o.value,label:o.textContent.trim(),selected:o.selected,index:i}));
  if(!choices.length)return;
  const p=show(`<h2 class="mbpu-title">${esc(field.closest('label')?.firstChild?.textContent?.trim()||'Choisir une option')}</h2><div class="mbpu-choice-list">${choices.map((o,i)=>`<button type="button" data-option="${i}" aria-selected="${o.selected}">${esc(o.label)}</button>`).join('')}</div><div class="mbpu-actions"><button type="button" data-act="cancel">Annuler</button></div>`);
@@ -1936,4 +1971,177 @@ document.addEventListener('click',e=>{
 },true);
 })();
 </script>
+<style id="mbp-v35-design-system">
+/* V3.5: unified dark-neutral financial design. No page scroll/header geometry modifications. */
+:root{
+ color-scheme:dark;
+ --mbp-bg:#0f131f;
+ --mbp-panel:#1b2130;
+ --mbp-panel-raised:#252c3d;
+ --mbp-panel-subtle:#202737;
+ --mbp-line:#384152;
+ --mbp-line-soft:#303849;
+ --mbp-text:#f3f5f9;
+ --mbp-muted:#aab3c2;
+ --mbp-green:#34d6ad;
+ --mbp-green-soft:#28473f;
+ --mbp-purple:#9987cf;
+ --mbp-danger:#e6a3a8;
+ --mbp-danger-bg:#463038;
+}
+body{background:radial-gradient(ellipse 85% 38% at 50% -14%,#20243b 0,transparent 80%),#0e121e!important;color:var(--mbp-text)}
+/* Shared surfaces */
+.card,.v32-card,.v30-card,.v26-panel,#v33profiletools,.v19-details,.v21-stat,.v32-kpis>div,.v30-kpis>div,.v26-stat{
+ background:var(--mbp-panel)!important;
+ border-color:var(--mbp-line-soft)!important;
+ box-shadow:none!important;
+ color:var(--mbp-text)!important;
+ border-radius:18px!important;
+}
+.card.hero,.v21-hero,.v26-hero,#wealth>.card.hero{
+ background:linear-gradient(125deg,#242b3e 0%,#1d2733 100%)!important;
+ border-color:#404859!important;
+ box-shadow:none!important;
+}
+.stat,.wealth-kpi,#v30summaryextras .v30-kpis>div,.v32-kpis>div{
+ background:var(--mbp-panel-raised)!important;
+ border-color:var(--mbp-line-soft)!important;
+ border-radius:13px!important;
+}
+#v30profile h2,#wealth h2,#home h2,#add h2{color:var(--mbp-text)}
+.muted,small,.v32-muted,.v32-sub,.v21-sub,.mbpu-note{color:var(--mbp-muted)!important}
+.row,.v32-line,.tracker,.v21-line{border-color:var(--mbp-line-soft)!important}
+/* All navigation states, including Accueil: never bright-violet */
+#nav,nav{background:#141925!important;border-color:var(--mbp-line-soft)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}
+#nav button,nav button{color:#9da6b7!important;background:transparent!important;border:1px solid transparent!important;border-radius:14px!important;transition:background .15s,color .15s!important;}
+#nav button.active,#nav button[data-tab="add"].active,nav button.active{
+ background:#292b43!important;color:#c4b6ee!important;border-color:transparent!important;
+}
+/* Primary actions: restrained sage/teal. Preserve type and handlers. */
+.btn:not(.secondary):not(.danger),button.btn:not(.secondary):not(.danger),
+#v24save,#add .v24-save,#mbp-ui-dialog .mbpu-pad-save{
+ background:#326a5e!important;color:#effff8!important;border:1px solid #468779!important;
+ box-shadow:none!important;border-radius:14px!important;text-shadow:none!important;
+}
+.btn.secondary,.v22-action,.v32-taskbutton,#v33profiletools button,.v33-toolgrid button,
+#v32monthnav button,#v32tasks button,#v32recent button{
+ background:var(--mbp-panel-raised)!important;border:1px solid #41495b!important;
+ color:#e7eaf1!important;box-shadow:none!important;border-radius:13px!important;
+}
+.btn.danger,button.danger{background:var(--mbp-danger-bg)!important;color:#ffd9dc!important;border-color:#6b434a!important}
+/* Form controls */
+input:not([type=checkbox]),select,textarea{
+ background:#151b2b!important;color:var(--mbp-text)!important;border:1px solid #485166!important;
+ box-shadow:none!important;border-radius:13px!important;
+}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible{
+ outline:2px solid #91b9af!important;outline-offset:2px!important;
+}
+input[type=checkbox]{accent-color:var(--mbp-green)!important}
+/* Accueil quick actions and saved custom shortcuts */
+#add #v24quick{background:#1d2332!important;border:1px solid #41495b!important;box-shadow:none!important;border-radius:19px!important}
+#add .v24-switch button,#add .v24-chip{
+ background:#293143!important;border:1px solid #414a60!important;color:#edf1f8!important;
+ border-radius:14px!important;box-shadow:none!important;
+}
+#add .v24-switch button.active,#add .v24-chip.active{
+ background:#25483f!important;border-color:#42ae96!important;color:#f0fff8!important;
+ box-shadow:none!important;
+}
+#v24cats .v30-ico{color:#a7b9c6!important}
+#v24cats{row-gap:9px!important;column-gap:9px!important}
+#add .v24-amount input{background:#131a29!important;border-color:#424c5f!important;color:#f4f6fa!important}
+#v24feedback button{background:#272e40!important;color:#e9edf7!important;border:1px solid #444e61!important;border-radius:11px!important}
+/* Profile controls and accordion */
+.v30-subnav button,.v30-subnav button.active{
+ background:var(--mbp-panel-raised)!important;color:#e7ebf4!important;border:1px solid #414a5d!important;
+ box-shadow:none!important;border-radius:13px!important;
+}
+.v30-subnav button.active{background:#303748!important;border-color:#618477!important;color:#f5fff9!important}
+#v33profiletools,.v33-toolgrid button{box-shadow:none!important}
+#v33profiletools button{min-height:44px!important;font-weight:650!important}
+.v19-details>summary,.v21-group summary,#plans summary,#v30profile summary{
+ background:#1c2230!important;border-color:#41495b!important;color:#f1f2f7!important;
+ box-shadow:none!important;
+}
+.v21-group,#plans .v19-details,.v30-category{
+ background:#1a2030!important;border-color:#3c4557!important;border-radius:14px!important;
+}
+.v30-category{color:#edf1f8!important}
+/* Remove the duplicated and historically bright blue add/modify button: the three
+   dedicated budget creation buttons above still work. Keep underlying actions. */
+#v30profile #v22quickadd{display:none!important}
+/* Charts */
+.trackbar,.v32-track,.v30-track,.v26-bar-bg{background:#373f50!important}
+.trackfill,.v32-fill,.v30-fill,.v26-bar{background:#40caaa!important}
+.trackfill.warn,.v32-warn{background:#e0b678!important}
+.trackfill.over,.v32-over{background:#de8d9e!important}
+#v21dashboard .donut,#budgetDonut{filter:saturate(.65)}
+/* Home / wealth special status, low saturation */
+.v33-status.done{background:#224438!important;color:#79dfbb!important;border-color:#3e7967!important}
+#v33wealthtask button{background:#293b39!important;border-color:#3e6158!important;color:#def9e9!important}
+/* All in-app dialogs: quieter typography, zero glows */
+dialog,dialog[open],#mbp-ui-dialog,#plandialog,#txdialog,#v32taskdialog,#v312funddialog,#v31dialog{
+ background:linear-gradient(180deg,#202736,#19202e)!important;
+ border:1px solid #465165!important;border-radius:20px!important;color:#f3f5f9!important;
+ box-shadow:0 16px 50px #0006!important;
+}
+dialog::backdrop{background:rgba(6,9,17,.79)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+#mbp-ui-dialog .mbpu-title{font-size:20px!important;letter-spacing:-.45px!important;font-weight:750!important;color:#f4f5f9!important}
+#mbp-ui-dialog .mbpu-message{font-size:14px!important;color:#bac2d0!important}
+#mbp-ui-dialog .mbpu-actions button{
+ background:#2b3343!important;color:#eef1f7!important;border:1px solid #434d60!important;
+ border-radius:12px!important;font-weight:650!important;min-height:45px!important;
+ box-shadow:none!important;
+}
+#mbp-ui-dialog .mbpu-actions .mbpu-primary{background:#315e54!important;border-color:#497e70!important;color:#f0fff9!important}
+#mbp-ui-dialog .mbpu-actions .mbpu-destructive{background:#463038!important;border-color:#734951!important;color:#ffd9dd!important}
+#mbp-ui-dialog .mbpu-value{background:#141b29!important;border:1px solid #3c485a!important;color:#f4f5f9!important}
+#mbp-ui-dialog .mbpu-pad{gap:8px!important}
+#mbp-ui-dialog .mbpu-pad button,#mbp-ui-dialog:has(.mbpu-pad) .mbpu-pad button{
+ background:#293141!important;color:#f0f3f9!important;border:1px solid #394356!important;
+ border-radius:12px!important;box-shadow:none!important;min-height:46px!important;font-size:20px!important;font-weight:600!important;
+}
+#mbp-ui-dialog .mbpu-pad button[data-k="del"],#mbp-ui-dialog:has(.mbpu-pad) .mbpu-pad button[data-k="del"]{
+ background:#293141!important;color:#cdd5e2!important;font-size:13px!important;
+}
+#mbp-ui-dialog .mbpu-pad-save{min-height:44px!important;font-size:15px!important}
+#mbp-ui-dialog .mbpu-choice-list button{
+ background:#293141!important;color:#eff2f8!important;border:1px solid #3e485b!important;
+ border-radius:12px!important;box-shadow:none!important;
+}
+#mbp-ui-dialog .mbpu-choice-list button[aria-selected="true"]{
+ background:#30463f!important;border-color:#4b8e7c!important;color:#ddffef!important;
+}
+#mbp-ui-dialog .mbpu-calendar-head button,#mbp-ui-dialog .mbpu-calendar-grid button{
+ background:#293141!important;border:1px solid #3f4a5c!important;color:#edf1f7!important;border-radius:10px!important;
+}
+#mbp-ui-dialog .mbpu-calendar-grid button[aria-current="date"]{
+ background:#305a50!important;border-color:#49a18a!important;color:#ecfff6!important;
+}
+#mbp-ui-dialog .mbpu-dismiss{background:#293141!important;border-color:#414b5b!important;color:#e3eaf3!important}
+@media(max-width:420px){
+ #mbp-ui-dialog:has(.mbpu-pad){padding:15px!important}
+ #mbp-ui-dialog:has(.mbpu-pad) .mbpu-pad button{min-height:45px!important}
+ #v33profiletools{padding:13px!important}
+}
+</style>
+<style id="mbp35-month-picker">
+#mbp-ui-dialog:has(.mbp35-monthsheet){padding:19px!important;width:min(92vw,430px)!important;max-height:calc(90dvh - env(safe-area-inset-top))!important}
+.mbp35-period-head,.mbp35-year-controls{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mbp35-period-head{margin-bottom:20px}
+.mbp35-period-head h2{margin:0!important}
+.mbp35-close{width:33px;height:33px;border:1px solid #3a4557;background:#293141;color:#c5cedd;border-radius:10px;font-size:21px}
+.mbp35-year-controls{margin-bottom:16px}
+.mbp35-year-controls strong{color:#eff2f8;font-size:18px}
+.mbp35-year-controls button{min-height:37px;width:39px;background:#293141;color:#ebeff5;border:1px solid #3b4558;border-radius:11px;font-size:24px}
+.mbp35-year-controls button:disabled{opacity:.3}
+.mbp35-monthgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mbp35-monthgrid button{min-height:48px;background:#293141;color:#e6ebf5;border:1px solid #3a4456;border-radius:11px;font-size:14px;font-weight:650}
+.mbp35-monthgrid button[aria-current=date]{background:#2b4b42;color:#a0f0d4;border-color:#4a927d}
+.mbp35-monthgrid button:disabled{opacity:.25}
+.mbp35-yearsummary{margin-top:15px}
+.mbp35-yearsummary button{width:100%;min-height:43px;background:#222c3c;color:#bac7d9;border:1px solid #3b475a;border-radius:11px;font-weight:600}
+#v24cats .v26-custom-chip:last-child:nth-child(even){grid-column:1/-1!important}
+</style>
 </body></html>
