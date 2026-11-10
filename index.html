@@ -920,7 +920,7 @@ document.addEventListener('click',async e=>{
  monthPlans=function(){const list=originalMonthPlans();if(!selectedMonth.startsWith('2027-'))return list;const c=forecastSettings(),month=Number(selectedMonth.slice(5));const result=list.filter(p=>p.cat!=='Revenus'&&p.cat!=='Impôts').map(p=>({...p}));result.push({id:'forecast-income-2027',name:'Salaire prévisionnel · 2027',cat:'Revenus',amount:splitAnnual(c.income,month)});result.push({id:'forecast-tax-2027',name:'Impôt prévisionnel · 2027',cat:'Impôts',amount:splitAnnual(c.tax,month)});return result};
  const settingsForecast=document.createElement('div');settingsForecast.className='card v24-settings-group';
  settingsForecast.innerHTML='<h3>Prévisions 2027</h3><p class="muted">Hypothèses annuelles modifiables. Les salaires réellement saisis et les budgets de 2026 ne sont pas modifiés.</p><form id="forecast2027form"><label>Revenus annuels avant impôt (€)<input id="forecast2027income" type="number" inputmode="decimal" min="0" step="0.01" required></label><label>Impôt annuel provisionnel (€)<input id="forecast2027tax" type="number" inputmode="decimal" min="0" step="0.01" required></label><p class="muted" id="forecast2027hint">Estimation à 14 % ; ce n’est pas un calcul fiscal officiel.</p><button class="btn" type="submit">Enregistrer les prévisions</button></form>';
- const securityGroup=settings.querySelector('.v24-settings-group');settings.insertBefore(settingsForecast,securityGroup);
+ const securityGroup=settings.querySelector('.v24-settings-group');settings.insertBefore(settingsForecast,securityGroup);settingsForecast.hidden=true;settingsForecast.setAttribute('aria-hidden','true');
  function updateForecastFields(){if(!data)return;const c=forecastSettings();document.getElementById('forecast2027income').value=c.income;document.getElementById('forecast2027tax').value=c.tax}
  const renderWithForecast=render;render=function(){renderWithForecast();if(data&&document.activeElement?.closest('#forecast2027form')===null)updateForecastFields()};
  document.getElementById('forecast2027form').onsubmit=async e=>{e.preventDefault();if(!data)return;const income=Number(document.getElementById('forecast2027income').value),tax=Number(document.getElementById('forecast2027tax').value);if(!Number.isFinite(income)||!Number.isFinite(tax)||income<0||tax<0){alertMsg('Montants invalides');return}data.forecast2027={income,tax};try{await save();render();alertMsg('Prévisions 2027 enregistrées')}catch(err){alertMsg('Échec de la sauvegarde')}};
@@ -1062,7 +1062,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const BRACKETS=[[11600,0],[29579,.11],[84577,.30],[181917,.41],[Infinity,.45]];
 function progressive(x){let prev=0,total=0;for(const [limit,rate] of BRACKETS){const portion=Math.max(0,Math.min(x,limit)-prev);total+=portion*rate;prev=limit;if(x<=limit)break}return total}
 function calculate({income,parts,baseParts,couple,deductions,credits,withholding}){
- const taxable=Math.max(0,income-(arguments[0].abatement?Math.min(14555,Math.max(504,income*.10)):0)-deductions),q=Math.max(.5,parts);
+ const taxable=Math.max(0,income-deductions),q=Math.max(.5,parts);
  const raw=progressive(taxable/q)*q;
  // Plafond indicatif de l'avantage familial : 1 807 € par demi-part supplémentaire (revenus 2025).
  const normal=progressive(taxable/baseParts)*baseParts;
@@ -1080,15 +1080,15 @@ if(existing){
  card.innerHTML=`<h3>🧮 Simulateur d'impôt · prévisions 2027</h3>
  <p class="v262-note">Calcul indicatif basé sur le <b>barème 2026 (revenus 2025)</b>. Le barème applicable aux revenus 2027 n'est pas encore publié. Ce simulateur ne remplace pas celui des impôts.</p>
  <div class="v262-grid">
- <label>Salaires nets fiscaux annuels avant abattement (€)<input id="v262income" type="number" min="0" step="0.01" inputmode="decimal"></label>
+ <label>Revenu net imposable annuel après frais professionnels (€)<input id="v262income" type="number" min="0" step="0.01" inputmode="decimal"></label>
  <label>Situation fiscale<select id="v262couple"><option value="0">Imposition individuelle</option><option value="1">Couple imposé conjointement</option></select></label>
  <label>Parts fiscales<input id="v262parts" type="number" min=".5" max="20" step=".5" value="1"></label>
  <label>Déductions supplémentaires (€)<input id="v262deductions" type="number" min="0" step="0.01" value="0"></label>
  <label>Réductions / crédits d'impôt (€)<input id="v262credits" type="number" min="0" step="0.01" value="0"></label>
  <label>Taux de prélèvement à la source (%)<input id="v262pas" type="number" min="0" max="100" step=".01" value="0"></label>
  </div>
- <label class="v263-abatement"><input type="checkbox" id="v263abatement" checked> Appliquer automatiquement la déduction forfaitaire de 10 % pour frais professionnels</label>
- <p class="v262-note" id="v263abatementnote">Activée par défaut pour les salaires. Désactive-la si tu renseignes un revenu déjà net après frais professionnels ou si tu optes pour les frais réels.</p>
+ <input type="checkbox" id="v263abatement" hidden aria-hidden="true">
+ <p class="v262-note" id="v263abatementnote">Saisis le revenu net imposable après déduction des frais professionnels, et non le revenu fiscal de référence. Aucun abattement de 10 % n’est appliqué automatiquement.</p>
  <div class="v262-results" aria-live="polite">
  <div class="v262-result"><small>Impôt annuel estimé</small><strong id="v262annual">—</strong></div>
  <div class="v262-result"><small>Équivalent mensuel</small><strong id="v262monthly">—</strong></div>
@@ -1096,22 +1096,23 @@ if(existing){
  <div class="v262-result"><small>Écart impôt / PAS annuel indicatif</small><strong id="v262balance">—</strong></div>
  </div>
  <p class="v262-note" id="v262detail">Le prélèvement à la source est comparé à l'impôt estimé, jamais ajouté une seconde fois. Son calcul réel dépend de l'assiette et du calendrier de prélèvement.</p>
- <div class="v262-buttons"><button class="btn secondary" id="v262calc" type="button">Recalculer</button><button class="btn" id="v262apply" type="button">Utiliser pour 2027</button></div>
+ <div class="v262-buttons"><button class="btn secondary" id="v262calc" type="button">Recalculer</button><button class="btn" id="v262apply" type="button">Appliquer aux prévisions 2027</button></div>
  <p class="v262-note" id="v262status" role="status"></p>
- <p class="v262-note">Déduction forfaitaire de 10 % plafonnée selon le barème de référence. Simulation simplifiée : revenus catégoriels, abattements particuliers, frais réels, situations familiales et revenus exceptionnels ne sont pas tous gérés. Ne saisis pas ton salaire brut.</p>`;
+ <p class="v262-note">Simulation simplifiée : certains revenus, situations familiales et mécanismes fiscaux ne sont pas tous gérés. Ne saisis ni ton salaire brut ni ton revenu fiscal de référence.</p>`;
  const forecast=$('forecast2027form');
  if(forecast?.closest('.card'))forecast.closest('.card').insertAdjacentElement('afterend',card);
  else existing.closest('.card').insertAdjacentElement('afterend',card);
+ const taxDetails=document.createElement('details');taxDetails.id='v312taxdetails';taxDetails.className='v19-details';taxDetails.innerHTML='<summary>🧮 Fiscalité et prévisions 2027</summary>';card.parentNode.insertBefore(taxDetails,card);taxDetails.append(card);
  let latest=null;
  const fields=['v262income','v262couple','v262parts','v262deductions','v262credits','v262pas'];
  function sync(){if(!data)return;const saved=data.fiscalSimulation2027||{};const prof=data.taxProfiles?.['2027']||{};
- $('v262income').value=saved.income??data.forecast2027?.income??55000;
+ $('v262income').value=saved.income!==undefined?(saved.abatement?Math.max(0,Number(saved.income)*.9):saved.income):49500;
  $('v262couple').value=String(saved.couple??0);
  $('v262parts').value=saved.parts??prof.parts??1;
  $('v262deductions').value=saved.deductions??0;
  $('v262credits').value=saved.credits??0;
  $('v262pas').value=saved.withholding??prof.rate??0;
- $('v263abatement').checked=saved.abatement??true;
+ $('v263abatement').checked=false;
  compute();
  }
  function compute(){
@@ -1120,7 +1121,7 @@ if(existing){
   if(parts<(couple?2:1)||income<0||deductions<0||credits<0||withholding<0||withholding>100){
    latest=null;$('v262status').textContent='Vérifie le nombre de parts et les montants.';return;
   }
-  latest={income,parts,couple:couple?1:0,deductions,credits,withholding,abatement:$('v263abatement').checked};
+  latest={income,parts,couple:couple?1:0,deductions,credits,withholding,abatement:false};
   const res=calculate({...latest,baseParts:couple?2:1});
   $('v262annual').textContent=eur(res.annual);
   $('v262monthly').textContent=eur(res.monthly);
@@ -1138,8 +1139,8 @@ if(existing){
   if(!confirm('Enregistrer cette estimation ('+eur(tax)+') comme impôt annuel prévisionnel 2027 ? Cela remplace uniquement le montant de prévision fiscale, sans créer de dépense ni modifier les opérations existantes.'))return;
   const beforeForecast=structuredClone(data.forecast2027||{}),beforeSim=structuredClone(data.fiscalSimulation2027||{});
   data.fiscalSimulation2027={...latest,barème:'2026-revenus-2025'};
-  data.forecast2027={...data.forecast2027,income:latest.income,tax:Math.round(tax*100)/100};
-  try{await save();render();$('v262status').textContent='Estimation enregistrée dans les prévisions 2027 (sans double comptage).'}
+  data.forecast2027={...data.forecast2027,tax:Math.round(tax*100)/100};
+  try{await save();render();$('v262status').textContent='Impôt estimé appliqué aux prévisions 2027. Les autres prévisions restent inchangées.'}
   catch(e){data.forecast2027=beforeForecast;data.fiscalSimulation2027=beforeSim;$('v262status').textContent='Erreur de sauvegarde, aucune prévision modifiée.'}
  };
  const oldRender=render;
@@ -1281,7 +1282,7 @@ function renameLabels(){document.querySelectorAll('#planlist b,#variableTracking
 const lastRender=render;render=function(){lastRender();renameLabels()};
 // Keep settings and original operations screen available internally for existing edit handlers.
 const oldShow=show;show=function(id){oldShow(id);if(id==='app'){nav.style.display='flex'}};
-const footer=document.querySelector('#settings .v262-version');if(footer)footer.textContent='Mon Budget Privé · Version 3.1 bêta 1 · Données chiffrées localement';
+const footer=document.querySelector('#settings .v262-version');if(footer)footer.textContent='Mon Budget Privé · Version 3.1 bêta 2 · Données chiffrées localement';
 // The original start() still enters the Add screen; the original nav button listeners are preserved by a direct click listener.
 if(data)render();
 })();
@@ -1316,7 +1317,59 @@ by('plans')?.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e
 const extras=by('v30summaryextras');extras?.addEventListener('click',e=>{const b=e.target.closest('[data-v31editbudget]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();editPlan(b.dataset.v31editbudget)},true);
 const prior=render;render=function(){prior();extras?.querySelectorAll('[data-v30cat]').forEach(el=>{if(el.nextElementSibling?.classList.contains('v31-editbudget'))return;const b=document.createElement('button');b.type='button';b.className='btn secondary v31-editbudget';b.style.cssText='margin:5px 0 9px;padding:8px 12px;font-size:12px';b.textContent='Modifier ce budget';b.dataset.v31editbudget=el.dataset.v30cat;el.insertAdjacentElement('afterend',b)})};
 // Remove duplicate fiscal profile; only simulator remains. Version displayed only in settings.
-by('v25taxbox')?.remove();const v=by('settings')?.querySelector('.v262-version');if(v)v.textContent='Mon Budget Privé · Version 3.1 bêta 1 · Données chiffrées localement';
+by('v25taxbox')?.remove();const v=by('settings')?.querySelector('.v262-version');if(v)v.textContent='Mon Budget Privé · Version 3.1 bêta 2 · Données chiffrées localement';
 render();
 })();
-</script></body></html>
+</script>
+<style id="v312-fixes">
+/* Keep heading sharp: avoid transformed subpixel text on mobile Safari. */
+#add h1,#home h1,#app header h1{filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;transform:none!important;will-change:auto!important;text-shadow:none!important;opacity:1!important;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+#app header{transform:none!important;filter:none!important;backdrop-filter:none!important;contain:none!important}
+#v312taxdetails{margin:12px 0;overflow:visible}
+#v312taxdetails>.card{margin:0;padding:14px;border:0;box-shadow:none;background:transparent}
+#v312taxdetails>summary{padding:15px}
+#v312taxdetails .v262-grid{grid-template-columns:1fr 1fr}
+#v312taxdetails input[type=checkbox][hidden]{display:none!important}
+#v22quickadd>.v19-menu-content{display:grid;grid-template-columns:1fr}
+#v22quickadd>.v19-menu-content>button#v19budgetline{display:block!important}
+#v22quickadd>.v19-menu-content>button:not(#v19budgetline){display:none!important}
+#txdialog,#v31dialog,#v312funddialog{max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 120px)!important;max-width:calc(100vw - 24px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;box-sizing:border-box;margin:auto auto calc(72px + env(safe-area-inset-bottom))!important}
+#txdialog input[type=date],#v312funddialog input[type=date]{min-width:0;max-width:100%;width:100%;box-sizing:border-box}
+#txdialog form,#v312funddialog form{min-width:0;max-width:100%}
+#v312funddialog{background:#152535;color:#fff;border:1px solid #476174;border-radius:18px;padding:20px;width:min(92vw,440px)}
+#v312funddialog .v312actions{display:flex;gap:10px;margin-top:8px}
+#v312funddialog .v312actions button{flex:1}
+@media(max-width:390px){#v312taxdetails .v262-grid{grid-template-columns:1fr}}
+</style>
+<script id="v312-functional-fixes">
+(()=>{
+ 'use strict';
+ const by=id=>document.getElementById(id);
+ // Fix budget menu: the old styling hid every action except a non-existent #newplan button.
+ const menu=by('v22quickadd');
+ if(menu){const summary=menu.querySelector(':scope > summary');if(summary){summary.textContent='＋ Ajouter / modifier';summary.setAttribute('role','button');summary.setAttribute('aria-label','Ajouter ou modifier une ligne budgétaire')}const add=by('v19budgetline');if(add){add.textContent='＋ Ajouter une charge ou ligne';add.addEventListener('click',()=>{menu.open=false})}}
+ // Replace the native provision prompts with an in-app, accessible dialog.
+ const dlg=document.createElement('dialog');dlg.id='v312funddialog';dlg.innerHTML='<h2>Mettre de côté</h2><p class="muted" id="v312fundname"></p><form id="v312fundform"><label>Montant (€)<input id="v312fundamount" type="number" inputmode="decimal" step="0.01" min="0.01" required></label><label>Date du versement<input id="v312funddate" type="date" required></label><div class="v312actions"><button class="btn secondary" id="v312fundcancel" type="button">Annuler</button><button class="btn" type="submit">Enregistrer</button></div><p class="muted" id="v312fundstatus" role="status"></p></form>';
+ document.body.append(dlg);
+ let currentId=null;
+ by('v312fundcancel').onclick=()=>dlg.close();
+ document.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-v17fund]');if(!btn||!data)return;
+  e.preventDefault();e.stopImmediatePropagation();
+  const p=data.plans?.find(p=>p.id===btn.dataset.v17fund);if(!p)return;
+  currentId=p.id;by('v312fundname').textContent=p.name;
+  by('v312fundamount').value=p.amount;by('v312funddate').value=new Date().toLocaleDateString('sv-SE');by('v312fundstatus').textContent='';dlg.showModal();
+ },true);
+ by('v312fundform').onsubmit=async e=>{
+  e.preventDefault();if(!data||!currentId)return;
+  const amount=Number(by('v312fundamount').value),date=by('v312funddate').value;
+  if(!Number.isFinite(amount)||amount<=0||!/^\d{4}-\d{2}-\d{2}$/.test(date)){by('v312fundstatus').textContent='Vérifie le montant et la date.';return}
+  const entry={id:uid(),planId:currentId,kind:'fund',amount,date};
+  if(!Array.isArray(data.envelopeMoves))data.envelopeMoves=[];
+  data.envelopeMoves.push(entry);
+  try{await save();dlg.close();render();alertMsg('Provision enregistrée (sans modifier tes comptes bancaires).')}
+  catch(err){data.envelopeMoves=data.envelopeMoves.filter(x=>x!==entry);by('v312fundstatus').textContent='Impossible de sauvegarder. Réessaie.'}
+ };
+})();
+</script>
+</body></html>
