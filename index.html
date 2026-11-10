@@ -2952,4 +2952,108 @@ input[type=checkbox]{accent-color:#9bc7f6!important}
  document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(el=>{el.textContent=el.textContent.replace(/Version\s+3\.\d\s+bêta\s+\d+/gi,'Version 3.6 bêta 2')});
 })();
 </script>
+
+<!-- MBP V3.6 beta 3 : semantic financial indicators, uncluttered transactions, stable close controls -->
+<style id="mbp363-corrections">
+:root{--mbp363-budget-ok:#48bea0;--mbp363-budget-care:#edbd73;--mbp363-budget-high:#ed9a61;--mbp363-budget-over:#f08c9b;--mbp363-goal-wait:#8294a8;--mbp363-goal-done:#53cda7}
+/* Tracking bars are financial information, never the Ice Glass navigation blue. */
+.mb35-section .v32-track,.v32-card .v32-track,#v32tasks .v32-track,.tracker .trackbar,#v30profile .trackbar{background:#39465a!important}
+.mb35-section .v32-fill,#v32summary .v32-fill,#v32tasks .v36-goal .v32-fill,#v30profile .tracker .trackfill{background:var(--mbp363-goal-wait)!important}
+.mbp363-progress-budget.mbp363-low{background:var(--mbp363-budget-ok)!important}
+.mbp363-progress-budget.mbp363-caution{background:var(--mbp363-budget-care)!important}
+.mbp363-progress-budget.mbp363-high{background:var(--mbp363-budget-high)!important}
+.mbp363-progress-budget.mbp363-over{background:var(--mbp363-budget-over)!important}
+.mbp363-progress-goal.mbp363-incomplete{background:var(--mbp363-goal-wait)!important}
+.mbp363-progress-goal.mbp363-complete{background:var(--mbp363-goal-done)!important}
+/* Specificity beats previous beta overrides without touching financial data. */
+#v32tasks .v36-goal .v32-fill.mbp363-progress-goal.mbp363-incomplete,
+#v32summary .v32-fill.mbp363-progress-goal.mbp363-incomplete,
+.mb35-section .v32-fill.mbp363-progress-goal.mbp363-incomplete{background:var(--mbp363-goal-wait)!important}
+#v32tasks .v36-goal .v32-fill.mbp363-progress-goal.mbp363-complete,
+#v32summary .v32-fill.mbp363-progress-goal.mbp363-complete,
+.mb35-section .v32-fill.mbp363-progress-goal.mbp363-complete{background:var(--mbp363-goal-done)!important}
+#v32summary .v32-fill.mbp363-progress-budget.mbp363-low,
+.mb35-section .v32-fill.mbp363-progress-budget.mbp363-low,
+#v30profile .trackfill.mbp363-progress-budget.mbp363-low{background:var(--mbp363-budget-ok)!important}
+#v32summary .v32-fill.mbp363-progress-budget.mbp363-caution,
+.mb35-section .v32-fill.mbp363-progress-budget.mbp363-caution,
+#v30profile .trackfill.mbp363-progress-budget.mbp363-caution{background:var(--mbp363-budget-care)!important}
+#v32summary .v32-fill.mbp363-progress-budget.mbp363-high,
+.mb35-section .v32-fill.mbp363-progress-budget.mbp363-high,
+#v30profile .trackfill.mbp363-progress-budget.mbp363-high{background:var(--mbp363-budget-high)!important}
+#v32summary .v32-fill.mbp363-progress-budget.mbp363-over,
+.mb35-section .v32-fill.mbp363-progress-budget.mbp363-over,
+#v30profile .trackfill.mbp363-progress-budget.mbp363-over{background:var(--mbp363-budget-over)!important}
+/* Recent transactions: fewer visual layers, no navigation chevron; entire row remains a tap target. */
+#v32recent .mb35-recentline{position:relative;min-height:61px;padding:11px 9px!important;margin:0 0 4px!important;border:1px solid #3a485e!important;border-radius:13px!important;background:#263145!important;gap:10px;transition:background-color .15s ease,border-color .15s ease}
+#v32recent .mb35-recentline:last-child{margin-bottom:0!important}
+#v32recent .mb35-recentline:active{background:#32425b!important;border-color:#688cb1!important}
+#v32recent .mb35-recentline:focus:not(:focus-visible){outline:none!important;box-shadow:none!important}
+#v32recent .mb35-recentline:focus-visible{outline:2px solid #a1c5ed!important;outline-offset:2px!important}
+#v32recent .mb35-recentline > span:last-child:not(.mb35-recentsum){display:none!important}
+#v32recent .mb35-recentname strong{font-size:13px;line-height:1.25}
+#v32recent .mb35-recentname small{margin-top:3px}
+#v32recent .mb35-recentsum{margin-left:auto;font-size:13px}
+#v32recent .mb35-txicon{width:34px;height:34px;font-size:15px;background:#243249;color:#b8cce0}
+/* Fix stray L-shaped iOS focused close-button borders; unify close across modal types. */
+dialog{position:relative!important;max-width:calc(100vw - 24px)!important}
+dialog button.close,dialog button[data-close],dialog button[data-ice-close],
+#mbp-ui-dialog .mbpu-dismiss,#mbp-ui-dialog .mbp35-close,
+#v31dialog .close,#txdialog .close,#plandialog .close,#assetdialog .close,#recurringdialog .close{
+ float:none!important;position:absolute!important;right:13px!important;top:13px!important;
+ display:grid!important;place-items:center!important;width:36px!important;height:36px!important;
+ min-width:36px!important;min-height:36px!important;margin:0!important;padding:0!important;
+ box-sizing:border-box!important;border:1px solid #52647d!important;border-radius:12px!important;
+ background:#2b3b51!important;color:#e4edf8!important;font-size:23px!important;
+ font-weight:400!important;line-height:1!important;box-shadow:none!important;outline:0!important;
+ -webkit-appearance:none!important;appearance:none!important;transform:none!important;z-index:3!important;
+}
+dialog button.close:focus-visible,dialog button[data-close]:focus-visible,dialog button[data-ice-close]:focus-visible,
+#mbp-ui-dialog .mbpu-dismiss:focus-visible,#mbp-ui-dialog .mbp35-close:focus-visible{
+ outline:none!important;box-shadow:0 0 0 2px #192536,0 0 0 4px #a6c9ee!important;
+}
+dialog button.close:focus:not(:focus-visible),dialog button[data-close]:focus:not(:focus-visible),dialog button[data-ice-close]:focus:not(:focus-visible),
+#mbp-ui-dialog .mbpu-dismiss:focus:not(:focus-visible),#mbp-ui-dialog .mbp35-close:focus:not(:focus-visible){outline:0!important;box-shadow:none!important}
+#txdialog form>h2,#plandialog form>h2,#assetdialog form>h2,#recurringdialog form>h2,#v31dialog form>h2{padding-right:42px!important;min-height:36px}
+/* Small-screen modal controls must not clip when iOS keyboard or a scrolling dialog is open. */
+dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,860px)}
+@media (max-width:390px){#v32recent .mb35-recentline{padding-left:8px!important;padding-right:8px!important}dialog button.close,dialog button[data-close],dialog button[data-ice-close]{right:10px!important;top:10px!important}}
+</style>
+<script id="mbp363-semantic-and-recent">
+(()=>{
+ 'use strict';
+ const financialClasses=['mbp363-progress-budget','mbp363-progress-goal','mbp363-low','mbp363-caution','mbp363-high','mbp363-over','mbp363-incomplete','mbp363-complete'];
+ function amount(s){const t=String(s||'').replace(/[\u00a0\u202f\s]/g,'').replace(/[^0-9,.-]/g,'');return Number(t.replace(/\./g,'').replace(',','.'))}
+ function values(row){
+  const heads=row.querySelector('.v32-monthrow,.tracker-top')||row;
+  const t=(heads.textContent||'').replace(/[\u00a0\u202f]/g,' ');
+  const m=t.match(/([\d\s.,]+)\s*€\s*\/\s*([\d\s.,]+)\s*€/);
+  return m?[amount(m[1]),amount(m[2])]:null;
+ }
+ function paint(){
+  document.querySelectorAll('#v32summary .v32-line,#v32tasks .v36-goal,.mb35-section .v32-line,#v30profile .v32-line,#v30profile .tracker').forEach(row=>{
+   const fill=row.querySelector('.v32-fill,.trackfill');if(!fill)return;
+   const nums=values(row);if(!nums||!(nums[1]>0))return;
+   const [actual,target]=nums,rate=actual/target;
+   const section=row.closest('.mb35-section');const heading=section?.querySelector('h2')?.textContent||'';
+   const savings=!!row.closest('#v32tasks')||/épargne|provisions|investissement|objectifs/i.test(heading);
+   fill.classList.remove(...financialClasses);
+   if(savings){fill.classList.add('mbp363-progress-goal',rate>=1?'mbp363-complete':'mbp363-incomplete');fill.style.setProperty('background-color',rate>=1?'#53cda7':'#8294a8','important')}
+   else {fill.classList.add('mbp363-progress-budget',rate>=1?'mbp363-over':rate>=.85?'mbp363-high':rate>=.60?'mbp363-caution':'mbp363-low');fill.style.setProperty('background-color',rate>=1?'#f08c9b':rate>=.85?'#ed9a61':rate>=.60?'#edbd73':'#48bea0','important')}
+  });
+ }
+ function cleanRecent(){
+  document.querySelectorAll('#v32recent .mb35-recentline').forEach(row=>{
+   const last=row.lastElementChild;
+   if(last&&!last.classList.contains('mb35-recentsum')&&last.textContent.trim()==='›')last.remove();
+   row.setAttribute('aria-label',`Modifier l’opération : ${(row.querySelector('.mb35-recentname strong')?.textContent||'').trim()}, ${(row.querySelector('.mb35-recentsum')?.textContent||'').trim()}`);
+  });
+ }
+ function update(){paint();cleanRecent()}
+ const targets=['v32summary','v32tasks','v32recent','v30profile'].map(id=>document.getElementById(id)).filter(Boolean);
+ for(const node of targets){new MutationObserver(()=>{if(!node.isConnected)return;requestAnimationFrame(update)}).observe(node,{childList:true,subtree:true})}
+ update();
+ document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(n=>n.textContent=n.textContent.replace(/Version\s+3\.6\s+bêta\s+\d+/gi,'Version 3.6 bêta 3'));
+})();
+</script>
 </body></html>
