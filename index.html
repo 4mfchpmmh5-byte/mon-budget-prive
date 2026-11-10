@@ -2273,9 +2273,9 @@ function buildSummary(){
  const val=cat=>sum(plans.filter(p=>p.cat===cat)),income=val('Revenus'),fixed=val('Fixes')+val('Impôts'),variable=val('Variables'),saving=val('Provisions')+val('Investissements'),out=fixed+variable+saving,left=income-out;
  const label=yearMode?'Bilan '+selectedYear():mname(selectedMonth);
  const metric=(name,value)=>`<div class="mb35-metric"><small>${h(name)}</small><strong>${euro(value)}</strong></div>`;
- const parts=[{label:'Charges fixes et impôts',value:fixed,color:'#8799ad'},{label:'Budgets variables',value:variable,color:'#42c7a6'},{label:'Épargne et provisions',value:saving,color:'#d1ad76'}].filter(p=>p.value>0);
+ const parts=[{label:'Charges fixes et impôts',value:fixed,color:'#a99bcf'},{label:'Budgets variables',value:variable,color:'#839bdc'},{label:'Épargne et provisions',value:saving,color:'#627bba'}].filter(p=>p.value>0);
  const total=parts.reduce((s,p)=>s+p.value,0)||1;
- let outHtml=`<section class="mb35-overview"><h2>${yearMode?'Bilan annuel':'Vue d’ensemble'} <span class="mb35-caption" style="float:right">${h(label)}</span></h2><div class="mb35-hero"><div class="mb35-caption">Reste prévisionnel après épargne</div><strong class="${left>=0?'positive':''}">${euro(left)}</strong><div class="mb35-caption">Prévision calculée à partir des lignes budgétaires, pas un solde bancaire.</div></div><div class="mb35-grid">${metric('Revenus prévus',income)}${metric('Charges fixes et impôts',fixed)}${metric('Budgets variables',variable)}${metric('Épargne et provisions',saving)}</div></section>`;
+ let outHtml=`<section class="mb35-overview"><h2>${yearMode?'Bilan annuel':'Vue d’ensemble'} <span class="mb35-caption" style="float:right">${h(label)}</span></h2><div class="mb35-hero"><div class="mb35-caption">Reste prévisionnel après épargne</div><strong class="${left>0?'positive':left<0?'negative':'neutral'}">${euro(left)}</strong><div class="mb35-caption">Prévision calculée à partir des lignes budgétaires, pas un solde bancaire.</div></div><div class="mb35-grid">${metric('Revenus prévus',income)}${metric('Charges fixes et impôts',fixed)}${metric('Budgets variables',variable)}${metric('Épargne et provisions',saving)}</div></section>`;
  outHtml+=`<section class="mb35-section"><h2>Répartition du budget</h2><div class="mb35-stacked">${parts.map(p=>`<span style="background:${p.color};flex:${p.value}"></span>`).join('')}</div><div class="mb35-legend">${parts.map(p=>`<div class="mb35-legend-row"><i class="mb35-swatch" style="background:${p.color}"></i><span>${h(p.label)}</span><strong>${euro(p.value)}</strong></div>`).join('')}</div><p class="mb35-caption">Montants prévisionnels ${yearMode?'pour l’année':'pour le mois sélectionné'}.</p></section>`;
  outHtml+=`<section class="mb35-section"><h2>Réel vs prévisionnel</h2><div class="mb35-grid">${metric('Revenus enregistrés',sum(received))}${metric('Dépenses enregistrées',sum(spent))}</div><p class="mb35-caption" style="margin:10px 0 0">Les contributions à l’épargne sont suivies séparément des dépenses de consommation.</p></section>`;
  // Preserve original variable budget matching and the well-received green progress bars.
@@ -2295,7 +2295,7 @@ function buildSummary(){
  for(const mm of periods){const target=monthPlansAt(mm).find(q=>q.id===p.id)||monthPlansAt(mm).find(q=>q.name===p.name&&q.cat===p.cat);if(target)expected+=Number(target.amount)||0;
  const ids=new Set([p.id,target?.id].filter(Boolean));paid+=sum((data.envelopeMoves||[]).filter(e=>e.kind==='fund'&&e.date?.startsWith(mm)&&ids.has(e.planId)));}
  const pct=expected>0?paid/expected*100:0;
- outHtml+=`<div class="v32-line"><div style="width:100%"><div class="v32-monthrow"><strong>${h(p.name)}</strong><span class="v32-muted">${euro(paid)} / ${euro(expected)}</span></div><div class="v32-track"><div class="v32-fill ${paid<expected?'v32-warn':''}" style="width:${Math.min(100,Math.max(0,pct))}%"></div></div><div class="v32-muted">${yearMode?'Écart annuel':'Reste ce mois'} : ${euro(yearMode?paid-expected:Math.max(0,expected-paid))}</div></div></div>`;
+ outHtml+=`<div class="v32-line"><div style="width:100%"><div class="v32-monthrow"><strong>${h(p.name)}</strong><span class="v32-muted">${euro(paid)} / ${euro(expected)}</span></div><div class="v32-track"><div class="v32-fill ${paid>=expected&&expected>0?'mbp-goal-complete':''}" style="width:${Math.min(100,Math.max(0,pct))}%"></div></div><div class="v32-muted">${yearMode?'Écart annuel':'Reste ce mois'} : ${euro(yearMode?paid-expected:Math.max(0,expected-paid))}</div></div></div>`;
  }
  if(!goals.length)outHtml+='<p class="mb35-caption">Aucun objectif configuré pour cette période.</p>';
  outHtml+='</section>';
@@ -2312,7 +2312,7 @@ function showTxSheet(tx){if(!tx)return;txSheet.innerHTML=`<h2>${h(tx.name)}</h2>
 recent?.addEventListener('click',e=>{const row=e.target.closest('[data-mb35tx]');if(!row||!data)return;const tx=data.transactions.find(t=>t.id===row.dataset.mb35tx);showTxSheet(tx)});
 txSheet.addEventListener('click',e=>{if(e.target.closest('[data-close-sheet]')){txSheet.close();return}const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-remove]');if(!edit&&!del)return;const id=(edit||del).dataset[edit?'edit':'remove'];txSheet.close();const target=[...document.querySelectorAll(edit?'#txlist [data-edit-tx]':'#txlist [data-delete-tx]')].find(b=>(edit?b.dataset.editTx:b.dataset.deleteTx)===id);target?.click()});
 function buildRecent(){if(!data||!recent)return;const mm=new Date().toLocaleDateString('sv-SE').slice(0,7);const txs=data.transactions.filter(t=>t.date?.startsWith(mm)).slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
- recent.innerHTML='<div class="v32-head"><h2>Dernières opérations</h2><span class="v32-muted">'+h(mname(mm))+'</span></div>'+ (txs.map(t=>`<button type="button" class="mb35-recentline" data-mb35tx="${h(t.id)}"><span class="mb35-txicon">${t.type==='income'?'↙':/repas|restaurant/i.test(t.name)?'♧':/course/i.test(t.name)?'▤':'↗'}</span><span class="mb35-recentname"><strong>${h(t.name)}</strong><small>${new Date(t.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})}</small></span><span class="mb35-recentsum" style="color:${t.type==='income'?'#52cda9':'#eda4aa'}">${t.type==='income'?'+':'−'}${euro(t.amount)}</span><span style="color:#8696a9">›</span></button>`).join('')||'<p class="mb35-caption">Aucune opération enregistrée ce mois-ci.</p>');}
+ recent.innerHTML='<div class="v32-head"><h2>Dernières opérations</h2><span class="v32-muted">'+h(mname(mm))+'</span></div>'+ (txs.map(t=>`<button type="button" class="mb35-recentline" data-mb35tx="${h(t.id)}"><span class="mb35-txicon">${t.type==='income'?'↙':/repas|restaurant/i.test(t.name)?'♧':/course/i.test(t.name)?'▤':'↗'}</span><span class="mb35-recentname"><strong>${h(t.name)}</strong><small>${new Date(t.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})}</small></span><span class="mb35-recentsum" style="color:${t.type==='income'?'#57d3af':'#f4a4ac'}">${t.type==='income'?'+':'−'}${euro(t.amount)}</span><span style="color:#8696a9">›</span></button>`).join('')||'<p class="mb35-caption">Aucune opération enregistrée ce mois-ci.</p>');}
 // Create grouped budget lists, but invoke the original edit/delete buttons so existing month logic survives.
 const profileTools=$('v33profiletools');const grouped=document.createElement('section');grouped.id='mb35budgets';profileTools?.after(grouped);
 const categories=['Revenus','Fixes','Impôts','Variables','Provisions','Investissements'];
@@ -2346,7 +2346,100 @@ const previousRender=render;
 render=function(){previousRender();if(!data)return;premiumIcons();buildSummary();buildRecent();buildBudgets();buildWealth();tidyFiscal()};
 if(data)render();else tidyFiscal();
 const foot=document.querySelector('.v32-lock-footer');if(foot)foot.innerHTML=foot.innerHTML.replace(/3\.5 bêta 1/gi,'3.5 bêta 2');
-const version=document.querySelector('#settings .v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.5 bêta 2 · Données chiffrées localement';
+const version=document.querySelector('#settings .v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.5 bêta 3 · Données chiffrées localement';
 })();
 </script>
+<style id="mbp35b3-liquid-glass-semantic-colors">
+/* MBP 3.5 beta 3 — appearance only. Do not change geometry, scrolling, data or encryption.
+   Lavender/ice blue indicate UI affordances; mint/coral indicate financial meaning. */
+:root{
+ color-scheme:dark;
+ --mbp-bg:#101420;--mbp-panel:#1c2332;--mbp-panel-raised:#273044;
+ --mbp-panel-subtle:#222b3c;--mbp-line:#39445a;--mbp-line-soft:#323c50;
+ --mbp-text:#f3f5fa;--mbp-muted:#a9b3c7;
+ --mbp-green:#56d5b3;--mbp-green-soft:#203c37;
+ --mbp-purple:#a99ad7;--mbp-ice:#91b4e6;
+ --mbp-danger:#f4a4ac;--mbp-danger-bg:#46303b;
+ --mb35-green:#56d5b3;--mb35-card:#1c2332;--mb35-raise:#273044;
+ --mb35-line:#39445a;--mb35-sub:#aab5c7;
+ --mbp-ui-accent:#a99ad7;--mbp-ui-highlight:#91b4e6;
+}
+body{background:radial-gradient(ellipse 80% 32% at 50% -18%,#252641 0%,transparent 76%),#101420!important}
+/* Restrained glass: translucent surface and hairline only; never blur text or page headers. */
+#nav,nav{background:rgba(18,23,37,.96)!important;border-top:1px solid rgba(150,158,192,.18)!important}
+#nav button.active,#nav button[data-tab="add"].active,nav button.active{
+ background:rgba(147,130,199,.16)!important;color:#d6c9f4!important;
+ border:1px solid rgba(169,154,215,.17)!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+.card,.v32-card,.v30-card,.v26-panel,#v33profiletools,.v19-details,.v21-stat,.v32-kpis>div,.v30-kpis>div,.v26-stat,
+.mb35-overview,.mb35-section,.mb35-bgroup{background:#1c2332!important;border-color:#39445a!important;box-shadow:none!important}
+/* Core UI actions are soft ice/lavender; green never means "press here". */
+.btn:not(.secondary):not(.danger),button.btn:not(.secondary):not(.danger),
+#v24save,#add .v24-save,#mbp-ui-dialog .mbpu-pad-save,#v33wealthtask button,
+#v33profiletools .v33-toolgrid button,.v33-toolgrid button{
+ background:#343550!important;color:#e8e2fb!important;
+ border:1px solid #625e86!important;box-shadow:none!important;text-shadow:none!important;
+}
+#add #v24save{background:#363551!important;color:#ebe5ff!important;border-color:#615d85!important}
+.btn.secondary,.v22-action,.v32-taskbutton,#v32tasks button,#v32recent button,
+#mbp-ui-dialog .mbpu-actions button:not(.mbpu-primary):not(.mbpu-destructive){
+ background:#293245!important;color:#e8ecf5!important;border:1px solid #46516a!important;
+}
+/* Selection, not a positive result. */
+#add .v24-switch button.active,#add .v24-chip.active,#add .v26-custom-chip.active,
+.v30-subnav button.active,.v30-subnav button[aria-selected="true"],
+#mbp-ui-dialog .mbpu-choice-list button[aria-selected="true"],
+#mbp-ui-dialog .mbpu-calendar-grid button[aria-current="date"],
+#mbp-ui-dialog .mbp35-monthsheet button[aria-pressed="true"],
+#mbp-ui-dialog .mbp35-monthsheet button[aria-selected="true"]{
+ background:#373750!important;color:#f0eaff!important;border-color:#8072aa!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.045)!important;
+}
+#add .v24-switch button.active,#add .v24-chip.active{color:#eee9ff!important}
+#add #v24cats .v30-ico svg{stroke:#bfc7e4!important}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible{
+ outline:2px solid #a99ad7!important;outline-offset:2px!important;
+}
+input[type=checkbox]{accent-color:#9988cc!important}
+/* All non-destructive modal actions are neutral or UI-accent. */
+#mbp-ui-dialog .mbpu-actions .mbpu-primary,#mbp-ui-dialog .mbpu-pad-save{
+ background:#454366!important;color:#f5f0ff!important;border-color:#746b9d!important;
+}
+#mbp-ui-dialog .mbpu-actions .mbpu-destructive,.btn.danger,button.danger{
+ background:#45303a!important;color:#ffc4cd!important;border-color:#80545f!important;
+}
+dialog,dialog[open],#mbp-ui-dialog,#plandialog,#txdialog,#v32taskdialog,#v312funddialog,#v31dialog{
+ background:linear-gradient(155deg,#24283b,#1b2331 80%)!important;
+ border-color:#51536f!important;box-shadow:0 16px 48px rgba(0,0,0,.33)!important;
+}
+#mbp-ui-dialog .mbpu-pad button,#mbp-ui-dialog:has(.mbpu-pad) .mbpu-pad button,
+#mbp-ui-dialog .mbpu-choice-list button,#mbp-ui-dialog .mbpu-calendar-head button,
+#mbp-ui-dialog .mbpu-calendar-grid button{background:#2a3347!important;color:#eef1fa!important;border-color:#434d65!important}
+#mbp-ui-dialog .mbpu-dismiss{background:#2a3043!important;border-color:#4a5268!important;color:#d3d7ec!important}
+/* Semantic indicators. No positive color on a budget progress that is incomplete. */
+.positive,.mbp-positive,.v33-status.done,#v32tasks .v33-status.done{color:#56d5b3!important}
+.negative,.mbp-negative,.v32-over{color:#f4a4ac!important}
+.v33-status.done{background:#203c37!important;border-color:#3a7062!important}
+.mb35-overview .mb35-hero{background:linear-gradient(120deg,#292c44,#202c3b)!important}
+.mb35-overview .mb35-hero strong{color:#f4a4ac!important}
+.mb35-overview .mb35-hero strong.positive{color:#56d5b3!important}
+.mb35-overview .mb35-hero strong.neutral{color:#f3f5fa!important}
+.trackbar,.v32-track,.v30-track,.v26-bar-bg{background:#384459!important}
+.trackfill,.v32-fill,.v30-fill,.v26-bar{background:#849dd0!important}
+.trackfill.warn,.v32-warn{background:#e2b77b!important}
+.trackfill.over,.v32-over{background:#f4a4ac!important}
+.v32-fill.mbp-goal-complete{background:#56d5b3!important}
+/* Contributions and tasks: completed = green, everything else = neutral UI. */
+#v33wealthtask button{background:#30364c!important;color:#deddf3!important;border-color:#515777!important}
+/* Charts are categorical and must not be mistaken for profits or losses. */
+#wealthchart svg polyline{stroke:#9f9ade!important}
+#wealthchart svg circle{fill:#a9b9ee!important}
+#wealth .pill,#v30profile .pill{background:#32374d!important;color:#d9d2ef!important}
+#v30profile .notice,#settings .notice{background:#292e43!important;border-left:3px solid #9189b8!important;color:#c1cad7!important}
+/* Remove misleading green from highlighted non-financial controls. */
+#v30profile .v30-subnav button.active{border-color:#777093!important}
+#mbp-ui-dialog .mbp35-monthsheet .selected{background:#373750!important;color:#f0eaff!important}
+/* Explicit visual lock: avoid unrelated overrides modifying viewport scroll/header. */
+</style>
 </body></html>
