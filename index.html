@@ -1690,7 +1690,7 @@ body:has(#app:not(.hidden)) #mbp-unified-brand {display:block!important}
   opacity:1!important;text-shadow:none!important;-webkit-text-stroke:0!important;
   text-rendering:auto!important; -webkit-font-smoothing:auto!important;
 }
-#mbp-unified-brand .mbp-brand-text span {color:#38dcae!important}
+#mbp-unified-brand .mbp-brand-text span {color:#b4d5f5!important}
 /* The unified header must scroll naturally instead of staying pinned. */
 body:has(#app:not(.hidden) #add:not(.hidden)) #mbp-unified-brand,
 body:has(#app:not(.hidden) #home:not(.hidden)) #mbp-unified-brand {position:relative!important}
@@ -2346,7 +2346,7 @@ const previousRender=render;
 render=function(){previousRender();if(!data)return;premiumIcons();buildSummary();buildRecent();buildBudgets();buildWealth();tidyFiscal()};
 if(data)render();else tidyFiscal();
 const foot=document.querySelector('.v32-lock-footer');if(foot)foot.innerHTML=foot.innerHTML.replace(/3\.5 bêta 1/gi,'3.5 bêta 2');
-const version=document.querySelector('#settings .v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.5 bêta 3 · Données chiffrées localement';
+const version=document.querySelector('#settings .v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.5 bêta 4 · Données chiffrées localement';
 })();
 </script>
 <style id="mbp35b3-liquid-glass-semantic-colors">
@@ -2442,4 +2442,84 @@ dialog,dialog[open],#mbp-ui-dialog,#plandialog,#txdialog,#v32taskdialog,#v312fun
 #mbp-ui-dialog .mbp35-monthsheet .selected{background:#373750!important;color:#f0eaff!important}
 /* Explicit visual lock: avoid unrelated overrides modifying viewport scroll/header. */
 </style>
+
+<style id="mbp35b4-ice-glass-semantic">
+/* MBP V3.5 B4: visual-only design tokens. Never modify app layout/scroll/encryption. */
+:root{
+ --mbp-ui-accent:#acc9ed;--mbp-ui-highlight:#c6dcf6;
+ --mbp-purple:#acc9ed;--mbp-ice:#b5d1f2;
+ --accent:#a9c7ea;
+ --mbp-green:#56d5b3;--mbp-danger:#f4a4ac;
+}
+/* Brand name is part of navigation design, not a "positive" result. */
+#mbp-unified-brand .mbp-brand-text span{color:#bad8f7!important}
+body>main>header h1 span{color:#bad8f7!important}
+/* A low-key ice tint on neutral chrome, not on user data. */
+body{background:radial-gradient(ellipse 70% 26% at 50% -15%,rgba(78,109,153,.13),transparent 80%),#101420!important}
+#nav,nav{background:rgba(16,22,35,.94)!important;border-top:1px solid rgba(169,193,227,.13)!important}
+#nav button.active,#nav button[data-tab="add"].active,nav button.active{
+ background:rgba(156,190,230,.105)!important;
+ color:#d7e7fc!important;
+ border:1px solid rgba(186,209,241,.16)!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+/* Primary interactions should not be read as positive finance indicators. */
+.btn:not(.secondary):not(.danger),button.btn:not(.secondary):not(.danger),
+#v24save,#add .v24-save,#mbp-ui-dialog .mbpu-pad-save,
+#v33wealthtask button,#v33profiletools .v33-toolgrid button,.v33-toolgrid button{
+ background:#2e3a4e!important;color:#e5f0fe!important;
+ border:1px solid #526780!important;box-shadow:none!important;text-shadow:none!important;
+}
+#add #v24save{background:#314058!important;color:#e7f2ff!important;border-color:#526985!important}
+#add .v24-switch button.active,#add .v24-chip.active,#add .v26-custom-chip.active,
+.v30-subnav button.active,.v30-subnav button[aria-selected="true"],
+#mbp-ui-dialog .mbpu-choice-list button[aria-selected="true"],
+#mbp-ui-dialog .mbpu-calendar-grid button[aria-current="date"],
+#mbp-ui-dialog .mbp35-monthsheet button[aria-pressed="true"],
+#mbp-ui-dialog .mbp35-monthsheet button[aria-selected="true"],
+#mbp-ui-dialog .mbp35-monthsheet .selected{
+ background:rgba(141,175,218,.17)!important;
+ color:#ecf4ff!important;border-color:#6887ad!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.05)!important;
+}
+#add .v24-switch button.active,#add .v24-chip.active{color:#eaf4ff!important}
+#add #v24cats .v30-ico svg{stroke:#c3d5ed!important}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible{
+ outline:2px solid #a6c7ed!important;outline-offset:2px!important;
+}
+input[type=checkbox]{accent-color:#a7c8ee!important}
+#mbp-ui-dialog .mbpu-actions .mbpu-primary,#mbp-ui-dialog .mbpu-pad-save{
+ background:#344863!important;color:#eaf3ff!important;border-color:#6684ab!important;
+}
+/* Destructive actions are red, never ice-blue. */
+#mbp-ui-dialog .mbpu-actions .mbpu-destructive,.btn.danger,button.danger{
+ background:#45303a!important;color:#ffc4cd!important;border-color:#80545f!important;
+}
+dialog,dialog[open],#mbp-ui-dialog,#plandialog,#txdialog,#v32taskdialog,#v312funddialog,#v31dialog{
+ background:linear-gradient(155deg,#202b3a,#182130 85%)!important;
+ border-color:#45556a!important;box-shadow:0 16px 48px rgba(0,0,0,.33)!important;
+}
+#mbp-ui-dialog .mbpu-pad button,#mbp-ui-dialog:has(.mbpu-pad) .mbpu-pad button,
+#mbp-ui-dialog .mbpu-choice-list button,#mbp-ui-dialog .mbpu-calendar-head button,
+#mbp-ui-dialog .mbpu-calendar-grid button{background:#28354a!important;color:#eef4fc!important;border-color:#40536c!important}
+#mbp-ui-dialog .mbpu-dismiss{background:#273348!important;border-color:#40516a!important;color:#d9e6f6!important}
+#v33wealthtask button{background:#2a394f!important;color:#e1ebfa!important;border-color:#4b6382!important}
+#wealthchart svg polyline{stroke:#9bc2ef!important}
+#wealthchart svg circle{fill:#b1d3f3!important}
+#wealth .pill,#v30profile .pill{background:#2d3b50!important;color:#dceaff!important}
+#v30profile .notice,#settings .notice{background:#243144!important;border-left:3px solid #7c9fc5!important;color:#c4d0df!important}
+#v30profile .v30-subnav button.active{border-color:#6686aa!important}
+/* Categorical graphs and non-completed task progress stay blue; only completion green. */
+.trackbar,.v32-track,.v30-track,.v26-bar-bg{background:#384459!important}
+.trackfill,.v32-fill,.v30-fill,.v26-bar{background:#86a9db!important}
+.v32-fill.mbp-goal-complete{background:#56d5b3!important}
+.positive,.mbp-positive,.v33-status.done,#v32tasks .v33-status.done{color:#56d5b3!important}
+.negative,.mbp-negative,.v32-over{color:#f4a4ac!important}
+.v33-status.done{background:#203c37!important;border-color:#3a7062!important}
+.mb35-overview .mb35-hero{background:linear-gradient(120deg,#273247,#1e2c3e)!important}
+.mb35-overview .mb35-hero strong{color:#f4a4ac!important}
+.mb35-overview .mb35-hero strong.positive{color:#56d5b3!important}
+.mb35-overview .mb35-hero strong.neutral{color:#f3f5fa!important}
+</style>
+
 </body></html>
