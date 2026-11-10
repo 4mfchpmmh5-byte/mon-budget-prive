@@ -1482,8 +1482,8 @@ const addNav=document.querySelector('#nav [data-tab="add"]');if(addNav)addNav.in
 const summaryNav=document.querySelector('#nav [data-tab="home"]');if(summaryNav)summaryNav.innerHTML='▥<br>Synthèse';
 const addHeading=by('v24quick')?.querySelector('h2');if(addHeading)addHeading.textContent='Ajouter une opération';
 // Remove duplicated actions from Synthèse; all entry points remain on Accueil.
-const footer=document.createElement('div');footer.className='v32-lock-footer';footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 7';by('unlock')?.insertAdjacentElement('afterend',footer);
-const settingsVersion=by('settings')?.querySelector('.v262-version');if(settingsVersion)settingsVersion.textContent='Mon Budget Privé · Version 3.4 bêta 7 · Données chiffrées localement';
+const footer=document.createElement('div');footer.className='v32-lock-footer';footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 8';by('unlock')?.insertAdjacentElement('afterend',footer);
+const settingsVersion=by('settings')?.querySelector('.v262-version');if(settingsVersion)settingsVersion.textContent='Mon Budget Privé · Version 3.4 bêta 8 · Données chiffrées localement';
 const lockFooter=()=>{footer.style.display=by('unlock')?.classList.contains('hidden')?'none':'block'};
 const originalShow=show;show=function(id){originalShow(id);lockFooter()};lockFooter();
 // Do not disable pinch zoom: keep accessibility. Prevent automatic iOS focus zoom with 16px inputs.
@@ -1529,8 +1529,8 @@ el('v33openwealth').onclick=()=>tab('wealth');
 const previousRender=render;render=function(){previousRender();updateTask()};
 // The existing "Enregistrer la valeur du jour" action adds a dated historical snapshot.
 // The task is completed from that encrypted snapshot, not from an unrelated checkbox.
-const version=el('settings')?.querySelector('.v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 7 · Données chiffrées localement';
-const footer=document.querySelector('.v32-lock-footer');if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 7';
+const version=el('settings')?.querySelector('.v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 8 · Données chiffrées localement';
+const footer=document.querySelector('.v32-lock-footer');if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 8';
 if(data)render();
 })();
 </script><style id="v34-consolidation">
@@ -1594,9 +1594,9 @@ const updateLabels=()=>{
  const task=by('v32tasks');
  if(task)task.querySelectorAll('button').forEach(b=>{if(b.textContent.trim()==='+ Verser')b.textContent='+ Contribution'});
  const version=by('settings')?.querySelector('.v262-version');
- if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 7 · Données chiffrées localement';
+ if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 8 · Données chiffrées localement';
  const footer=document.querySelector('.v32-lock-footer');
- if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 7';
+ if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 8';
 };
 // Reuse original existing update functions rather than mutate amounts or historical records.
 if(typeof render==='function'){
@@ -1815,6 +1815,20 @@ body:has(#app:not(.hidden) #home:not(.hidden)) main {
 #mbp-ui-dialog .mbpu-calendar-grid button{border:0;border-radius:11px;background:#2b2d45;color:#f8f4ff;min-height:42px;font-size:14px}
 #mbp-ui-dialog .mbpu-calendar-grid button[aria-current="date"]{background:#a88bff;color:#171128;font-weight:800}
 #mbp-ui-dialog .mbpu-note{font-size:12px;color:#b8afcd;margin:8px 0 0;line-height:1.4}
+/* V3.4 B8 compact amount pad: no bulky full-size modal. */
+#mbp-ui-dialog:has(.mbpu-pad){width:min(360px,calc(100vw - 34px))!important;max-width:360px!important;padding:16px!important;border-radius:22px!important}
+#mbp-ui-dialog .mbpu-amount-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+#mbp-ui-dialog .mbpu-amount-head .mbpu-title{margin:0!important;font-size:17px!important;line-height:1.3}
+#mbp-ui-dialog .mbpu-dismiss{width:34px;height:34px;border:1px solid #514766;border-radius:12px;background:#29263c;color:#cfc6e5;font-size:22px;display:grid;place-items:center}
+#mbp-ui-dialog .mbpu-category{font-size:12px;color:#bbb2d1;margin:0 0 10px;line-height:1.35}
+#mbp-ui-dialog:has(.mbpu-pad) .mbpu-value{min-height:55px!important;padding:9px 14px!important;margin:0 0 12px!important;border-radius:14px!important;font-size:35px!important;white-space:nowrap;overflow:hidden}
+#mbp-ui-dialog:has(.mbpu-pad) .mbpu-pad{gap:7px!important}
+#mbp-ui-dialog:has(.mbpu-pad) .mbpu-pad button{min-height:48px!important;border-radius:12px!important;font-size:21px!important;font-weight:650}
+#mbp-ui-dialog:has(.mbpu-pad) .mbpu-pad button[data-k="del"]{font-size:13px!important;color:#e1d8ff!important;background:#423859!important}
+#mbp-ui-dialog .mbpu-pad-save{width:100%;min-height:46px;margin-top:10px;border:1px solid #b8a2ff;border-radius:13px;background:#a88bff;color:#171123;font-weight:800;font-size:16px;touch-action:manipulation}
+#mbp-ui-dialog:has(.mbpu-pad) .mbpu-note{display:none}
+@media(max-height:690px){#mbp-ui-dialog:has(.mbpu-pad) .mbpu-pad button{min-height:42px!important}#mbp-ui-dialog:has(.mbpu-pad) .mbpu-value{min-height:46px!important}}
+
 /* Readonly number/select/date controls look editable, but open the themed custom input. */
 input[data-mbpu="number"],input[data-mbpu="date"],select[data-mbpu="select"]{
  cursor:pointer!important;caret-color:transparent!important;color-scheme:dark!important;
@@ -1848,21 +1862,28 @@ window.mbpAlert=message=>{
 };
 function editAmount(field){
  activeField=field;
+ const quick=field.id==='v24amount';
  let raw=String(field.value||'').replace('.',',').replace(/[^\d,]/g,'');
  const digits=()=>raw||'0,00';
- const p=show(`<h2 class="mbpu-title">Saisir un montant</h2><div class="mbpu-value" id="mbpu-display">${esc(digits())}</div><div class="mbpu-pad">${['1','2','3','4','5','6','7','8','9',',','0','⌫'].map(v=>`<button type="button" data-k="${v==='⌫'?'del':esc(v)}">${v}</button>`).join('')}<button type="button" data-k="clear">Effacer</button><button type="button" data-act="cancel">Annuler</button><button type="button" data-act="accept" style="background:#a88bff;color:#171123">Valider</button></div><p class="mbpu-note">Clavier numérique intégré à MBP.</p>`);
+ const selectedLabel=()=>document.querySelector('#v24cats [data-v24cat].active')?.textContent?.trim()||'Catégorie sélectionnée';
+ const title=quick?'Nouvelle opération':'Saisir un montant';
+ const p=show(`<div class="mbpu-amount-head"><h2 class="mbpu-title">${esc(title)}</h2><button type="button" class="mbpu-dismiss" data-act="cancel" aria-label="Fermer">×</button></div>${quick?`<p class="mbpu-category">Catégorie : ${esc(selectedLabel())} · ${document.querySelector('#v24income.active')?'Revenu':'Dépense'}</p>`:''}<div class="mbpu-value" id="mbpu-display">${esc(digits())}</div><div class="mbpu-pad">${['1','2','3','4','5','6','7','8','9',',','0','⌫'].map(v=>`<button type="button" data-k="${v==='⌫'?'del':esc(v)}" ${v==='⌫'?'aria-label="Correction : supprimer le dernier chiffre"':''}>${v==='⌫'?'Corriger':v}</button>`).join('')}</div><button type="button" class="mbpu-pad-save" data-act="accept">${quick?'Enregistrer l’opération':'Valider le montant'}</button>`);
  dlg.querySelectorAll('[data-k]').forEach(btn=>btn.onclick=()=>{
   const k=btn.dataset.k;
-  if(k==='clear')raw='';else if(k==='del')raw=raw.slice(0,-1);else if(k===','){if(!raw.includes(','))raw+=(raw?',':'0,')}
+  if(k==='del')raw=raw.slice(0,-1);
+  else if(k===','){if(!raw.includes(','))raw+=(raw?',':'0,')}
   else if(raw.replace(/\D/g,'').length<12){const decimals=raw.split(',')[1];if(decimals===undefined||decimals.length<2)raw+=k}
   dlg.querySelector('#mbpu-display').textContent=digits();
  });
  dlg.querySelector('[data-act="cancel"]').onclick=()=>finish(null);
  dlg.querySelector('[data-act="accept"]').onclick=()=>{
-   const amount=raw.replace(',','.');
-   const n=Number(amount);
-   if(!raw||!Number.isFinite(n)){finish(null);return}
-   field.value=String(n);field.dispatchEvent(new Event('input',{bubbles:true}));field.dispatchEvent(new Event('change',{bubbles:true}));finish(true)
+   const amount=raw.replace(',','.');const n=Number(amount);
+   if(!raw||!Number.isFinite(n)||n<=0){dlg.querySelector('#mbpu-display').textContent='Montant invalide';return}
+   field.value=String(n);field.dispatchEvent(new Event('input',{bubbles:true}));field.dispatchEvent(new Event('change',{bubbles:true}));
+   finish(true);
+   // Accueil: same existing save handler (and its safeguards), invoked only once.
+   // Other fields remain simple inputs, because their forms require more details.
+   if(quick){const save=document.getElementById('v24save');if(save&&!save.disabled)queueMicrotask(()=>save.click())}
  };
  return p;
 }
