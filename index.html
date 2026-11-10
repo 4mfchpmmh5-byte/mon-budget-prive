@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'"><meta name="theme-color" content="#0b1220"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Mon Budget"><link rel="apple-touch-icon" href="./icon-192.png"><link rel="manifest" href="./manifest.webmanifest"><title>Mon Budget Privé</title><style>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'"><meta name="theme-color" content="#0b1220"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Mon Budget"><link rel="apple-touch-icon" href="./icon-192.png"><link rel="manifest" href="./manifest.webmanifest"><title>Mon Budget Privé</title><style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e9f2f6;background:#0b1220;font-synthesis:none}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top right,#153a40 0,#0b1220 55%)}button,input,select{font:inherit}button{cursor:pointer}main{max-width:700px;margin:auto;padding:calc(24px + env(safe-area-inset-top)) 18px calc(90px + env(safe-area-inset-bottom))}h1{font-size:28px;letter-spacing:-.8px;margin:8px 0}h2{font-size:18px;margin:0 0 14px}p{color:#a8bbc6;line-height:1.55}.muted{color:#8da2af;font-size:13px}.eyebrow{color:#3ae4b8;text-transform:uppercase;letter-spacing:2px;font-weight:800;font-size:11px}.card{background:#152332;border:1px solid #284052;border-radius:20px;padding:20px;margin:16px 0;box-shadow:0 10px 30px #0002}.hero{background:linear-gradient(135deg,#183f42,#152332)}.amount{font-size:36px;font-weight:800;letter-spacing:-1.5px;margin:8px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.stat{padding:15px;background:#101e2d;border-radius:14px}.stat strong{display:block;font-size:21px;margin-top:8px}.btn{border:0;background:#2ad6a9;color:#082323;font-weight:800;border-radius:13px;padding:13px 17px}.btn.secondary{background:#253c4a;color:#e6f5f3}.btn.danger{background:#482c36;color:#ffd7dc}.btn:disabled{opacity:.5}input,select{width:100%;padding:13px 12px;border-radius:12px;border:1px solid #3b5260;background:#0d1b28;color:#fff;margin:6px 0 13px;min-height:46px}label{display:block;color:#c8d8de;font-size:13px;font-weight:650}.actions{display:flex;gap:9px;flex-wrap:wrap}.actions>*{flex:1}nav{position:fixed;bottom:0;left:0;right:0;background:#101e2df5;border-top:1px solid #2a4452;padding:10px 8px calc(10px + env(safe-area-inset-bottom));display:none;justify-content:center;gap:8px}nav button{background:transparent;border:0;color:#8ea5b3;padding:9px 10px;border-radius:10px;font-size:12px}nav button.active{color:#35e3b5;background:#1b3540}.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #2a3e4a}.row:last-child{border:0}.row .right{text-align:right;white-space:nowrap}.negative{color:#ffadad}.positive{color:#42e2b7}.hidden{display:none!important}.notice{font-size:12px;color:#b9cad3;background:#19323b;border-left:3px solid #31d7a9;padding:12px;border-radius:9px}.section-title{display:flex;justify-content:space-between;align-items:center}.section-title button{font-size:12px}.pill{display:inline-block;border-radius:20px;background:#1e4040;color:#53e6bb;padding:6px 10px;font-size:12px}hr{border:0;border-top:1px solid #2b4351;margin:18px 0}small{color:#93aab7}#msg{color:#ffb9b9;min-height:20px}.inline{display:flex;gap:8px;align-items:center}.inline input{margin:0}.inline label{flex:1}.footer{text-align:center;font-size:12px;color:#8da2af;margin-top:25px}dialog{border:1px solid #3a5863;background:#152332;color:#fff;border-radius:20px;width:min(94vw,480px);padding:22px}dialog::backdrop{background:#000b}dialog h2{margin-bottom:16px}dialog form{margin:0}.close{float:right;background:transparent;border:0;color:white;font-size:25px} .break{overflow-wrap:anywhere}@media(min-width:700px){nav{max-width:700px;margin:auto;border-radius:18px 18px 0 0}}
 
 :root{color-scheme:dark;--surface:#171b2a;--border:#30354b;--accent:#9a7bff;--green:#36dbac}
@@ -1482,8 +1482,8 @@ const addNav=document.querySelector('#nav [data-tab="add"]');if(addNav)addNav.in
 const summaryNav=document.querySelector('#nav [data-tab="home"]');if(summaryNav)summaryNav.innerHTML='▥<br>Synthèse';
 const addHeading=by('v24quick')?.querySelector('h2');if(addHeading)addHeading.textContent='Ajouter une opération';
 // Remove duplicated actions from Synthèse; all entry points remain on Accueil.
-const footer=document.createElement('div');footer.className='v32-lock-footer';footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 1';by('unlock')?.insertAdjacentElement('afterend',footer);
-const settingsVersion=by('settings')?.querySelector('.v262-version');if(settingsVersion)settingsVersion.textContent='Mon Budget Privé · Version 3.4 bêta 1 · Données chiffrées localement';
+const footer=document.createElement('div');footer.className='v32-lock-footer';footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 2';by('unlock')?.insertAdjacentElement('afterend',footer);
+const settingsVersion=by('settings')?.querySelector('.v262-version');if(settingsVersion)settingsVersion.textContent='Mon Budget Privé · Version 3.4 bêta 2 · Données chiffrées localement';
 const lockFooter=()=>{footer.style.display=by('unlock')?.classList.contains('hidden')?'none':'block'};
 const originalShow=show;show=function(id){originalShow(id);lockFooter()};lockFooter();
 // Do not disable pinch zoom: keep accessibility. Prevent automatic iOS focus zoom with 16px inputs.
@@ -1529,8 +1529,8 @@ el('v33openwealth').onclick=()=>tab('wealth');
 const previousRender=render;render=function(){previousRender();updateTask()};
 // The existing "Enregistrer la valeur du jour" action adds a dated historical snapshot.
 // The task is completed from that encrypted snapshot, not from an unrelated checkbox.
-const version=el('settings')?.querySelector('.v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 1 · Données chiffrées localement';
-const footer=document.querySelector('.v32-lock-footer');if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 1';
+const version=el('settings')?.querySelector('.v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 2 · Données chiffrées localement';
+const footer=document.querySelector('.v32-lock-footer');if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 2';
 if(data)render();
 })();
 </script><style id="v34-consolidation">
@@ -1594,9 +1594,9 @@ const updateLabels=()=>{
  const task=by('v32tasks');
  if(task)task.querySelectorAll('button').forEach(b=>{if(b.textContent.trim()==='+ Verser')b.textContent='+ Contribution'});
  const version=by('settings')?.querySelector('.v262-version');
- if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 1 · Données chiffrées localement';
+ if(version)version.textContent='Mon Budget Privé · Version 3.4 bêta 2 · Données chiffrées localement';
  const footer=document.querySelector('.v32-lock-footer');
- if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 1';
+ if(footer)footer.innerHTML='♧ Espace personnel et confidentiel<br>Mon Budget Privé · Version 3.4 bêta 2';
 };
 // Reuse original existing update functions rather than mutate amounts or historical records.
 if(typeof render==='function'){
@@ -1606,4 +1606,63 @@ if(typeof render==='function'){
 updateLabels();
 // Keep viewport level zoom by pinch enabled for accessibility and reduce double-tap zoom via touch-action.
 })();
-</script></body></html>
+</script>
+<style id="v341-ios-visual-and-zoom-fix">
+/* MBP 3.4 beta 2: all blur and zoom fixes have a single final override. */
+:root { color-scheme:dark; -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+html,body { width:100%;max-width:100%; overflow-x:hidden!important; }
+html { touch-action:pan-x pan-y; }
+body { -webkit-tap-highlight-color:transparent; }
+/* Native overlays: avoid translucent blur on iOS and keep clear opaque cards. */
+*,*::before,*::after { -webkit-backdrop-filter:none!important;backdrop-filter:none!important; }
+header,header *,nav,nav *,dialog,dialog *,#add,#home,#v30profile,#wealth,
+.card,.v32-card,.v26-panel,.v33-taskheading,.v30-card {
+  -webkit-filter:none!important; filter:none!important;
+  text-shadow:none!important;
+}
+header,header *,nav,nav *,dialog,dialog *,#v24quick h2,#v32summary h2 {
+  -webkit-transform:none!important; transform:none!important;
+  will-change:auto!important;
+}
+nav { background:#151827!important; }
+.card,.v32-card,.v26-panel,.v30-card { background-clip:padding-box; }
+/* iOS Safari zooms automatically on focus if any input is computed smaller than 16px. */
+input:not([type=checkbox]):not([type=radio]):not([type=range]),
+textarea,select,dialog input,dialog textarea,dialog select {
+  font-size:16px!important;line-height:normal; color-scheme:dark;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;
+}
+input[type=checkbox],input[type=radio] { accent-color:#a58aff; }
+input:focus,select:focus,textarea:focus { scroll-margin-bottom:100px; }
+/* Dialogs always use an opaque surface, never a blur layer. */
+dialog,dialog[open],#txdialog,#v31dialog,#v312funddialog {
+  background:#1b2032!important;color:#f8f5ff!important;
+  max-width:calc(100vw - 24px)!important;
+  max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 28px)!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  box-sizing:border-box!important;
+  -webkit-overflow-scrolling:touch;
+  margin:auto!important;
+  isolation:isolate;
+}
+dialog::backdrop { background:rgba(4,6,18,.88)!important; }
+button,.btn,summary,nav button,.v24-chip { touch-action:manipulation; }
+@media(max-width:390px){ dialog,dialog[open]{width:calc(100vw - 24px)!important;padding:14px!important;} }
+</style>
+<script id="v341-ios-zoom-fix">
+(()=>{
+  'use strict';
+  // Disable WebKit gesture zoom explicitly. Does not intercept normal tap or scrolling.
+  const preventGesture=e=>e.preventDefault();
+  document.addEventListener('gesturestart',preventGesture,{passive:false});
+  document.addEventListener('gesturechange',preventGesture,{passive:false});
+  // Safari sometimes double-tap zooms on non-controls despite touch-action manipulation.
+  document.addEventListener('dblclick',e=>{
+    if(e.target.closest('input,textarea,select,[contenteditable="true"]')) return;
+    e.preventDefault();
+  },{passive:false});
+  // Ensure the iPhone keyboard never triggers focus zoom, including dynamic fields.
+  // CSS controls the computed font-size; do not set inline sizes or auto-focus fields.
+})();
+</script>
+</body></html>
