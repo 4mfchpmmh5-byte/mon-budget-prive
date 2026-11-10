@@ -1279,7 +1279,7 @@ const originalTab=tab;tab=function(id){if(id==='plans'||id==='settings'){sub(id=
 nav.addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b){tab(b.dataset.tab)}});
 // Premium icon system (not emoji glyphs).
 function updateIcons(){const map={courses:'basket',midi:'utensils',sorties:'glass',exception:'bolt',autre:'wallet',salaire:'wallet',prime:'coins'};
- document.querySelectorAll('#v24cats [data-v24cat]').forEach(b=>{const key=b.dataset.v24cat;if(!b.dataset.v30icon){b.dataset.v30icon='1';b.textContent=b.textContent.replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu,'').trim();b.insertAdjacentHTML('afterbegin',svg(map[key]||'wallet'))}});
+ document.querySelectorAll('#v24cats [data-v24cat]').forEach(b=>{const key=b.dataset.v24cat;if(!b.dataset.v30icon){b.dataset.v30icon='1';b.textContent=b.textContent.replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF\uFE0E\uFE0F]/gu,'').trim();b.insertAdjacentHTML('afterbegin',svg(map[key]||'wallet'))}});
  const snapshot=$('snapshot');if(snapshot&&snapshot.textContent.includes('📌'))snapshot.textContent='Enregistrer la valeur du jour';
  const icoMap={'🔒':'lock','⬇':'download','⬆':'upload','🗑':'trash','⚙':'settings','📌':'trend','🔄':'refresh','▣':'wallet','▥':'wallet','🗑️':'trash'};
  document.querySelectorAll('#settings .v24-ico').forEach(el=>{if(!el.querySelector('svg'))el.innerHTML=svg(icoMap[el.textContent.trim()]||'settings')});
@@ -2144,4 +2144,209 @@ dialog::backdrop{background:rgba(6,9,17,.79)!important;-webkit-backdrop-filter:n
 .mbp35-yearsummary button{width:100%;min-height:43px;background:#222c3c;color:#bac7d9;border:1px solid #3b475a;border-radius:11px;font-weight:600}
 #v24cats .v26-custom-chip:last-child:nth-child(even){grid-column:1/-1!important}
 </style>
+<style id="mbp35b2-final-design">
+/* Presentation only. No change to the global header, viewport, scroll, or storage. */
+:root{--mb35-bg:#0e131f;--mb35-card:#1b2230;--mb35-raise:#262f3e;--mb35-line:#364153;--mb35-green:#38c6a2;--mb35-sub:#aab6c5}
+/* Four-tab navigation keeps existing working behavior and shared geometry. */
+#nav button.active,#nav button[data-tab="add"].active{background:#293141!important;color:#c6d1df!important}
+/* Home entry: true two-column grid, auto height for income as well as expense. */
+#add #v24quick{height:auto!important;min-height:0!important;padding:14px!important;gap:9px!important}
+#add #v24quick h2{font-size:18px!important}
+#add .v24-switch button{height:43px!important;min-height:43px!important;font-size:14px!important}
+#add .v24-amount input{height:58px!important;font-size:32px!important}
+#add #v24cats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:auto!important;grid-template-rows:none!important;max-height:none!important;overflow:visible!important;align-content:start!important;gap:8px!important;flex:none!important}
+#add #v24cats .v24-chip,#add #v24cats .v26-custom-chip{height:49px!important;min-height:49px!important;padding:7px!important;grid-column:auto!important;font-size:14px!important}
+#add #v24cats .v24-chip:last-child:nth-child(odd),#add #v24cats .v26-custom-chip:last-child:nth-child(odd){grid-column:1/-1!important}
+#add #v24cats .v30-ico svg{height:19px!important;width:19px!important;stroke:#bac4d0!important}
+#add #v24save{height:47px!important;min-height:47px!important;font-size:15px!important;font-weight:700!important;background:#2c6558!important}
+#add #v24feedback{font-size:12px}
+/* Goals kept intact, just lighter actions */
+#v32tasks .v32-taskbutton{min-height:38px!important;padding:7px 10px!important;font-size:12px!important}
+/* Summary: remove the legacy dashboard as well as the duplicated month buttons. */
+body:has(#app:not(.hidden) #home:not(.hidden)) #v26home,
+#home #v26home,#home #v21dashboard{display:none!important}
+/* Summary: only the pre-existing period SELECT remains. */
+#home #v32monthnav,#home #v21dashboard{display:none!important}
+#home .v24-period{margin:10px 0!important;display:flex!important;align-items:center!important;gap:12px!important}
+#home .v24-period label{flex:none!important;margin:0!important;font-size:13px!important}
+#home #v24period{flex:1;min-width:0;margin:0!important;min-height:46px!important}
+#v32summary{margin-top:0!important}
+.mb35-overview,.mb35-section{background:var(--mb35-card)!important;border:1px solid var(--mb35-line)!important;border-radius:18px;padding:15px;margin:12px 0}
+.mb35-overview h2,.mb35-section h2{font-size:18px!important;margin:0 0 12px!important}
+.mb35-overview .mb35-hero{padding:14px;background:linear-gradient(120deg,#273343,#1c2a31);border-radius:14px;margin-bottom:10px}
+.mb35-overview .mb35-hero strong{display:block;font-size:clamp(27px,7.7vw,39px);font-variant-numeric:tabular-nums;letter-spacing:-.6px;margin:6px 0;color:#f2a7ad}
+.mb35-overview .mb35-hero strong.positive{color:#61d6b4}
+.mb35-caption{color:var(--mb35-sub);font-size:12px;line-height:1.4}
+.mb35-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.mb35-metric{padding:12px;background:var(--mb35-raise);border-radius:12px;min-width:0}
+.mb35-metric small{display:block;font-size:11px!important;color:var(--mb35-sub)!important;line-height:1.35}
+.mb35-metric strong{display:block;margin-top:6px;font-size:clamp(15px,4vw,20px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.mb35-stacked{display:flex;overflow:hidden;height:12px;background:#374353;border-radius:99px;margin:14px 0}
+.mb35-stacked>span{height:100%;min-width:0}
+.mb35-legend{display:grid;gap:8px}.mb35-legend-row{display:flex;align-items:center;gap:9px;font-size:12px}
+.mb35-swatch{display:inline-block;width:10px;height:10px;border-radius:3px;flex:none}
+.mb35-legend-row strong{margin-left:auto;font-variant-numeric:tabular-nums}
+.mb35-section .v32-line{padding:10px 0!important}
+/* Recent transactions: compact tappable rows instead of two permanent buttons. */
+#v32recent .mb35-recentline{display:flex;align-items:center;gap:10px;width:100%;min-height:60px;padding:9px 0;border:0;border-top:1px solid var(--mb35-line);background:transparent;color:#eff3f8;text-align:left}
+.mb35-txicon{display:grid;place-items:center;background:#2a3443;color:#b6c6d6;border-radius:11px;width:37px;height:37px;flex:none;font-size:17px}
+.mb35-recentname{flex:1;min-width:0}.mb35-recentname strong{font-size:13px;display:block}.mb35-recentname small{display:block;color:var(--mb35-sub);font-size:11px}
+.mb35-recentsum{font-size:13px;font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.mb35-tx-actionset{display:flex;gap:8px}.mb35-tx-actionset button{flex:1}
+/* Profile compact budget sections and category-based browsing. */
+#v30profile #plans .card:has(#variableTracking),#v30profile #plans .card:has(#envelopeTracking){display:none!important}
+#v30profile #plans .v19-details:has(#variableTracking),#v30profile #plans .v19-details:has(#envelopeTracking){display:none!important}
+#v33profiletools p,#v33profilestatus{font-size:12px!important}
+#v33profiletools .v33-toolgrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+#v33profiletools .v33-toolgrid button{font-size:12px!important;min-height:45px!important;padding:8px 5px!important}
+#v33allplans{display:none!important}
+#mb35budgets{margin:12px 0}
+.mb35-bgroup{border:1px solid var(--mb35-line);background:var(--mb35-card);border-radius:15px;margin:9px 0;overflow:hidden}
+.mb35-bgroup summary{padding:13px!important;background:transparent!important;cursor:pointer;list-style:none;display:flex;gap:10px;align-items:center;font-weight:650}
+.mb35-bgroup summary::-webkit-details-marker{display:none}
+.mb35-bgroup summary .mb35-arrow{margin-left:auto;color:#9ba9b9}
+.mb35-groupcontent{border-top:1px solid var(--mb35-line);padding:3px 12px}
+.mb35-budgetline{width:100%;display:flex;align-items:center;gap:9px;justify-content:space-between;padding:11px 2px;background:transparent;color:#eef2f8;border:0;border-bottom:1px solid var(--mb35-line);text-align:left;min-height:48px}
+.mb35-budgetline:last-child{border-bottom:0}.mb35-budgetline b{font-size:13px;flex:1}.mb35-budgetline span{font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}
+#v30profile #plans .v19-details:has(#planlist){display:none!important}
+#v30profile #plans>.card:has(#planlist){display:none!important}
+#v30profile #v21groupcard{display:none!important}
+.mb35-taxadvanced{border:1px solid var(--mb35-line);border-radius:12px;padding:10px;margin:10px 0;background:#222b39}
+.mb35-taxadvanced summary{background:none!important;padding:3px!important;border:0!important;font-size:12px!important}
+.mb35-taxadvanced .v262-grid{margin-top:12px}
+#v262taxbox .v262-results>div:nth-child(n+3){background:#273140!important}
+
+/* Form dialogs use compact typography while preserving all form fields. */
+#plandialog{padding:17px!important}
+#plandialog h2{font-size:18px!important;max-width:calc(100% - 40px)}
+#plandialog form label{font-size:12px!important;margin-bottom:7px!important}
+#plandialog form input,#plandialog form select{padding:9px 11px!important;min-height:43px!important;margin:4px 0 9px!important}
+#plandialog button[type=submit]{width:100%;min-height:44px!important}
+#v262taxbox{padding:13px!important}
+#v262taxbox h3{font-size:17px!important;margin-bottom:7px!important}
+#v262taxbox .v262-grid{gap:8px!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#v262taxbox label{font-size:11px!important;line-height:1.3!important}
+#v262taxbox input,#v262taxbox select{min-height:42px!important;padding:8px!important;margin:5px 0 9px!important;font-size:16px!important}
+#v262taxbox .v262-result{padding:9px!important;background:#252f3e!important;border-radius:10px!important}
+#v262taxbox .v262-result strong{font-size:17px!important}
+#v262taxbox .v262-note{font-size:11px!important}
+#v312taxdetails>summary{font-size:15px!important}
+#v312taxdetails>summary::first-letter{color:inherit}
+/* Patrimoine summary: one net total; keep original debt controls available on demand. */
+#wealth>.card.hero{display:none!important}
+#wealth #v30wealthmore:not(.mb35-debtopen){display:none!important}
+#wealth #v26assetgraph{display:none!important}
+#wealth>.card:has(#wealthbreakdown){display:none!important}
+#mb35wealthsummary{margin:12px 0}
+.mb35-assets{display:grid;gap:9px}.mb35-assetrow{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--mb35-line)}
+.mb35-assetrow:last-child{border-bottom:0}.mb35-assetrow strong{margin-left:auto;white-space:nowrap;font-size:13px}
+#wealthchart svg .wealth-chart-grid{stroke:#3b4657!important}
+#wealthchart svg polyline{stroke:#40c6a5!important}
+#wealthlist .row{padding:10px 0!important}
+#wealthlist .right>div{gap:4px!important}
+/* No legacy purple or bright blue in security, tax, or information panels */
+#v30profile .notice,#settings .notice{background:#26313d!important;border-left:3px solid #519985!important;color:#bbc8d3!important}
+#v30profile .pill,#wealth .pill{background:#293941!important;color:#b5dfd1!important}
+#v312taxdetails,.v19-details{border-color:var(--mb35-line)!important}
+#settings .card,#v262taxbox,.v262-result{box-shadow:none!important}
+@media(max-width:370px){#v33profiletools .v33-toolgrid button{font-size:11px!important}#v262taxbox .v262-grid{grid-template-columns:1fr!important}}
+</style>
+<script id="mbp35b2-functional">
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const h=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const euro=v=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(Number(v)||0);
+const sum=a=>a.reduce((x,p)=>x+Number(p.amount||0),0);
+const mname=m=>new Date(m+'-02T12:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+const monthPlansAt=m=>{const old=selectedMonth;try{selectedMonth=m;return monthPlans().map(p=>({...p}))}finally{selectedMonth=old}};
+const categoryName={Revenus:'Revenus',Fixes:'Charges fixes',Impôts:'Impôts',Variables:'Budgets variables',Provisions:'Provisions',Investissements:'Investissements'};
+const visibleMonth=()=>String($('v24period')?.value||selectedMonth);
+const isAnnual=()=>visibleMonth().startsWith('annual-');
+const selectedYear=()=>isAnnual()?visibleMonth().slice(7,11):selectedMonth.slice(0,4);
+const sourcePeriod=()=>isAnnual()?selectedYear():selectedMonth;
+function plansForPeriod(){if(!isAnnual())return monthPlansAt(selectedMonth);return Array.from({length:12},(_,i)=>monthPlansAt(selectedYear()+'-'+String(i+1).padStart(2,'0'))).flat()}
+function ledgerForPeriod(){const period=sourcePeriod();return (data.transactions||[]).filter(t=>String(t.date||'').startsWith(period))}
+function buildSummary(){
+ if(!data)return;
+ const yearMode=isAnnual(),period=sourcePeriod(),plans=plansForPeriod(),ledger=ledgerForPeriod(),spent=ledger.filter(t=>t.type==='expense'),received=ledger.filter(t=>t.type==='income');
+ const val=cat=>sum(plans.filter(p=>p.cat===cat)),income=val('Revenus'),fixed=val('Fixes')+val('Impôts'),variable=val('Variables'),saving=val('Provisions')+val('Investissements'),out=fixed+variable+saving,left=income-out;
+ const label=yearMode?'Bilan '+selectedYear():mname(selectedMonth);
+ const metric=(name,value)=>`<div class="mb35-metric"><small>${h(name)}</small><strong>${euro(value)}</strong></div>`;
+ const parts=[{label:'Charges fixes et impôts',value:fixed,color:'#8799ad'},{label:'Budgets variables',value:variable,color:'#42c7a6'},{label:'Épargne et provisions',value:saving,color:'#d1ad76'}].filter(p=>p.value>0);
+ const total=parts.reduce((s,p)=>s+p.value,0)||1;
+ let outHtml=`<section class="mb35-overview"><h2>${yearMode?'Bilan annuel':'Vue d’ensemble'} <span class="mb35-caption" style="float:right">${h(label)}</span></h2><div class="mb35-hero"><div class="mb35-caption">Reste prévisionnel après épargne</div><strong class="${left>=0?'positive':''}">${euro(left)}</strong><div class="mb35-caption">Prévision calculée à partir des lignes budgétaires, pas un solde bancaire.</div></div><div class="mb35-grid">${metric('Revenus prévus',income)}${metric('Charges fixes et impôts',fixed)}${metric('Budgets variables',variable)}${metric('Épargne et provisions',saving)}</div></section>`;
+ outHtml+=`<section class="mb35-section"><h2>Répartition du budget</h2><div class="mb35-stacked">${parts.map(p=>`<span style="background:${p.color};flex:${p.value}"></span>`).join('')}</div><div class="mb35-legend">${parts.map(p=>`<div class="mb35-legend-row"><i class="mb35-swatch" style="background:${p.color}"></i><span>${h(p.label)}</span><strong>${euro(p.value)}</strong></div>`).join('')}</div><p class="mb35-caption">Montants prévisionnels ${yearMode?'pour l’année':'pour le mois sélectionné'}.</p></section>`;
+ outHtml+=`<section class="mb35-section"><h2>Réel vs prévisionnel</h2><div class="mb35-grid">${metric('Revenus enregistrés',sum(received))}${metric('Dépenses enregistrées',sum(spent))}</div><p class="mb35-caption" style="margin:10px 0 0">Les contributions à l’épargne sont suivies séparément des dépenses de consommation.</p></section>`;
+ // Preserve original variable budget matching and the well-received green progress bars.
+ outHtml+='<section class="mb35-section"><h2>Avancement des dépenses variables</h2>';
+ const vars=yearMode?[]:plans.filter(p=>p.cat==='Variables');
+ for(const p of vars){const used=sum(spent.filter(t=>t.planId===p.id||(!t.planId&&String(t.name||'').toLowerCase()===String(p.name||'').toLowerCase()))),goal=Number(p.amount)||0,pct=goal?used/goal*100:0;
+ outHtml+=`<div class="v32-line"><div style="width:100%"><div class="v32-monthrow"><strong>${h(p.name)}</strong><span class="v32-muted">${euro(used)} / ${euro(goal)}</span></div><div class="v32-track"><div class="v32-fill ${pct>100?'v32-over':pct>=80?'v32-warn':''}" style="width:${Math.max(0,Math.min(100,pct))}%"></div></div><div class="v32-muted">${Math.round(pct)} % utilisés · ${goal>=used?euro(goal-used)+' restants':'Dépassement : '+euro(used-goal)}</div></div></div>`;
+ }
+ if(yearMode)outHtml+='<p class="mb35-caption">Le suivi détaillé des dépenses variables est disponible en sélectionnant un mois.</p>';
+ else if(!vars.length)outHtml+='<p class="mb35-caption">Aucun budget variable configuré pour ce mois.</p>';
+ outHtml+='</section>';
+ const goalPeriod=yearMode?selectedYear():selectedMonth;
+ const goals=yearMode?monthPlansAt(selectedYear()+'-12').filter(p=>['Provisions','Investissements'].includes(p.cat)) : monthPlansAt(selectedMonth).filter(p=>['Provisions','Investissements'].includes(p.cat));
+ outHtml+=`<section class="mb35-section"><h2>Épargne et provisions · ${yearMode?selectedYear():h(mname(selectedMonth))}</h2><p class="mb35-caption">${yearMode?'Objectifs et contributions cumulés pendant l’année.':'Objectifs et contributions du mois uniquement.'}</p>`;
+ for(const p of goals){let expected=0,paid=0;
+ const periods=yearMode?Array.from({length:12},(_,i)=>selectedYear()+'-'+String(i+1).padStart(2,'0')):[selectedMonth];
+ for(const mm of periods){const target=monthPlansAt(mm).find(q=>q.id===p.id)||monthPlansAt(mm).find(q=>q.name===p.name&&q.cat===p.cat);if(target)expected+=Number(target.amount)||0;
+ const ids=new Set([p.id,target?.id].filter(Boolean));paid+=sum((data.envelopeMoves||[]).filter(e=>e.kind==='fund'&&e.date?.startsWith(mm)&&ids.has(e.planId)));}
+ const pct=expected>0?paid/expected*100:0;
+ outHtml+=`<div class="v32-line"><div style="width:100%"><div class="v32-monthrow"><strong>${h(p.name)}</strong><span class="v32-muted">${euro(paid)} / ${euro(expected)}</span></div><div class="v32-track"><div class="v32-fill ${paid<expected?'v32-warn':''}" style="width:${Math.min(100,Math.max(0,pct))}%"></div></div><div class="v32-muted">${yearMode?'Écart annuel':'Reste ce mois'} : ${euro(yearMode?paid-expected:Math.max(0,expected-paid))}</div></div></div>`;
+ }
+ if(!goals.length)outHtml+='<p class="mb35-caption">Aucun objectif configuré pour cette période.</p>';
+ outHtml+='</section>';
+ $('v32summary').innerHTML=outHtml;
+}
+const icons={courses:'shopping',midi:'meal',sorties:'glass',exception:'bolt',autre:'wallet',salaire:'wallet',prime:'sparkles'};
+const paths={shopping:'<path d="M3 9h18l-2 11H5L3 9ZM8 9l4-6 4 6M9 13v3m6-3v3"/>',meal:'<path d="M4 3v7a3 3 0 0 0 6 0V3M7 3v18M17 21V3c-4 2-4 9 0 11"/>',glass:'<path d="M5 3h14l-2 8a5 5 0 0 1-10 0L5 3ZM12 16v5m-5 0h10"/>',bolt:'<path d="m13 2-9 11h7l-1 9 10-12h-7l0-8Z"/>',wallet:'<rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M16 15h2"/>',sparkles:'<path d="m12 3 2 7 7 2-7 2-2 7-2-7-7-2 7-2 2-7Z"/>',fuel:'<path d="M4 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M4 12h11M3 21h14m-2-14 4 4v7a2 2 0 0 0 4 0v-7l-3-3"/>'};
+function premiumIcons(){const root=$('v24cats');if(!root)return;for(const btn of root.querySelectorAll('button')){if(btn.querySelector('svg'))continue;const key=btn.dataset.v24cat,kind=icons[key]||(btn.textContent.toLowerCase().includes('essence')?'fuel':null);if(!kind)continue;const label=btn.textContent.replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF\uFE0E\uFE0F]/gu,'').trim();btn.innerHTML=`<span class="v30-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths[kind]}</svg></span>${h(label)}`;}}
+const cats=$('v24cats');if(cats){let busy=false;const observer=new MutationObserver(()=>{if(busy)return;busy=true;observer.disconnect();premiumIcons();observer.observe(cats,{childList:true,subtree:true});busy=false});observer.observe(cats,{childList:true,subtree:true});premiumIcons()}
+// Compact history. Existing transaction handlers remain the only edit/delete implementation.
+const recent=$('v32recent');
+const txSheet=document.createElement('dialog');txSheet.id='mb35txsheet';document.body.append(txSheet);
+function showTxSheet(tx){if(!tx)return;txSheet.innerHTML=`<h2>${h(tx.name)}</h2><p class="mb35-caption">${new Date(tx.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})} · ${h(tx.cat||'Opération')}</p><h3 style="margin:14px 0">${tx.type==='income'?'+':'−'}${euro(tx.amount)}</h3><div class="mb35-tx-actionset"><button type="button" class="btn secondary" data-edit="${h(tx.id)}">Modifier</button><button type="button" class="btn danger" data-remove="${h(tx.id)}">Supprimer</button></div><button class="btn secondary" type="button" data-close-sheet style="width:100%;margin-top:10px">Fermer</button>`;txSheet.showModal()}
+recent?.addEventListener('click',e=>{const row=e.target.closest('[data-mb35tx]');if(!row||!data)return;const tx=data.transactions.find(t=>t.id===row.dataset.mb35tx);showTxSheet(tx)});
+txSheet.addEventListener('click',e=>{if(e.target.closest('[data-close-sheet]')){txSheet.close();return}const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-remove]');if(!edit&&!del)return;const id=(edit||del).dataset[edit?'edit':'remove'];txSheet.close();const target=[...document.querySelectorAll(edit?'#txlist [data-edit-tx]':'#txlist [data-delete-tx]')].find(b=>(edit?b.dataset.editTx:b.dataset.deleteTx)===id);target?.click()});
+function buildRecent(){if(!data||!recent)return;const mm=new Date().toLocaleDateString('sv-SE').slice(0,7);const txs=data.transactions.filter(t=>t.date?.startsWith(mm)).slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+ recent.innerHTML='<div class="v32-head"><h2>Dernières opérations</h2><span class="v32-muted">'+h(mname(mm))+'</span></div>'+ (txs.map(t=>`<button type="button" class="mb35-recentline" data-mb35tx="${h(t.id)}"><span class="mb35-txicon">${t.type==='income'?'↙':/repas|restaurant/i.test(t.name)?'♧':/course/i.test(t.name)?'▤':'↗'}</span><span class="mb35-recentname"><strong>${h(t.name)}</strong><small>${new Date(t.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})}</small></span><span class="mb35-recentsum" style="color:${t.type==='income'?'#52cda9':'#eda4aa'}">${t.type==='income'?'+':'−'}${euro(t.amount)}</span><span style="color:#8696a9">›</span></button>`).join('')||'<p class="mb35-caption">Aucune opération enregistrée ce mois-ci.</p>');}
+// Create grouped budget lists, but invoke the original edit/delete buttons so existing month logic survives.
+const profileTools=$('v33profiletools');const grouped=document.createElement('section');grouped.id='mb35budgets';profileTools?.after(grouped);
+const categories=['Revenus','Fixes','Impôts','Variables','Provisions','Investissements'];
+function buildBudgets(){if(!data||!grouped)return;const plans=monthPlans();const active=new Set([...grouped.querySelectorAll('details[open]')].map(d=>d.dataset.category));grouped.innerHTML='<h3 style="font-size:17px;margin:12px 0">Lignes budgétaires</h3>'+categories.map(cat=>{const arr=plans.filter(p=>p.cat===cat);if(!arr.length)return'';return `<details class="mb35-bgroup" data-category="${h(cat)}" ${active.has(cat)?'open':''}><summary><span>${h(categoryName[cat]||cat)}</span><span style="margin-left:auto;font-size:12px;color:#b7c4d0">${euro(sum(arr))}</span><span class="mb35-arrow">⌄</span></summary><div class="mb35-groupcontent">${arr.map(p=>`<button type="button" class="mb35-budgetline" data-bmid="${h(p.id)}"><b>${h(p.name)}</b><span>${euro(p.amount)}</span><span style="color:#94a1b3">›</span></button>`).join('')}</div></details>`}).join('')};
+grouped.addEventListener('click',e=>{const b=e.target.closest('[data-bmid]');if(!b)return;const real=[...document.querySelectorAll('#planlist [data-edit-plan]')].find(x=>x.dataset.editPlan===b.dataset.bmid);real?.click()});
+// Single net wealth summary; old manual debt controls only expand on demand.
+const wealth=$('wealth');const wealthCard=document.createElement('section');wealthCard.id='mb35wealthsummary';wealthCard.className='mb35-overview';const wealthHeading=wealth?.querySelector(':scope > h2');wealthHeading?.after(wealthCard);
+function buildWealth(){if(!data)return;const assets=data.assets||[],gross=sum(assets),debt=Math.max(0,Number(data.v30Debt)||0),net=gross-debt;
+ const types={};for(const a of assets){types[a.type||'Autres']=(types[a.type||'Autres']||0)+Number(a.amount||0)}const categoryColors=['#47c9a8','#8193b0','#d1ac76','#94a7d5','#7bbaa8'];
+ const total=Math.max(gross,1);let invested=0,investedValue=0,tracked=0;for(const a of assets){if(a.invested!=null&&Number.isFinite(Number(a.invested))){invested+=Number(a.invested);investedValue+=Number(a.amount)||0;tracked++}}
+ wealthCard.innerHTML=`<h2>Patrimoine net</h2><div class="mb35-hero"><div class="mb35-caption">Actifs renseignés moins dettes</div><strong class="${net>=0?'positive':''}">${euro(net)}</strong><div class="mb35-caption">Suivi manuel · Aucune connexion bancaire</div></div><div class="mb35-grid">${`<div class="mb35-metric"><small>Actifs renseignés</small><strong>${euro(gross)}</strong></div><div class="mb35-metric"><small>Capital restant dû</small><strong>${euro(debt)}</strong></div>`}</div><button type="button" id="mb35debtbtn" class="btn secondary" style="width:100%;margin:11px 0 0">Gérer mes emprunts</button>${tracked?`<p class="mb35-caption" style="margin:10px 0 0">Écart valeur / capital investi renseigné : ${euro(investedValue-invested)} (hors versements, frais et retraits).</p>`:''}</section>`;
+ // Separate single asset distribution, no duplicate pie and bars.
+ const chart=$('mb35assetdist')||document.createElement('section');chart.id='mb35assetdist';chart.className='mb35-section';
+ chart.innerHTML='<h2>Répartition de mes actifs</h2>'+Object.entries(types).filter(x=>x[1]>0).map(([name,value],i)=>`<div class="mb35-assetrow"><span class="mb35-swatch" style="background:${categoryColors[i%categoryColors.length]}"></span><span style="flex:1">${h(name)}</span><small style="color:#aebbc8">${Math.round(value/total*100)} %</small><strong>${euro(value)}</strong></div>`).join('') ;
+ const listCard=$('wealthlist')?.closest('.card');if(listCard&&chart.previousElementSibling!==listCard){listCard.before(chart)}
+ $('mb35debtbtn')?.addEventListener('click',()=>{const d=$('v30wealthmore');if(!d)return;d.classList.toggle('mb35-debtopen');if(d.classList.contains('mb35-debtopen'))d.scrollIntoView({behavior:'smooth',block:'center'})});
+}
+// Fiscal: remove emoji without removing the simulator or changing its legal caveats.
+function tidyFiscal(){
+ const details=$('v312taxdetails'),heading=$('v262taxbox')?.querySelector('h3');
+ const summary=details?.querySelector(':scope > summary');if(summary)summary.textContent='Fiscalité et prévisions 2027';
+ if(heading)heading.textContent='Simulation fiscale · 2027';
+ const card=$('v262taxbox'),grid=card?.querySelector('.v262-grid');
+ if(grid&&!card.querySelector('.mb35-taxadvanced')){
+  const more=document.createElement('details');more.className='mb35-taxadvanced';more.innerHTML='<summary>Options fiscales avancées</summary><div class="v262-grid"></div>';
+  grid.after(more);const items=[...grid.querySelectorAll('label')];
+  items.slice(2).forEach(node=>more.querySelector('.v262-grid').append(node));
+ }
+}
+const previousRender=render;
+render=function(){previousRender();if(!data)return;premiumIcons();buildSummary();buildRecent();buildBudgets();buildWealth();tidyFiscal()};
+if(data)render();else tidyFiscal();
+const foot=document.querySelector('.v32-lock-footer');if(foot)foot.innerHTML=foot.innerHTML.replace(/3\.5 bêta 1/gi,'3.5 bêta 2');
+const version=document.querySelector('#settings .v262-version');if(version)version.textContent='Mon Budget Privé · Version 3.5 bêta 2 · Données chiffrées localement';
+})();
+</script>
 </body></html>
