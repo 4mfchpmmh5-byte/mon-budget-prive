@@ -2311,7 +2311,7 @@ function buildSummary(){
  outHtml+='</section>';
  const goalPeriod=yearMode?selectedYear():selectedMonth;
  const goals=yearMode?monthPlansAt(selectedYear()+'-12').filter(p=>['Provisions','Investissements'].includes(p.cat)) : monthPlansAt(selectedMonth).filter(p=>['Provisions','Investissements'].includes(p.cat));
- outHtml+=`<section class="mb35-section"><h2>Épargne et provisions · ${yearMode?selectedYear():h(mname(selectedMonth))}</h2><p class="mb35-caption">${yearMode?'Objectifs et contributions cumulés pendant l’année.':'Objectifs et contributions du mois uniquement.'}</p>`;
+ outHtml+=`<section class="mb35-section"><h2>Épargne et provisions</h2><p class="mb35-caption">${yearMode?'Objectifs et contributions cumulés pendant l’année.':'Objectifs et contributions du mois uniquement.'}</p>`;
  for(const p of goals){let expected=0,paid=0;
  const periods=yearMode?Array.from({length:12},(_,i)=>selectedYear()+'-'+String(i+1).padStart(2,'0')):[selectedMonth];
  for(const mm of periods){const target=monthPlansAt(mm).find(q=>q.id===p.id)||monthPlansAt(mm).find(q=>q.name===p.name&&q.cat===p.cat);if(target)expected+=Number(target.amount)||0;
@@ -2819,16 +2819,23 @@ function balance(p,m){
 }
 function drawGoals(){if(!data||!q('v32tasks'))return;
  const m=now().slice(0,7),goals=goalsFor(m),done=goals.filter(p=>paidMonth(p,m)>=Number(p.amount)),todo=goals.filter(p=>paidMonth(p,m)<Number(p.amount));
- const row=(p,complete)=>{const amount=paidMonth(p,m),goal=Number(p.amount),pct=goal?Math.min(100,Math.max(0,amount/goal*100)):0;return `<div class="v36-goal"><button type="button" class="v36-goal-main" data-v36detail="${esc(p.id)}"><strong>${esc(p.name)}</strong><p>${euros(amount)} / ${euros(goal)} · ${complete?'Objectif atteint':'Reste '+euros(Math.max(0,goal-amount))}</p><div class="v32-track"><div class="v32-fill ${complete?'v36-complete':''}" style="width:${pct}%"></div></div></button>${complete?'<span class="v36-check" aria-label="Terminé">✓</span>':''}<button type="button" class="v36-goal-add" data-v36add="${esc(p.id)}" aria-label="Ajouter un versement à ${esc(p.name)}" title="Ajouter un versement">+</button></div>`};
+ const row=(p,complete)=>{const amount=paidMonth(p,m),goal=Number(p.amount),pct=goal?Math.min(100,Math.max(0,amount/goal*100)):0;return `<div class="v36-goal mbp372-goal"><button type="button" class="v36-goal-main" data-v36detail="${esc(p.id)}" aria-label="Consulter ${esc(p.name)} et ses actions"><span class="mbp372-goal-content"><strong>${esc(p.name)}</strong><p>${euros(amount)} / ${euros(goal)} · ${complete?'Objectif atteint':'Reste '+euros(Math.max(0,goal-amount))}</p><div class="v32-track"><div class="v32-fill ${complete?'v36-complete':''}" style="width:${pct}%"></div></div></span>${complete?'<span class="v36-check" aria-hidden="true">✓</span>':''}<span class="mbp372-goal-arrow" aria-hidden="true">›</span></button></div>`};
  const wealthWidget=q('v33wealthtask');q('v32tasks').innerHTML=`<div class="v32-head"><h2>Mes tâches du mois</h2><span class="v32-muted">${new Date(m+'-02T12:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</span></div><p class="v32-sub">${done.length} / ${goals.length} objectifs atteints</p>${todo.map(p=>row(p,false)).join('')}${done.length?`<details class="v36-done" style="margin-top:10px"><summary class="v32-muted">✓ Effectuées (${done.length})</summary>${done.map(p=>row(p,true)).join('')}</details>`:''}${goals.length?'':'<p class="v32-muted">Aucun objectif pour ce mois.</p>'}`;if(wealthWidget)q('v32tasks').append(wealthWidget);
 }
 function showGoal(id){if(!data)return;const p=goalsFor(now().slice(0,7)).find(x=>x.id===id)||findPlan(id);if(!p)return;activeGoal=p.id;const m=now().slice(0,7),deposited=paidMonth(p,m),b=balance(p,m),history=goalMoves(p,m).sort((a,b)=>b.date.localeCompare(a.date)),expenses=data.transactions.filter(t=>t.type==='expense'&&t.planId===p.id&&t.date?.slice(0,7)<=m).sort((a,b)=>b.date.localeCompare(a.date));
  goalDialog.innerHTML=`<h2>${esc(p.name)}</h2><p class="muted" style="font-size:12px;margin:0">${isInvestment(p)?'Suivi des versements investis':'Provision cumulée'} · ${esc(m)}</p><div class="v36-goalmetrics"><div><span>Objectif du mois</span><b>${euros(p.amount)}</b></div><div><span>Versé ce mois</span><b>${euros(deposited)}</b></div><div><span>Cumul des versements</span><b>${euros(b.funded)}</b></div><div><span>${isInvestment(p)?'Versements nets suivis':'Solde disponible suivi'}</span><b>${euros(b.remaining)}</b></div></div><div class="v36-goalactions"><button type="button" class="btn" data-v36action="add">+ Versement</button>${isInvestment(p)?'<button type="button" class="btn secondary" data-v36action="investment">Mouvements</button>':'<button type="button" class="btn secondary" data-v36action="spend">Utiliser</button>'}</div><h3 style="font-size:14px;margin:18px 0 4px">Historique</h3><div class="v36-history">${[...history.map(x=>({date:x.date,name:'Versement',value:x.amount,sign:1})),...expenses.map(x=>({date:x.date,name:x.name,value:x.amount,sign:-1}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20).map(x=>`<div><span>${esc(x.date)} · ${esc(x.name)}</span><b style="color:${x.sign>0?'#57cfae':'#f1a6ae'}">${x.sign>0?'+':'−'}${euros(x.value)}</b></div>`).join('')||'<p class="muted">Aucun mouvement enregistré.</p>'}</div><button type="button" class="btn secondary v36-close" data-v36action="close">Fermer</button>`;
  goalDialog.showModal();
 }
-q('v32tasks')?.addEventListener('click',e=>{const plus=e.target.closest('[data-v36add]'),detail=e.target.closest('[data-v36detail]');if(plus){e.stopPropagation();const p=goalsFor(now().slice(0,7)).find(x=>x.id===plus.dataset.v36add);if(!p)return;const form=q('v32taskdialog'),left=Math.max(.01,Number(p.amount)-paidMonth(p,now().slice(0,7)));q('v32tasktitle').textContent=(isInvestment(p)?'Versement · ':'Épargne · ')+p.name;q('v32taskstatus').textContent='';q('v32taskamount').value=left.toFixed(2);q('v32taskdate').value=now(); // use the existing validated and encrypted save path with its own taskId
- const hidden=document.createElement('button');hidden.dataset.v32task=p.id;hidden.style.display='none';q('v32tasks').append(hidden);hidden.click();hidden.remove();q('v32tasktitle').textContent=(isInvestment(p)?'Versement PEA / investissement · ':'Versement · ')+p.name;q('v32taskstatus').textContent='';return}if(detail)showGoal(detail.dataset.v36detail)});
-goalDialog.addEventListener('click',e=>{const b=e.target.closest('[data-v36action]');if(!b)return;const id=activeGoal,action=b.dataset.v36action;goalDialog.close();if(action==='close'||!id)return;if(action==='add'){const plus=q('v32tasks')?.querySelector(`[data-v36add="${CSS.escape(id)}"]`);plus?.click()}if(action==='spend'){const p=findPlan(id);if(!p)return;openTx('expense','Utilisation · '+p.name,'Variables');q('txbudget').value=p.id; // a real spending transaction, never a second contribution deduction
+function openGoalContribution(id){
+ const p=goalsFor(now().slice(0,7)).find(x=>x.id===id)||findPlan(id);if(!p)return;
+ const hidden=document.createElement('button');hidden.type='button';hidden.dataset.v32task=p.id;hidden.style.display='none';q('v32tasks').append(hidden);hidden.click();hidden.remove();
+ q('v32tasktitle').textContent=(isInvestment(p)?'Versement PEA / investissement · ':'Versement · ')+p.name;
+ q('v32taskstatus').textContent='';
+ q('v32taskamount').value=Math.max(.01,Number(p.amount)-paidMonth(p,now().slice(0,7))).toFixed(2);
+ q('v32taskdate').value=now();
+}
+q('v32tasks')?.addEventListener('click',e=>{const detail=e.target.closest('[data-v36detail]');if(detail)showGoal(detail.dataset.v36detail)});
+goalDialog.addEventListener('click',e=>{const b=e.target.closest('[data-v36action]');if(!b)return;const id=activeGoal,action=b.dataset.v36action;goalDialog.close();if(action==='close'||!id)return;if(action==='add'){openGoalContribution(id)}if(action==='spend'){const p=findPlan(id);if(!p)return;openTx('expense','Utilisation · '+p.name,'Variables');q('txbudget').value=p.id; // a real spending transaction, never a second contribution deduction
  }if(action==='investment'){mbpAlert('Les retraits d’investissement se suivent comme mouvements distincts. La valeur du portefeuille se met à jour dans Patrimoine.')}});
 document.getElementById('v24expense')?.addEventListener('click',()=>queueMicrotask(()=>render()));document.getElementById('v24income')?.addEventListener('click',()=>queueMicrotask(()=>render()));
 // Native keyboard for every amount field (legacy custom number overlay is disabled at its source).
@@ -3079,7 +3086,7 @@ dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,86
    row.setAttribute('aria-label',`Modifier l’opération : ${(row.querySelector('.mb35-recentname strong')?.textContent||'').trim()}, ${(row.querySelector('.mb35-recentsum')?.textContent||'').trim()}`);
   });
  }
- function update(){paint();cleanRecent()}
+ function update(){cleanRecent()}
  const targets=['v32summary','v32tasks','v32recent','v30profile'].map(id=>document.getElementById(id)).filter(Boolean);
  for(const node of targets){new MutationObserver(()=>{if(!node.isConnected)return;requestAnimationFrame(update)}).observe(node,{childList:true,subtree:true})}
  update();
@@ -3159,7 +3166,7 @@ dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,86
   });
  }
  function labelChart(){const h=document.querySelector('#v26budgetgraph h2');if(h)h.textContent='Dépenses réalisées'}
- const schedule=()=>{if(schedule.queued)return;schedule.queued=true;requestAnimationFrame(()=>{schedule.queued=false;updateIndicators();labelChart()})};
+ const schedule=()=>{if(schedule.queued)return;schedule.queued=true;requestAnimationFrame(()=>{schedule.queued=false;labelChart()})};
  for(const id of rootIds){const root=document.getElementById(id);if(root)new MutationObserver(schedule).observe(root,{childList:true,subtree:true})}
  schedule();
  document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(n=>n.textContent=n.textContent.replace(/Version\s+3\.6\s+bêta\s+\d+/gi,'Version 3.6 bêta 4'));
@@ -3211,8 +3218,92 @@ dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,86
  // Render colors consistently, without using ice-blue for financial status.
  const statusColor=(ratio,savings)=>savings?(ratio<=0?'#77879a':ratio>=1?'#4dc69f':'#e8ae68'):(ratio>=1?'#f08e9c':ratio>=.85?'#e88b55':ratio>=.60?'#e8ae68':'#4dc69f');
  function recolor(){for(const row of document.querySelectorAll('#v32summary .v32-line,#v32tasks .v36-goal,#v30profile .v32-line')){const fill=row.querySelector('.v32-fill,.trackfill');if(!fill)continue;const m=(row.textContent||'').match(/([\d\s\u00a0\u202f.,]+)\s*€\s*\/\s*([\d\s\u00a0\u202f.,]+)\s*€/);if(!m)continue;const num=s=>Number(s.replace(/[\s\u00a0\u202f]/g,'').replace(',','.'));const actual=num(m[1]),max=num(m[2]);if(!(max>0))continue;const savings=!!row.closest('#v32tasks')||!!row.closest('.v32-section-goals')||/épargne|provision|investissement/i.test(row.closest('.v32-card')?.querySelector('h2')?.textContent||'');const color=statusColor(actual/max,savings);fill.style.setProperty('background',color,'important');fill.style.setProperty('background-color',color,'important')}}
- const obs=new MutationObserver(()=>{if(obs.timer)return;obs.timer=1;requestAnimationFrame(()=>{obs.timer=0;recolor()})});for(const id of ['v32summary','v32tasks','v30profile']){const node=q(id);if(node)obs.observe(node,{childList:true,subtree:true})}recolor();
+ const obs=new MutationObserver(()=>{if(obs.timer)return;obs.timer=1;requestAnimationFrame(()=>{obs.timer=0;/* coloriage centralisé en bêta 2 */})});for(const id of ['v32summary','v32tasks','v30profile']){const node=q(id);if(node)obs.observe(node,{childList:true,subtree:true})}/* coloriage centralisé en bêta 2 */
  document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(n=>n.textContent=n.textContent.replace(/Version\s+3\.6\s+bêta\s+\d+/gi,'Version 3.7 bêta 1'));
+})();
+</script>
+
+<!-- MBP V3.7 bêta 2 : actions uniques, palette unique, modales adaptées à iOS -->
+<style id="mbp372-polish">
+/* Le bouton englobe la ligne, son statut et son discret chevron. */
+#v32tasks .mbp372-goal{padding:0!important;gap:0!important}
+#v32tasks .mbp372-goal .v36-goal-main{display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;min-height:76px!important;padding:12px 1px!important;box-sizing:border-box!important;}
+#v32tasks .mbp372-goal .mbp372-goal-content{display:block;flex:1;min-width:0;}
+#v32tasks .mbp372-goal .v36-check{flex-shrink:0!important;}
+#v32tasks .mbp372-goal .mbp372-goal-arrow{flex:0 0 18px;color:#91a5ba;font-size:24px;font-weight:400;text-align:right;line-height:1}
+#v32tasks .mbp372-goal .v32-track{display:block;width:100%;overflow:hidden;}
+#v32tasks .mbp372-goal .v32-fill{display:block;height:100%}
+#v32tasks .mbp372-goal .v36-goal-main:focus:not(:focus-visible){outline:0!important;box-shadow:none!important;}
+/* Une seule source de couleur, jamais de rose pour un objectif atteint. */
+#v32summary .v32-fill.mbp372-status,#v32tasks .v32-fill.mbp372-status,
+.mb35-section .v32-fill.mbp372-status,#v30profile .v32-fill.mbp372-status,
+#v30profile .trackfill.mbp372-status{background:var(--mbp372-status)!important;background-color:var(--mbp372-status)!important;}
+/* Tous les formulaires modaux doivent rester dans le viewport visible, indépendamment du défilement du fond. */
+html.mbp372-modal-open,body.mbp372-modal-open{overscroll-behavior:none!important;}
+dialog[open],#mbp-ui-dialog[open]{
+ position:fixed!important;
+ left:0!important;right:0!important;bottom:auto!important;
+ top:var(--mbp372-viewport-mid,50dvh)!important;
+ transform:translateY(-50%)!important;
+ margin:0 auto!important;
+ width:min(calc(100vw - 28px),450px)!important;
+ max-width:calc(100vw - 28px)!important;
+ max-height:min(calc(var(--mbp372-viewport-height,100dvh) - 32px - env(safe-area-inset-bottom)),700px)!important;
+ overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain!important;
+ box-sizing:border-box!important;
+ scroll-padding-bottom:18px;
+ -webkit-overflow-scrolling:touch;
+}
+#mbp36goaldialog[open],#v32taskdialog[open],#mbp37transferdialog[open]{max-height:min(calc(var(--mbp372-viewport-height,100dvh) - 40px - env(safe-area-inset-bottom)),690px)!important;}
+#v32taskdialog input,#v32taskdialog select,#v32taskdialog button,
+#mbp37transferdialog input,#mbp37transferdialog select,
+#txdialog input,#txdialog select,dialog input[type="date"]{box-sizing:border-box!important;max-width:100%!important;min-width:0!important;}
+#v32taskdialog input[type="date"],#mbp37transferdialog input[type="date"]{display:block!important;width:100%!important;}
+/* Focus clavier visible mais sans double anneau ni halo sur les boutons activés au doigt. */
+#mbp36goaldialog button:focus:not(:focus-visible),#v32taskdialog button:focus:not(:focus-visible),
+#mbp37transferdialog button:focus:not(:focus-visible),#txdialog button:focus:not(:focus-visible),
+#v32taskdialog input:focus:not(:focus-visible){outline:none!important;box-shadow:none!important;}
+#v32taskdialog input:focus,#mbp37transferdialog input:focus,#txdialog input:focus{outline:1px solid #8ab8e9!important;outline-offset:0!important;box-shadow:none!important;}
+#mbp36goaldialog .v36-goalactions button:focus:not(:focus-visible){outline:0!important;box-shadow:none!important;}
+@media(max-width:390px){dialog[open],#mbp-ui-dialog[open]{width:calc(100vw - 24px)!important;}}
+</style>
+<script id="mbp372-interface-controller">
+(()=>{'use strict';
+ const opt=document.querySelector('#v32summary');
+ // One financial classification for every view. Read data from row headings; do not interpret visually colored classes.
+ const moneyNumber=t=>{const v=String(t).replace(/[\u00a0\u202f\s]/g,'').replace(/[^0-9.,-]/g,'');return Number(v.replace(',','.'))};
+ function classify(row){
+  const fill=row.querySelector('.v32-fill,.trackfill');if(!fill)return;
+  const txt=(row.querySelector('.v32-monthrow,.tracker-top,.v36-goal-main')||row).textContent||'';
+  const m=txt.match(/([\d\s\u00a0\u202f.,]+)\s*€\s*\/\s*([\d\s\u00a0\u202f.,]+)\s*€/);
+  if(!m)return;const actual=moneyNumber(m[1]),limit=moneyNumber(m[2]);if(!(limit>0)||!Number.isFinite(actual))return;
+  const parent=row.closest('.mb35-section,.v32-card');const header=parent?.querySelector('h2')?.textContent||'';
+  const goal=!!row.closest('#v32tasks')||/épargne|provision|investissement|objectif/i.test(header);
+  const ratio=actual/limit;
+  const color=goal?(actual<=0?'#77879a':ratio>=1?'#4dc69f':'#e8ae68'):(ratio>=1?'#f08e9c':ratio>=.85?'#e88b55':ratio>=.60?'#e8ae68':'#4dc69f');
+  if(fill.style.getPropertyValue('--mbp372-status')!==color)fill.style.setProperty('--mbp372-status',color);
+  fill.classList.add('mbp372-status');
+ }
+ function paint(){document.querySelectorAll('#v32summary .v32-line,#v32tasks .v36-goal,.mb35-section .v32-line,#v30profile .v32-line,#v30profile .tracker').forEach(classify);
+  const h=document.querySelector('#v26budgetgraph h2');if(h&&h.textContent!=='Dépenses réalisées')h.textContent='Dépenses réalisées';
+ }
+ let scheduled=false;const schedule=()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;paint()})};
+ for(const id of ['v32summary','v32tasks','v30profile']){const el=document.getElementById(id);if(el)new MutationObserver(schedule).observe(el,{childList:true,subtree:true})}
+ paint();
+ // iOS visual viewport can shrink while native keyboard is open.
+ const vv=window.visualViewport;
+ function viewport(){const height=vv?.height||window.innerHeight;document.documentElement.style.setProperty('--mbp372-viewport-height',height+'px');document.documentElement.style.setProperty('--mbp372-viewport-mid',((vv?.offsetTop||0)+height/2)+'px')}
+ viewport();vv?.addEventListener('resize',viewport);window.addEventListener('resize',viewport);
+ // Native HTML dialogs: lock background scrolling while open, then restore exact position.
+ let lockTop=0,locked=false;
+ function sync(){const opened=[...document.querySelectorAll('dialog[open]')];if(opened.length&&!locked){lockTop=window.scrollY;locked=true;document.documentElement.classList.add('mbp372-modal-open');document.body.classList.add('mbp372-modal-open');document.body.style.position='fixed';document.body.style.width='100%';document.body.style.top=-lockTop+'px';}
+  else if(!opened.length&&locked){document.body.style.position='';document.body.style.width='';document.body.style.top='';document.documentElement.classList.remove('mbp372-modal-open');document.body.classList.remove('mbp372-modal-open');locked=false;window.scrollTo(0,lockTop)}
+ }
+ const observer=new MutationObserver(sync);observer.observe(document.body,{attributes:true,attributeFilter:['open'],subtree:true,childList:true});sync();
+ // Rest state should not select the first action button by showing a touch-style focus ring.
+ document.addEventListener('focusin',e=>{const el=e.target;if(el.closest?.('dialog')&&el.matches?.('input,select,textarea'))setTimeout(()=>el.scrollIntoView({block:'nearest',behavior:'instant'}),50)});
+ document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(n=>{n.textContent=n.textContent.replace(/Version\s+3\.[67]\s+bêta\s+\d+/gi,'Version 3.7 bêta 2')});
 })();
 </script>
 </body></html>
