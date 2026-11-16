@@ -613,22 +613,35 @@ $('recurringform').onsubmit=async e=>{
  try{await save();editingRecurring=null;$('recurringdialog').close();render();}
  catch(err){if(hadRecurring)data.recurring=before;else delete data.recurring;alertMsg('Enregistrement impossible : modèle précédent conservé.')}
 };
+let mbpV4RecurringApplyBusy=false;
 $('applyrecurring').onclick=async()=>{
+ if(mbpV4RecurringApplyBusy||!data)return;
+ mbpV4RecurringApplyBusy=true;
+ const month=selectedMonth;
+ try{
  const recurring=data.recurring||[];
  if(!recurring.length){alertMsg('Ajoute d’abord un modèle récurrent.');return}
  // Une occurrence par identifiant de modèle et par mois : pas de rapprochement par simple nom.
  const fresh=recurring.filter(r=>!data.transactions.some(t=>t.recurringId===r.id&&t.date?.startsWith(selectedMonth)));
  if(!fresh.length){alertMsg('Tous les modèles sont déjà enregistrés pour ce mois.');return}
- if(!await mbpConfirm(`Ajouter ${fresh.length} opération(s) au mois ${selectedMonth} pour ${fmt(fresh.reduce((s,r)=>s+Number(r.amount),0))} ?`))return;
- const daysInMonth=new Date(Number(selectedMonth.slice(0,4)),Number(selectedMonth.slice(5)),0).getDate();
- const added=[];
- for(const r of fresh){
+ if(!await mbpConfirm(`Ajouter ${fresh.length} opération(s) au mois ${month} pour ${fmt(fresh.reduce((s,r)=>s+Number(r.amount),0))} ?`))return;
+ if(selectedMonth!==month){alertMsg('Le mois a changé : aucune charge ajoutée.');return}
+ const stillFresh=fresh.filter(r=>!data.transactions.some(t=>String(t.recurringId)===String(r.id)&&t.date?.slice(0,7)===month));
+ if(!stillFresh.length){alertMsg('Ces opérations sont déjà enregistrées.');return}
+ const daysInMonth=new Date(Number(month.slice(0,4)),Number(month.slice(5)),0).getDate();
+ const added=[],activePlans=mbpV4PlansForMonth(month);
+ for(const r of stillFresh){
   const day=Math.max(1,Math.min(daysInMonth,Number(r.day)||1));
-  const item={id:uid(),type:'expense',name:r.name,amount:Number(r.amount),cat:r.cat,date:selectedMonth+'-'+String(day).padStart(2,'0'),recurringId:r.id,...(r.planId?{planId:r.planId}:{})};
+  const item={id:uid(),type:'expense',name:r.name,amount:Number(r.amount),cat:r.cat,date:month+'-'+String(day).padStart(2,'0'),recurringId:r.id};
+  const direct=r.planId?activePlans.find(p=>String(p.id)===String(r.planId)&&p.cat===r.cat):null;
+  const named=activePlans.filter(p=>p.cat===r.cat&&String(p.name||'').trim().toLocaleLowerCase('fr')===String(r.name||'').trim().toLocaleLowerCase('fr'));
+  if(direct)item.planId=direct.id;
+  else if(named.length===1)item.planId=named[0].id;
   added.push(item);data.transactions.push(item);
  }
  try{await save();render();alertMsg(added.length+' opération(s) ajoutée(s).');}
  catch(err){const ids=new Set(added.map(x=>x.id));data.transactions=data.transactions.filter(x=>!ids.has(x.id));alertMsg('Enregistrement impossible : aucune charge récurrente ajoutée.');}
+ }finally{mbpV4RecurringApplyBusy=false}
 };
 function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA','Compte-titres','Crypto','Immobilier','Autres'],colors=['#a58aff','#4a8aff','#f0a44c','#36dbac','#e79bbd','#8993b1'];let invested=0,valued=0,count=0;for(const a of assets){if(a.invested!==null&&a.invested!==undefined&&Number.isFinite(Number(a.invested))){invested+=Number(a.invested);valued+=Number(a.amount)||0;count++}}$('investedtotal').textContent=count?fmt(invested):'Non renseigné';$('wealthgain').textContent=count?fmt(valued-invested):'Non calculable';$('wealthgain').style.color=count?(valued-invested>=0?'#45e5b6':'#ffaaa8'):'';const totals=types.map((name,i)=>({name,color:colors[i],value:assets.filter(a=>(a.type||'Autres')===name).reduce((s,a)=>s+Number(a.amount||0),0)})).filter(x=>x.value>0);const total=totals.reduce((s,x)=>s+x.value,0);$('wealthbreakdown').innerHTML=totals.length?totals.map(x=>'<div class="row"><span><i class="legend-dot" style="display:inline-block;background:'+x.color+';margin-right:8px"></i>'+escapeHtml(x.name)+' <small>('+Math.round(x.value/total*100)+' %)</small></span><b>'+fmt(x.value)+'</b></div>').join(''):'<p class="muted">Ajoute un actif pour voir sa répartition.</p>'}function renderHistory(){const el=$('wealthchart');if(!el)return;const a=(data.snapshots||[]).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date)&&Number.isFinite(Number(x.amount))).slice().sort((x,y)=>x.date.localeCompare(y.date));if(!a.length){el.innerHTML='<p class="muted">Aucun historique pour le moment. Enregistre un premier point.</p>';return}if(a.length===1){el.innerHTML='<p class="muted">Un point enregistré le '+escapeHtml(a[0].date)+' : <b>'+fmt(a[0].amount)+'</b>. Un deuxième jour de suivi permettra d’afficher une courbe.</p>';return}const points=a.slice(-24),values=points.map(x=>Number(x.amount)),lo=Math.min(...values),hi=Math.max(...values),range=Math.max(hi-lo,1),min=lo-range*.15,max=hi+range*.15,W=340,H=190,L=12,R=12,T=15,B=32,plotW=W-L-R,plotH=H-T-B,xy=values.map((v,i)=>[L+i*plotW/(values.length-1),T+(max-v)/(max-min)*plotH]),coords=xy.map(p=>p.map(x=>x.toFixed(2)).join(',')).join(' '),grid=[0,.5,1].map(f=>'<line x1="'+L+'" x2="'+(W-R)+'" y1="'+(T+plotH*f)+'" y2="'+(T+plotH*f)+'" class="wealth-chart-grid"/>').join(''),dots=xy.map((p,i)=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.5" fill="#36dbac"><title>'+escapeHtml(points[i].date)+' : '+fmt(values[i])+'</title></circle>').join('');el.innerHTML='<svg class="wealth-chart-svg" viewBox="0 0 340 190" role="img" aria-label="Évolution des actifs suivis de '+fmt(values[0])+' à '+fmt(values.at(-1))+' sur '+points.length+' dates"><defs><linearGradient id="wealthLine" x1="0" x2="1"><stop stop-color="#a58aff"/><stop offset="1" stop-color="#36dbac"/></linearGradient></defs>'+grid+'<polyline points="'+coords+'" fill="none" stroke="url(#wealthLine)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>'+dots+'<text x="'+L+'" y="183" class="wealth-chart-axis">'+escapeHtml(points[0].date.slice(5))+'</text><text x="'+(W-R)+'" y="183" text-anchor="end" class="wealth-chart-axis">'+escapeHtml(points.at(-1).date.slice(5))+'</text></svg><div class="wealth-legend"><div class="wealth-chip">Début <b>'+fmt(values[0])+'</b></div><div class="wealth-chip">Dernier point <b>'+fmt(values.at(-1))+'</b></div><div class="wealth-chip">Variation <b>'+fmt(values.at(-1)-values[0])+'</b></div></div><p class="wealth-chart-note">'+points.length+' relevés affichés (24 derniers maximum). Variation des actifs bruts : elle inclut les versements et retraits, sans déduire les dettes. Ce n’est pas un rendement.</p>'}async function saveSnapshot(){
  if(!data)return;
