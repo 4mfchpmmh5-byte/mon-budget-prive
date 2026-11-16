@@ -534,9 +534,9 @@ button,nav,summary,.v24-chip,.btn{touch-action:manipulation;-webkit-tap-highligh
 <dialog id="assetdialog"><form id="assetform"><button type="button" class="close" data-close>×</button><h2 id="assettitle">Ajouter un actif</h2><label>Nom<input id="assetname" required maxlength="80" placeholder="Ex. Livret A"></label><label>Type de placement<select id="assettype"><option value="Livrets">Livrets / épargne</option><option value="PEA">PEA</option><option value="Compte-titres">Compte-titres</option><option value="Crypto">Cryptomonnaies</option><option value="Immobilier">Immobilier</option><option value="Autres">Autres</option></select></label><label>Valeur actuelle (€)<input id="assetamount" required type="number" min="0" step="0.01" inputmode="decimal"></label><label>Capital investi ou versé (€) — facultatif<input id="assetinvested" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Laisser vide si inconnu"></label><p class="muted" style="font-size:12px">Le capital investi sert uniquement à calculer un écart indicatif, pas une performance réelle.</p><button class="btn" id="assetsubmit" type="submit">Ajouter</button></form></dialog>
 <dialog id="recurringdialog"><form id="recurringform"><button type="button" class="close" data-close>×</button><h2 id="recurringtitle">Nouvelle opération récurrente</h2><label>Libellé<input id="recurringname" required maxlength="80" placeholder="Ex. EDF"></label><label>Montant (€)<input id="recurringamount" required type="number" min="0.01" step="0.01" inputmode="decimal"></label><label>Catégorie<select id="recurringcat"><option>Fixes</option><option>Variables</option><option>Provisions</option><option>Impôts</option><option>Investissements</option></select></label><label>Jour du mois (1 à 31)<input id="recurringday" type="number" required min="1" max="31" value="5"></label><button class="btn" type="submit">Enregistrer le modèle</button></form></dialog>
 <script>
-'use strict';const $=id=>document.getElementById(id);const KEY='mbp-encrypted-v1';let data=null,secret=null,selectedMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);const fmt=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n||0);const uid=()=>crypto.randomUUID();const enc=new TextEncoder(),dec=new TextDecoder();const to64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));const from64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));function empty(){return {version:1,plans:[],transactions:[],assets:[],snapshots:[],recurring:[]}};async function keyFor(pass,salt){const material=await crypto.subtle.importKey('raw',enc.encode(pass),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}async function seal(obj,pass){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await keyFor(pass,salt),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(obj)));return {format:'mon-budget-prive',version:1,kdf:'PBKDF2-SHA256',iterations:310000,salt:to64(salt),iv:to64(iv),ciphertext:to64(cipher)}}async function unseal(v,pass){if(v?.format!=='mon-budget-prive'||v?.version!==1||v?.iterations!==310000)throw Error('Format de sauvegarde non reconnu');const key=await keyFor(pass,from64(v.salt));const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:from64(v.iv)},key,from64(v.ciphertext));const result=JSON.parse(dec.decode(raw));if(!Array.isArray(result.plans)||!Array.isArray(result.transactions)||!Array.isArray(result.assets))throw Error('Données incorrectes');return result}let mbpSaveQueue=Promise.resolve(),mbpVaultGeneration=0,mbpVaultDeleting=false,mbpVaultRestoring=false;
+'use strict';const $=id=>document.getElementById(id);const KEY='mbp-encrypted-v1';let data=null,secret=null,selectedMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);const fmt=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n||0);const uid=()=>crypto.randomUUID();const enc=new TextEncoder(),dec=new TextDecoder();const to64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));const from64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));function empty(){return {version:1,plans:[],transactions:[],assets:[],snapshots:[],recurring:[]}};async function keyFor(pass,salt){const material=await crypto.subtle.importKey('raw',enc.encode(pass),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}async function seal(obj,pass){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await keyFor(pass,salt),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(obj)));return {format:'mon-budget-prive',version:1,kdf:'PBKDF2-SHA256',iterations:310000,salt:to64(salt),iv:to64(iv),ciphertext:to64(cipher)}}async function unseal(v,pass){if(v?.format!=='mon-budget-prive'||v?.version!==1||v?.iterations!==310000)throw Error('Format de sauvegarde non reconnu');const key=await keyFor(pass,from64(v.salt));const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:from64(v.iv)},key,from64(v.ciphertext));const result=JSON.parse(dec.decode(raw));if(!Array.isArray(result.plans)||!Array.isArray(result.transactions)||!Array.isArray(result.assets))throw Error('Données incorrectes');return result}let mbpSaveQueue=Promise.resolve(),mbpVaultGeneration=0,mbpVaultDeleting=false,mbpVaultRestoring=false,mbpVaultResetting=false;
 async function save(){
- if(!data||!secret||mbpVaultDeleting||mbpVaultRestoring)throw Error('Coffre verrouillé ou en cours de remplacement');
+ if(!data||!secret||mbpVaultDeleting||mbpVaultRestoring||mbpVaultResetting)throw Error('Coffre verrouillé ou en cours de remplacement');
  const snapshot=JSON.parse(JSON.stringify(data)),pass=secret,generation=mbpVaultGeneration;
  const task=async()=>{
   if(generation!==mbpVaultGeneration)throw Error('Écriture annulée : coffre remplacé');
@@ -775,7 +775,7 @@ $('txform').onsubmit=async e=>{
   const pw=await mbpPrompt('Phrase secrète de cette sauvegarde :');if(pw===null)return;
   const imported=mbpMigrate37(await unseal(v,pw));
   if(!await mbpConfirm('Remplacer toutes les données locales par cette sauvegarde ?'))return;
-  if(data!==openedData||secret!==openedSecret||mbpVaultDeleting||mbpVaultRestoring)
+  if(data!==openedData||secret!==openedSecret||mbpVaultDeleting||mbpVaultRestoring||mbpVaultResetting)
    throw Error('Le coffre a changé pendant la confirmation');
   // Prevent other writers from slipping between queue drain, encryption and replacement.
   mbpVaultRestoring=true;locked=true;
@@ -806,9 +806,52 @@ $('txform').onsubmit=async e=>{
   }
  }catch(err){mbpAlert('Restauration impossible : les données existantes ont été conservées si le stockage le permet.')}
  finally{if(locked)mbpVaultRestoring=false;e.target.value=''}
-};$('resetdata').onclick=async()=>{if(!data||!secret)return;const confirmation=await mbpPrompt('Cette action efface TOUTES les données du coffre, sans supprimer sa phrase secrète. Tape RÉINITIALISER pour confirmer :');if(confirmation!=='RÉINITIALISER')return;const pw=await mbpPrompt('Saisis ta phrase secrète pour confirmer :');if(pw===null)return;try{await unseal(JSON.parse(localStorage.getItem(KEY)),pw)}catch(e){alertMsg('Phrase secrète incorrecte : aucune donnée supprimée.');return}const previous=data;data=empty();try{await save();selectedMonth=new Date().toISOString().slice(0,7);render();tab('home');alertMsg('Données réinitialisées. Coffre conservé.')}catch(e){data=previous;alertMsg('Réinitialisation impossible : aucune suppression confirmée.')}};$('wipe').onclick=async()=>{
+};$('resetdata').onclick=async()=>{
+ if(!data||!secret||mbpVaultRestoring||mbpVaultDeleting||mbpVaultResetting)return;
+ const confirmation=await mbpPrompt('Cette action efface TOUTES les données du coffre, sans supprimer sa phrase secrète. Tape RÉINITIALISER pour confirmer :');
+ if(confirmation!=='RÉINITIALISER')return;
+ const pw=await mbpPrompt('Saisis ta phrase secrète pour confirmer :');
+ if(pw===null)return;
+ if(!data||!secret||mbpVaultRestoring||mbpVaultDeleting||mbpVaultResetting)return;
+ mbpVaultResetting=true;
+ let previousData=null,previousPayload=null;
+ try{
+  // Drain all earlier mutations before confirming the actual encrypted vault password.
+  await mbpSaveQueue.catch(()=>{});
+  previousData=data;
+  previousPayload=localStorage.getItem(KEY);
+  if(!previousPayload)throw Error('Coffre absent');
+  await unseal(JSON.parse(previousPayload),pw);
+  if(secret!==pw)throw Error('Phrase secrète incompatible');
+  const cleared=empty();
+  const ciphertext=JSON.stringify(await seal(cleared,pw));
+  const verified=await unseal(JSON.parse(ciphertext),pw);
+  if(JSON.stringify(verified)!==JSON.stringify(cleared))throw Error('Vérification échouée');
+  localStorage.setItem(KEY,ciphertext);
+  if(localStorage.getItem(KEY)!==ciphertext)throw Error('Écriture incomplète');
+  data=cleared;
+  try{
+   selectedMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);
+   render();tab('home');
+  }catch(uiError){
+   if(previousPayload===null)localStorage.removeItem(KEY);
+   else localStorage.setItem(KEY,previousPayload);
+   data=previousData;
+   try{render()}catch(_){}
+   throw uiError;
+  }
+  mbpVaultGeneration++;
+  mbpSaveQueue=Promise.resolve();
+  alertMsg('Données réinitialisées. Coffre conservé.');
+ }catch(err){
+  // Never report success when local storage or password verification failed.
+  if(previousData&&data!==previousData)data=previousData;
+  alertMsg('Réinitialisation impossible : les données précédentes ont été conservées si le stockage le permet.');
+ }finally{mbpVaultResetting=false}
+};
+$('wipe').onclick=async()=>{
  if(await mbpPrompt('Pour supprimer définitivement les données locales, écris EFFACER')!=='EFFACER')return;
- if(mbpVaultRestoring||mbpVaultDeleting){alertMsg('Une opération sur le coffre est déjà en cours.');return}
+ if(mbpVaultRestoring||mbpVaultDeleting||mbpVaultResetting){alertMsg('Une opération sur le coffre est déjà en cours.');return}
  // Cancel pending snapshots first: none may re-create the removed vault.
  mbpVaultDeleting=true;
  mbpVaultGeneration++;
