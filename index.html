@@ -955,6 +955,55 @@ document.addEventListener('click',e=>{
   s.value=id;
  }
 });
+// V4: a single native iOS contribution sheet (amount and date together).
+const mbpV4ContributionDialog=document.createElement('dialog');
+mbpV4ContributionDialog.id='mbpV4ContributionDialog';
+mbpV4ContributionDialog.setAttribute('aria-labelledby','mbpV4ContributionTitle');
+mbpV4ContributionDialog.innerHTML='<form id="mbpV4ContributionForm"><h2 id="mbpV4ContributionTitle">Mettre de côté</h2><p id="mbpV4ContributionGoal" class="muted"></p><label>Montant (€)<input id="mbpV4ContributionAmount" type="number" inputmode="decimal" min="0.01" step="0.01" required></label><label>Date<input id="mbpV4ContributionDate" type="date" required></label><p id="mbpV4ContributionError" role="alert" class="negative" aria-live="polite"></p><div style="display:flex;gap:10px;margin-top:12px"><button id="mbpV4ContributionCancel" class="btn secondary" type="button" style="flex:1">Annuler</button><button id="mbpV4ContributionSubmit" class="btn" type="submit" style="flex:1">Valider</button></div></form>';
+document.body.append(mbpV4ContributionDialog);
+let mbpV4ContributionPlan=null,mbpV4ContributionBusy=false;
+$('mbpV4ContributionCancel').onclick=()=>{if(!mbpV4ContributionBusy)mbpV4ContributionDialog.close()};
+mbpV4ContributionDialog.addEventListener('close',()=>{mbpV4ContributionPlan=null;$('mbpV4ContributionError').textContent=''});
+function mbpV4OpenContribution(p){
+ if(!p||mbpV4ContributionBusy||mbpV4ContributionDialog.open)return;
+ mbpV4ContributionPlan={id:p.id,goalId:p.goalId||'',name:p.name};
+ $('mbpV4ContributionGoal').textContent=p.name;
+ $('mbpV4ContributionAmount').value=Number(p.amount)||'';
+ const today=new Date().getDate(),last=new Date(Number(selectedMonth.slice(0,4)),Number(selectedMonth.slice(5)),0).getDate();
+ $('mbpV4ContributionDate').value=selectedMonth+'-'+String(Math.min(today,last)).padStart(2,'0');
+ $('mbpV4ContributionError').textContent='';
+ mbpV4ContributionDialog.showModal();
+}
+$('mbpV4ContributionForm').onsubmit=async e=>{
+ e.preventDefault();
+ if(!data||mbpV4ContributionBusy||!mbpV4ContributionPlan)return;
+ const p=mbpV4ContributionPlan,amount=Number($('mbpV4ContributionAmount').value),date=$('mbpV4ContributionDate').value;
+ const fail=msg=>{$('mbpV4ContributionError').textContent=msg};
+ if(!$('mbpV4ContributionAmount').value||!Number.isFinite(amount)||amount<=0||
+    Math.abs(amount*100-Math.round(amount*100))>1e-6){fail('Montant invalide : deux décimales maximum.');return}
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||new Date(date+'T12:00:00').toLocaleDateString('sv-SE')!==date){fail('Date invalide.');return}
+ const dated=mbpV4PlansForMonth(date.slice(0,7));
+ const match=dated.find(x=>String(x.id)===String(p.id))||
+  (p.goalId?dated.find(x=>String(x.goalId||'')===String(p.goalId)):null);
+ if(!match||match.cat!=='Provisions'){fail('Provision introuvable pour cette date.');return}
+ mbpV4ContributionBusy=true;
+ $('mbpV4ContributionSubmit').disabled=true;
+ $('mbpV4ContributionCancel').disabled=true;
+ v17Ensure();
+ const move={id:uid(),planId:match.id,goalId:match.goalId||p.goalId,kind:'fund',amount:Math.round(amount*100)/100,date};
+ data.envelopeMoves.push(move);
+ try{
+  await save();
+  mbpV4ContributionDialog.close();render();alertMsg('Provision enregistrée (sans modifier tes comptes bancaires).');
+ }catch(err){
+  data.envelopeMoves=data.envelopeMoves.filter(x=>x.id!==move.id);
+  fail('Enregistrement impossible : la contribution n’a pas été conservée.');
+ }finally{
+  mbpV4ContributionBusy=false;
+  $('mbpV4ContributionSubmit').disabled=false;
+  $('mbpV4ContributionCancel').disabled=false;
+ }
+};
 document.addEventListener('click',async e=>{
  const b=e.target.closest('[data-v17fund],[data-v17expense]');
  if(!b||!data)return;
@@ -970,29 +1019,7 @@ document.addEventListener('click',async e=>{
   $('txbudget').value=String(p.id);
   return;
  }
- const value=await mbpPrompt('Montant réellement mis de côté pour « '+p.name+' » (€) :',String(p.amount));
- if(value===null)return;
- const amount=Number(String(value).trim().replace(',','.'));
- if(!Number.isFinite(amount)||amount<=0||Math.round(amount*100)!==amount*100&&Math.abs(amount*100-Math.round(amount*100))>1e-6){
-  alertMsg('Montant invalide (deux décimales maximum).');return;
- }
- const date=await mbpPrompt('Date de la contribution (AAAA-MM-JJ) :',selectedMonth+'-01');
- if(date===null)return;
- if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||new Date(date+'T12:00:00').toLocaleDateString('sv-SE')!==date){
-  alertMsg('Date invalide');return;
- }
- // A selected plan may have a different planId on the date of contribution.
- const dated=mbpV4PlansForMonth(date.slice(0,7));
- const matching=dated.find(x=>String(x.id)===String(p.id))||
-  (p.goalId?dated.find(x=>String(x.goalId||'')===String(p.goalId)):null);
- if(!matching||matching.cat!=='Provisions'){
-  alertMsg('Aucune provision correspondante pour cette date.');return;
- }
- v17Ensure();
- const move={id:uid(),planId:matching.id,goalId:matching.goalId||p.goalId,kind:'fund',amount:Math.round(amount*100)/100,date};
- data.envelopeMoves.push(move);
- try{await save();render();alertMsg('Provision enregistrée (sans modifier tes comptes bancaires).')}
- catch(err){data.envelopeMoves=data.envelopeMoves.filter(x=>x.id!==move.id);alertMsg('Enregistrement impossible : contribution non conservée.')}
+ mbpV4OpenContribution(p);
 });
 $('resetEnvelopes').onclick=async()=>{
  if(!data)return;
