@@ -812,7 +812,6 @@ document.addEventListener('click',async e=>{
  if(!p)return;
  if(b.dataset.v17expense){
   openTx('expense',p.name,p.cat);
-  $('txdate').value=selectedMonth+'-'+String(new Date().getDate()).padStart(2,'0');
   // Use a real calendar day in the selected month.
   const d=new Date().getDate(),last=new Date(Number(selectedMonth.slice(0,4)),Number(selectedMonth.slice(5)),0).getDate();
   $('txdate').value=selectedMonth+'-'+String(Math.min(d,last)).padStart(2,'0');
