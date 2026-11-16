@@ -26,12 +26,12 @@ const assert=require('node:assert/strict');
     const button=document.querySelector('#nav button[data-tab="'+id+'"]');
     const computed=getComputedStyle(button);
     return {active,hidden:document.getElementById(id).classList.contains('hidden'),
-      label:button.getAttribute('aria-label'),bg:computed.backgroundColor,border:computed.borderTopColor};
+      label:button.getAttribute('aria-label'),bg:computed.backgroundImage,border:computed.borderTopColor};
    },id);
    assert.deepEqual(state.active,[id]);
    assert.equal(state.hidden,false);
    assert(state.label.length>0);
-   assert.notEqual(state.bg,'rgba(0, 0, 0, 0)','Active tab needs visible ice background');
+   assert.notEqual(state.bg,'none','Active tab needs visible ice background');
   }
   await page.locator('#nav button[data-tab="v30profile"]').click();
   await page.locator('#v30security').click();
