@@ -679,6 +679,44 @@ function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA
 const V17_GROUPS=['Résidence principale','Abonnements & télécoms','Banque & assurances','Vie quotidienne & loisirs','Provisions & investissements','Impôts','Revenus'];
 function v17Group(p){if(p.group&&p.group!=='auto')return p.group;const n=(p.name||'').toLowerCase();if(p.cat==='Revenus')return 'Revenus';if(p.cat==='Impôts'||/impôt|taxe sur revenu/.test(n))return 'Impôts';if(p.cat==='Provisions'&&/edf|électricité|chauffage/.test(n))return 'Résidence principale';if(p.cat==='Provisions'||p.cat==='Investissements')return 'Provisions & investissements';if(/crédit immobilier|loyer|habitation|edf|électricité|copro|foncière|chauffage|logement/.test(n))return 'Résidence principale';if(/orange|internet|mobile|spotify|canal|netflix|chat.?gpt|icloud|abonnement|box/.test(n))return 'Abonnements & télécoms';if(/banque|bnp|mutuelle|juridique|carte bancaire|assurance(?! habitation)|téléphone|iphone/.test(n))return 'Banque & assurances';return 'Vie quotidienne & loisirs'}
 function v17Ensure(){if(!Array.isArray(data.envelopeMoves))data.envelopeMoves=[];if(!data.envelopeStart)data.envelopeStart='2026-11'}
+
+// V4: a single cent-precise ledger shared by provisions, investment goals and transfers.
+function mbpV4GoalLedger(plan,through){
+ if(!data||!plan)return {month:0,total:0,spent:0,remaining:0,funds:[],expenses:[],transfers:[]};
+ const cutoff=/^\d{4}-\d{2}$/.test(through)?through+'-31':through;
+ const month=cutoff.slice(0,7),from=(data.envelopeStart||'2026-11')+'-01';
+ const id=String(plan.id),goalId=plan.goalId?String(plan.goalId):'';
+ const ids=new Set([id]);
+ if(goalId){
+  const history=[...(data.plans||[]),...Object.entries(data.monthBudgets||{})
+    .filter(([m])=>m<=month).flatMap(([,list])=>Array.isArray(list)?list:[])];
+  for(const p of history)if(p&&String(p.goalId||'')===goalId)ids.add(String(p.id));
+ }
+ const belongs=x=>{
+  if(!x)return false;
+  if(goalId&&x.goalId&&String(x.goalId)===goalId)return true;
+  return x.planId!==undefined&&x.planId!==null&&ids.has(String(x.planId));
+ };
+ const inRange=x=>typeof x.date==='string'&&x.date>=from&&x.date<=cutoff;
+ const moves=(data.envelopeMoves||[]).filter(x=>belongs(x)&&inRange(x));
+ const funds=moves.filter(x=>x.kind==='fund');
+ const transfers=moves.filter(x=>['transfer-in','transfer-out','use','withdraw'].includes(x.kind));
+ const expenses=(data.transactions||[]).filter(x=>{
+  if(x.type!=='expense'||!inRange(x))return false;
+  if(x.planId!==undefined&&x.planId!==null&&String(x.planId)!=='')return belongs(x);
+  if(x.goalId)return belongs(x);
+  const p=mbpV4ResolvePlan(x,mbpV4PlansForMonth(x.date.slice(0,7)));
+  return !!p&&ids.has(String(p.id));
+ });
+ const cents=x=>Math.round(Number(x.amount||0)*100);
+ const funded=funds.reduce((sum,x)=>sum+cents(x),0);
+ const net=transfers.reduce((sum,x)=>sum+(x.kind==='transfer-in'?1:-1)*cents(x),0);
+ const spent=expenses.reduce((sum,x)=>sum+cents(x),0);
+ return {month:funds.filter(x=>x.date.slice(0,7)===month).reduce((sum,x)=>sum+cents(x),0)/100,
+  total:(funded+net)/100,spent:spent/100,remaining:(funded+net-spent)/100,
+  funds,expenses,transfers};
+}
+
 // V4: une dépense ne peut être affectée qu'à un seul budget du même mois.
 function mbpV4ResolvePlan(t,plans){
  if(!t||!Array.isArray(plans))return null;
@@ -694,22 +732,7 @@ function v17BudgetSpent(p){
  const plans=monthPlans();
  return data.transactions.filter(t=>t.type==='expense'&&t.date?.startsWith(selectedMonth)&&mbpV4ResolvePlan(t,plans)?.id===p.id).reduce((total,t)=>total+Number(t.amount||0),0);
 }
-function v17EnvelopeBalance(p){
- v17Ensure();
- const start=data.envelopeStart, end=selectedMonth, targetId=String(p.id);
- const inPeriod=x=>typeof x.date==='string'&&x.date.slice(0,7)>=start&&x.date.slice(0,7)<=end;
- const funded=data.envelopeMoves.filter(x=>String(x.planId)===targetId&&inPeriod(x)).reduce((s,x)=>{
-  const sign=(x.kind==='fund'||x.kind==='transfer-in')?1:(x.kind==='transfer-out'||x.kind==='withdraw'||x.kind==='expense')?-1:0;
-  return s+sign*(Number.isFinite(Number(x.amount))?Number(x.amount):0);
- },0);
- const spent=data.transactions.filter(t=>{
-  if(t.type!=='expense'||!inPeriod(t))return false;
-  const month=t.date.slice(0,7);
-  // Resolve against the plans of the transaction month: never match two homonymous plans.
-  return String(mbpV4ResolvePlan(t,mbpV4PlansForMonth(month))?.id||'')===targetId;
- }).reduce((s,t)=>s+(Number.isFinite(Number(t.amount))?Number(t.amount):0),0);
- return {funded,spent,remaining:funded-spent};
-}
+function v17EnvelopeBalance(p){const s=mbpV4GoalLedger(p,selectedMonth);return {funded:s.total,spent:s.spent,remaining:s.remaining}}
 function v17TrackRow(p,mode){const used=v17BudgetSpent(p),left=Number(p.amount)-used,percent=p.amount?Math.max(0,Math.min(100,used/Number(p.amount)*100)):0;return `<div class="tracker"><div class="tracker-top"><b>${escapeHtml(p.name)}</b><b class="${left<0?'negative':'positive'}">${fmt(left)}</b></div><div class="trackbar"><div class="trackfill ${left<0?'over':percent>=85?'warn':''}" style="width:${percent}%"></div></div><small>${fmt(used)} dépensés sur ${fmt(p.amount)} prévus${left<0?' · dépassement':''}</small><div class="tracker-actions"><button class="btn secondary" data-v17expense="${p.id}">+ Dépense</button></div></div>`}
 function v17Render(){if(!data)return;v17Ensure();const variables=monthPlans().filter(p=>p.cat==='Variables');$('variableTracking').innerHTML=variables.map(p=>v17TrackRow(p)).join('')||'<p class="muted">Aucune dépense variable prévue.</p>';const provisions=monthPlans().filter(p=>p.cat==='Provisions');$('envelopeTracking').innerHTML=provisions.map(p=>{const b=v17EnvelopeBalance(p);return `<div class="tracker"><div class="tracker-top"><b>${escapeHtml(p.name)}</b><b class="${b.remaining<0?'negative':'positive'}">${fmt(b.remaining)}</b></div><small>Mis de côté : ${fmt(b.funded)} · Dépensé : ${fmt(b.spent)} · Objectif mensuel : ${fmt(p.amount)}</small><div class="tracker-actions"><button class="btn secondary" data-v17fund="${p.id}">+ Mettre de côté</button><button class="btn secondary" data-v17expense="${p.id}">− Dépenser</button></div></div>`}).join('')||'<p class="muted">Aucune provision prévue.</p>';const groups=V17_GROUPS.map(g=>({g,items:monthPlans().filter(p=>v17Group(p)===g)})).filter(x=>x.items.length);$('categoryTracking').innerHTML=groups.map(({g,items})=>`<div class="tracker"><div class="tracker-top"><b>${escapeHtml(g)}</b><b>${fmt(items.reduce((s,p)=>s+Number(p.amount),0))}</b></div><small>${items.map(p=>escapeHtml(p.name)).join(' · ')}</small></div>`).join('');$('homeTracking').innerHTML=variables.map(p=>{const left=p.amount-v17BudgetSpent(p);return `<div class="tracker"><div class="tracker-top"><span>${escapeHtml(p.name)}</span><b class="${left<0?'negative':'positive'}">${fmt(left)}</b></div></div>`}).join('')+provisions.map(p=>{const b=v17EnvelopeBalance(p);return `<div class="tracker"><div class="tracker-top"><span>🏦 ${escapeHtml(p.name)}</span><b class="${b.remaining<0?'negative':'positive'}">${fmt(b.remaining)}</b></div></div>`}).join('')||'<p class="muted">Ajoute tes budgets pour voir les soldes.</p>';}
 const v17OriginalRender=render;render=function(){v17OriginalRender();v17Render();updateMonthPickers()};
@@ -2952,14 +2975,7 @@ const goalsFor=m=>plansAt(m).filter(p=>['Provisions','Investissements'].includes
 const goalMoves=(p,until)=>Array.isArray(data?.envelopeMoves)?data.envelopeMoves.filter(v=>(v.goalId&&p.goalId?v.goalId===p.goalId:v.planId===p.id)&&v.date?.slice(0,7)<=until&&v.kind==='fund'):[];
 const paidMonth=(p,m)=>goalMoves(p,m).filter(v=>v.date?.slice(0,7)===m).reduce((n,v)=>n+Number(v.amount||0),0);
 const isInvestment=p=>p.cat==='Investissements';
-function balance(p,m){
- const start=data.envelopeStart||'2026-11',funded=goalMoves(p,m).filter(v=>v.date.slice(0,7)>=start).reduce((a,v)=>a+Number(v.amount),0);
- const match=x=>x.goalId&&p.goalId?x.goalId===p.goalId:String(x.planId)===String(p.id);
- const transfers=(data.envelopeMoves||[]).filter(v=>match(v)&&v.date?.slice(0,7)>=start&&v.date?.slice(0,7)<=m);
- const netTransfers=transfers.reduce((a,v)=>a+(v.kind==='transfer-in'?Number(v.amount):v.kind==='transfer-out'?-Number(v.amount):v.kind==='use'?-Number(v.amount):0),0);
- const spent=(data.transactions||[]).filter(t=>t.type==='expense'&&(t.goalId&&p.goalId?t.goalId===p.goalId:t.planId===p.id)&&t.date?.slice(0,7)>=start&&t.date?.slice(0,7)<=m).reduce((a,t)=>a+Number(t.amount),0);
- return{funded,spent,transfers,remaining:Math.round((funded-spent+netTransfers)*100)/100};
-}
+function balance(p,m){const s=mbpV4GoalLedger(p,m);return {funded:s.funds.reduce((n,e)=>n+Number(e.amount||0),0),spent:s.spent,transfers:s.transfers,remaining:s.remaining}}
 function drawGoals(){if(!data||!q('v32tasks'))return;
  const m=now().slice(0,7),goals=goalsFor(m),done=goals.filter(p=>paidMonth(p,m)>=Number(p.amount)),todo=goals.filter(p=>paidMonth(p,m)<Number(p.amount));
  const row=(p,complete)=>{const amount=paidMonth(p,m),goal=Number(p.amount),pct=goal?Math.min(100,Math.max(0,amount/goal*100)):0;return `<div class="v36-goal mbp372-goal"><button type="button" class="v36-goal-main" data-v36detail="${esc(p.id)}" aria-label="Consulter ${esc(p.name)} et ses actions"><span class="mbp372-goal-content"><strong>${esc(p.name)}</strong><p>${euros(amount)} / ${euros(goal)} · ${complete?'Objectif atteint':'Reste '+euros(Math.max(0,goal-amount))}</p><div class="v32-track"><div class="v32-fill ${complete?'v36-complete':''}" style="width:${pct}%"></div></div></span>${complete?'<span class="v36-check" aria-hidden="true">✓</span>':''}<span class="mbp372-goal-arrow" aria-hidden="true">›</span></button></div>`};
@@ -3078,13 +3094,7 @@ input[type=checkbox]{accent-color:#9bc7f6!important}
    }
    return ids;
  }
- function goalDetails(p,until){
-   const ids=matchingGoalIds(p,until),from=data.envelopeStart||'2026-11';
-   const funds=(data.envelopeMoves||[]).filter(e=>ids.has(String(e.planId))&&e.kind==='fund'&&e.date?.slice(0,7)<=until);
-   const spent=(data.transactions||[]).filter(t=>ids.has(String(t.planId))&&t.type==='expense'&&t.date?.slice(0,7)<=until&&t.date?.slice(0,7)>=from);
-   const allFunds=funds.filter(e=>e.date?.slice(0,7)>=from);
-   const transfers=(data.envelopeMoves||[]).filter(e=>((p.goalId&&e.goalId===p.goalId)||(!e.goalId&&ids.has(String(e.planId))))&&e.date?.slice(0,7)>=from&&e.date?.slice(0,7)<=until&&['transfer-in','transfer-out','use'].includes(e.kind));const net=transfers.reduce((v,e)=>v+(e.kind==='transfer-in'?1:-1)*Number(e.amount||0),0);return {month:funds.filter(x=>x.date?.slice(0,7)===until).reduce((a,x)=>a+Number(x.amount||0),0),total:allFunds.reduce((a,x)=>a+Number(x.amount||0),0)+net,spent:spent.reduce((a,x)=>a+Number(x.amount||0),0),funds,expenses:spent,transfers};
- }
+ function goalDetails(p,until){return mbpV4GoalLedger(p,until)}
  // Replace goal dialog detail content after it opens, without changing or persisting any data.
  const dlg=q('mbp36goaldialog');
  function refreshGoalDetail(){if(!dlg?.open||!data)return;
@@ -3339,8 +3349,7 @@ dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,86
  const cents=v=>Math.round(Number(v)*100);
  const plans=()=>[...(data?.plans||[]),...Object.values(data?.monthBudgets||{}).flat()];
  const availableGoals=()=>{const unique=new Map();for(const p of plans())if(['Provisions','Investissements'].includes(p.cat)){const key=p.goalId||'goal:'+p.id;unique.set(key,p)}return [...unique.values()]};
- const movementMatches=(e,p)=>e.goalId&&p.goalId?e.goalId===p.goalId:String(e.planId)===String(p.id);
- const balance=(p,day)=>{const from=data.envelopeStart||'2026-11';let v=0;for(const e of data.envelopeMoves||[])if(movementMatches(e,p)&&e.date?.slice(0,7)>=from&&e.date<=day){v+=cents(e.amount)*(e.kind==='fund'||e.kind==='transfer-in'?1:-1)}for(const t of data.transactions||[])if(t.type==='expense'&&movementMatches(t,p)&&t.date?.slice(0,7)>=from&&t.date<=day)v-=cents(t.amount);return v/100};
+ const balance=(p,day)=>mbpV4GoalLedger(p,day).remaining;
  const dlg=document.createElement('dialog');dlg.id='mbp37transferdialog';dlg.setAttribute('aria-labelledby','mbp37heading');dlg.innerHTML='<form id="mbp37form"><h2 id="mbp37heading" tabindex="-1">Transfert entre enveloppes</h2><p class="mbp37-help">Déplacer une somme sans créer de revenu ni de dépense.</p><div class="mbp373-field"><span class="mbp373-label">Enveloppe source</span><div id="mbp37sourceview" class="mbp373-static"></div><input type="hidden" id="mbp37source"></div><div class="mbp373-field"><span class="mbp373-label">Enveloppe destination</span><input type="hidden" id="mbp37target"><button type="button" id="mbp37targetbutton" class="mbp373-picker" aria-expanded="false" aria-controls="mbp37choices"><span id="mbp37targetlabel">Choisir une destination</span><span aria-hidden="true">⌄</span></button><div id="mbp37choices" class="mbp373-choices" hidden role="group" aria-label="Choix de la destination"></div></div><div class="mbp373-field"><label for="mbp37amount" class="mbp373-label">Montant (€)</label><input id="mbp37amount" inputmode="decimal" type="number" min="0.01" step="0.01" required><div id="mbp37available" class="mbp373-available"></div></div><div class="mbp373-field"><label for="mbp37date" class="mbp373-label">Date</label><input id="mbp37date" type="date" required></div><p class="mbp37-error" id="mbp37error" role="alert" aria-live="polite"></p><div class="mbp37-actions"><button type="button" class="btn secondary" id="mbp37cancel">Annuler</button><button type="submit" class="btn" id="mbp37submit" disabled>Transférer</button></div></form>';document.body.append(dlg);
  const goalKey=g=>String(g.goalId||'goal:'+g.id);
  const sourceGoal=()=>availableGoals().find(g=>goalKey(g)===q('mbp37source').value);
