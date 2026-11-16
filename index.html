@@ -724,7 +724,27 @@ function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA
  try{await save();render();}
  catch(err){data[kind]=before;alertMsg('Suppression impossible : élément conservé.')}
  return;
-}if(x.quick){openTx('expense',x.quick,x.quickCat||'Variables');/* Pas de focus automatique : évite le clavier et le zoom iOS */}if(x.editTx){const t=data.transactions.find(t=>t.id===x.editTx);if(!t)return;openTx(t.type);editingTx=t.id;$('txtype').value=t.type;$('txname').value=t.name;$('txamount').value=t.amount;$('txcat').value=t.cat;$('txdate').value=t.date;$('txsubmit').textContent='Enregistrer les modifications'}if(x.editAsset){const a=data.assets.find(a=>a.id===x.editAsset);if(!a)return;editingAsset=a.id;$('assetname').value=a.name;$('assetamount').value=a.amount;$('assettype').value=['Livrets','PEA','Compte-titres','Crypto','Immobilier','Autres'].includes(a.type)?a.type:'Autres';$('assetinvested').value=a.invested??'';$('assettitle').textContent='Modifier un compte / actif';$('assetsubmit').textContent='Enregistrer';$('assetdialog').showModal()}});function lockVault(){if(!data)return;data=null;secret=null;$('pass').value='';document.querySelectorAll('dialog[open]').forEach(d=>d.close());show('unlock')} $('lock').onclick=lockVault;$('export').onclick=()=>{if(!data||!localStorage.getItem(KEY))return;const blob=new Blob([localStorage.getItem(KEY)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='mon-budget-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);alertMsg('Sauvegarde chiffrée téléchargée. Conserve ta phrase secrète.')};$('import').onclick=()=>$('importfile').click();$('importfile').onchange=async e=>{
+}if(x.quick){openTx('expense',x.quick,x.quickCat||'Variables');/* Pas de focus automatique : évite le clavier et le zoom iOS */}if(x.editTx){const t=data.transactions.find(t=>t.id===x.editTx);if(!t)return;openTx(t.type);editingTx=t.id;$('txtype').value=t.type;$('txname').value=t.name;$('txamount').value=t.amount;$('txcat').value=t.cat;$('txdate').value=t.date;$('txsubmit').textContent='Enregistrer les modifications'}if(x.editAsset){const a=data.assets.find(a=>a.id===x.editAsset);if(!a)return;editingAsset=a.id;$('assetname').value=a.name;$('assetamount').value=a.amount;$('assettype').value=['Livrets','PEA','Compte-titres','Crypto','Immobilier','Autres'].includes(a.type)?a.type:'Autres';$('assetinvested').value=a.invested??'';$('assettitle').textContent='Modifier un compte / actif';$('assetsubmit').textContent='Enregistrer';$('assetdialog').showModal()}});function lockVault(){if(!data)return;data=null;secret=null;$('pass').value='';document.querySelectorAll('dialog[open]').forEach(d=>d.close());show('unlock')} $('lock').onclick=lockVault;$('export').onclick=async()=>{
+ if(!data||!secret)return;
+ const currentData=data,currentSecret=secret;
+ try{
+  // Wait for any queued writes: exporting a stale vault would silently lose recent operations.
+  await mbpSaveQueue;
+  if(data!==currentData||secret!==currentSecret)throw Error('Le coffre a changé');
+  const serialized=localStorage.getItem(KEY);
+  if(!serialized)throw Error('Coffre absent');
+  // Authenticate and compare the full decrypted snapshot before handing it to the user.
+  const snapshot=await unseal(JSON.parse(serialized),currentSecret);
+  if(data!==currentData||secret!==currentSecret||
+      JSON.stringify(snapshot)!==JSON.stringify(currentData))throw Error('Sauvegarde non synchronisée');
+  const blob=new Blob([serialized],{type:'application/json'}),url=URL.createObjectURL(blob);
+  try{
+   const a=document.createElement('a');a.href=url;
+   a.download='mon-budget-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+   alertMsg('Sauvegarde chiffrée téléchargée. Conserve ta phrase secrète.');
+  }finally{setTimeout(()=>URL.revokeObjectURL(url),1000)}
+ }catch(err){alertMsg('Export impossible : les dernières données ne sont pas encore sécurisées. Réessaie.')}
+};$('import').onclick=()=>$('importfile').click();$('importfile').onchange=async e=>{
  const file=e.target.files[0];if(!file)return;
  const previousData=data,previousSecret=secret;
  let previousPayload=null;
