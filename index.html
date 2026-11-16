@@ -567,6 +567,12 @@ function monthPlans(){
  const list=prior.map(p=>({...p}));
  return list;
 }
+// V4: shared month-scoped plan lookup (safe in every script layer).
+function mbpV4PlansForMonth(month){
+ const prior=selectedMonth;
+ try{selectedMonth=month;return monthPlans();}
+ finally{selectedMonth=prior;}
+}
 function saveMonthPlans(next){
  if(selectedMonth==='2026-11')data.plans=next;
  else{if(!data.monthBudgets)data.monthBudgets={};data.monthBudgets[selectedMonth]=next}
@@ -617,7 +623,7 @@ function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA
   alertMsg('Vérifie le libellé, la date et le montant.');return;
  }
  const chosen=$('txbudget').value;
- const chosenPlan=chosen?getMonthPlans(item.date.slice(0,7)).find(p=>String(p.id)===String(chosen)):null;
+ const chosenPlan=chosen?mbpV4PlansForMonth(item.date.slice(0,7)).find(p=>String(p.id)===String(chosen)):null;
  if(chosen&&!chosenPlan){alertMsg('Ce budget ne correspond pas au mois sélectionné.');return;}
  if(chosenPlan){
   if((item.type==='income')!==(chosenPlan.cat==='Revenus')){
@@ -700,7 +706,7 @@ function v17EnvelopeBalance(p){
   if(t.type!=='expense'||!inPeriod(t))return false;
   const month=t.date.slice(0,7);
   // Resolve against the plans of the transaction month: never match two homonymous plans.
-  return String(mbpV4ResolvePlan(t,getMonthPlans(month))?.id||'')===targetId;
+  return String(mbpV4ResolvePlan(t,mbpV4PlansForMonth(month))?.id||'')===targetId;
  }).reduce((s,t)=>s+(Number.isFinite(Number(t.amount))?Number(t.amount):0),0);
  return {funded,spent,remaining:funded-spent};
 }
@@ -716,7 +722,7 @@ const v17OpenTx=openTx;openTx=function(...args){v17OpenTx(...args);v17FillTxBudg
 function v17FillTxBudgets(preserve=false){
  const s=$('txbudget'),previous=preserve?s.value:'',date=$('txdate').value;
  const month=/^\d{4}-\d{2}-\d{2}$/.test(date)?date.slice(0,7):selectedMonth;
- const plans=getMonthPlans(month);
+ const plans=mbpV4PlansForMonth(month);
  const type=$('txtype').value;
  s.innerHTML='<option value="">Aucune imputation</option>'+plans.filter(p=>['Variables','Revenus','Provisions','Fixes','Impôts','Investissements'].includes(p.cat)&&((type==='income')===(p.cat==='Revenus'))).map(p=>`<option value="${escapeHtml(String(p.id))}">${escapeHtml(p.name)} (${escapeHtml(p.cat)})</option>`).join('');
  s.value=[...s.options].some(o=>o.value===previous)?previous:'';
