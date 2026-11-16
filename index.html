@@ -4489,4 +4489,57 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
 }
 #mbpV4ContributionDialog input{max-width:100%;min-width:0;}
 </style>
+
+<style id="mbp-v4-navigation-ice">
+/* V4: one restrained Ice Glass navigation language on all four tabs. */
+#nav button[data-tab]{
+ border:1px solid transparent!important;
+ border-radius:13px!important;
+ background:transparent!important;
+ color:#b8c9df!important;
+ font-weight:600!important;
+ transition:background-color .14s ease,border-color .14s ease,color .14s ease;
+}
+#nav button[data-tab].active{
+ background:linear-gradient(155deg,rgba(91,149,211,.25),rgba(128,104,193,.20))!important;
+ border-color:rgba(158,192,236,.43)!important;
+ color:#f5f9ff!important;
+}
+#v30profile .v30-subnav button.active{
+ background:linear-gradient(145deg,rgba(81,135,190,.36),rgba(116,98,183,.31))!important;
+ border-color:#9bc3eb!important;
+ color:#fff!important;
+}
+#nav button:focus-visible,#v30profile .v30-subnav button:focus-visible{
+ outline:2px solid #b5d8ff!important;outline-offset:2px!important;
+}
+@media(prefers-reduced-motion:reduce){#nav button[data-tab]{transition:none!important}}
+</style>
+<script id="mbp-v4-navigation-state">
+(()=>{
+ 'use strict';
+ const nav=document.getElementById('nav');
+ if(!nav)return;
+ nav.setAttribute('aria-label','Navigation principale');
+ const update=()=>{
+  const tabs=[...nav.querySelectorAll('button[data-tab]')];
+  for(const button of tabs){
+   const active=button.classList.contains('active');
+   if(active)button.setAttribute('aria-current','page');
+   else button.removeAttribute('aria-current');
+   button.setAttribute('aria-label',(button.textContent||'').trim());
+  }
+  const profile=document.getElementById('v30profile');
+  if(profile)for(const b of profile.querySelectorAll('.v30-subnav button')){
+   b.setAttribute('aria-pressed',String(b.classList.contains('active')));
+  }
+ };
+ // Watch CSS class changes only: updating ARIA attributes never re-triggers this observer.
+ const observer=new MutationObserver(update);
+ observer.observe(nav,{subtree:true,attributes:true,attributeFilter:['class'],childList:true});
+ const sub=document.querySelector('#v30profile .v30-subnav');
+ if(sub)observer.observe(sub,{subtree:true,attributes:true,attributeFilter:['class']});
+ update();
+})();
+</script>
 </body></html>
