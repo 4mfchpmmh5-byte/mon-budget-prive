@@ -46,7 +46,7 @@ const record=(section,scenario,pass,detail={})=>{const out={section,scenario,pas
    try{
     await (document.getElementById('applyrecurring')?.onclick||window.__auditRemovedHandlers.applyrecurring)?.();
     const first=data.transactions.map(t=>({id:t.id,date:t.date,recurringId:t.recurringId}));
-    await document.getElementById('applyrecurring').onclick();
+    await (document.getElementById('applyrecurring')?.onclick||window.__auditRemovedHandlers.applyrecurring)?.();
     result.recurring={first,after:data.transactions.length};
    }finally{mbpConfirm=originalConfirm}
    // Chiffrement AES-GCM : round-trip complet et rejet de phrase erronée.
