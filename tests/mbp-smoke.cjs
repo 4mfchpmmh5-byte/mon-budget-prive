@@ -9,7 +9,7 @@ const vm = require('node:vm');
   assert(!html.includes('p.amount=938.17'));
   assert(html.includes('planId:p.id'));
   assert(html.includes('day=Math.max(1,Math.min(daysInMonth'));
-  assert(html.includes('const previousPayload=localStorage.getItem(KEY)'));
+  assert(html.includes("const backupKey=KEY+'-previous-v4'"),'La V4 doit conserver le coffre précédent chiffré');
   const scripts=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
   for(const [i,script] of scripts.entries()){
     if(script[1].trim())new vm.Script(script[1],{filename:'inline-script-'+i+'.js'});
