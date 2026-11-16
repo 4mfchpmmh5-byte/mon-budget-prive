@@ -37,3 +37,12 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - La copie de secours utilise plus d'espace local; contrôler son comportement dans Safari iOS et en stockage saturé avant toute diffusion.
 - La restauration et la réinitialisation n'exploitent pas encore automatiquement cette copie, ce qui demande un lot de développement séparé et une confirmation utilisateur explicite.
 - Les erreurs de sauvegarde ne doivent jamais être présentées comme une opération enregistrée ; auditer les formulaires concernés.
+
+
+## Suite du lot V4 — récupération locale authentifiée
+- L'écran de déverrouillage propose **Récupérer la sauvegarde locale précédente** lorsqu'une copie chiffrée existe.
+- La copie n'est déchiffrée qu'avec une phrase secrète fournie par l'utilisateur; le coffre actif est d'abord testé. Si le coffre actif est lisible avec cette phrase, le retour en arrière est refusé.
+- Pour un coffre illisible, une confirmation explicite détaille le risque de perdre les opérations les plus récentes, puis la copie de secours devient le coffre actif, sous contrôle de relecture.
+- Une régression Playwright valide le refus de restaurer un coffre sain et la récupération d'un coffre volontairement altéré.
+- Le test historique de fumée a été ajusté pour contrôler la présence de la copie de secours plutôt qu'une ancienne déclaration JavaScript devenue obsolète.
+- **Validation CI sur la dernière révision encore à vérifier**. Safari iOS et stockage défaillant pendant la restauration restent des risques ouverts; aucune diffusion.
