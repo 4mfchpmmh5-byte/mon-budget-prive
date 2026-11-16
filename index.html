@@ -639,6 +639,14 @@ function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA
   }
   item.planId=chosenPlan.id;
  }else delete item.planId;
+ // Les titres-restaurant sont des avantages non liquides, jamais des dépenses.
+ // Un changement de type ou de catégorie ne doit pas conserver l'ancien marqueur.
+ if(item.type==='income'){
+  const ticketCategory=/^titres?[ -]?restaurant$/i.test(item.cat);
+  const ticketName=/^tickets?[ -]?(restaurant|resto)(?:\b|$)/i.test(item.name);
+  if(ticketCategory||ticketName)item.nonCash=true;
+  else delete item.nonCash;
+ }else delete item.nonCash;
  if(item.type!=='expense'){delete item.recurringId;delete item.goalId;}
  else if(original&&String(original.planId||'')!==String(item.planId||'')){
   delete item.recurringId;delete item.goalId;
