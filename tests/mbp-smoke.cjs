@@ -67,6 +67,7 @@ const vm = require('node:vm');
   assert.deepEqual(finance.december,[{name:'Crédit immobilier',amount:1200},{name:'Impôt',amount:1576}]);
   assert(finance.january.some(x=>x.name==='Salaire prévisionnel · 2027'));
   assert(finance.january.some(x=>x.name==='Impôt prévisionnel · 2027'));
+  console.log('Diagnostic des prévisions 2027 : '+JSON.stringify(finance));
   assert.deepEqual(finance.januaryExplicit,[{name:'Crédit immobilier',amount:1200},{name:'Impôt',amount:1576}]);
   assert.equal(finance.initiallyPaid,0);
   assert.deepEqual(finance.afterPaid,['p1']);
