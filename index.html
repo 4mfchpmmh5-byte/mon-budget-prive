@@ -898,6 +898,9 @@ $('txform').onsubmit=async e=>{
    try{render()}catch(_){}
    throw uiError;
   }
+  // A reset must not leave the previous financial history recoverable locally.
+  localStorage.removeItem(mbpV4RecoveryKey);
+  if(localStorage.getItem(mbpV4RecoveryKey)!==null)throw Error('Ancienne copie de secours non supprimée');
   mbpVaultGeneration++;
   mbpSaveQueue=Promise.resolve();
   alertMsg('Données réinitialisées. Coffre conservé.');
@@ -915,12 +918,14 @@ $('wipe').onclick=async()=>{
  mbpVaultGeneration++;
  await mbpSaveQueue.catch(()=>{});
  try{
+  // Delete both encrypted snapshots: erasing only the active one leaves personal data behind.
+  localStorage.removeItem(mbpV4RecoveryKey);
   localStorage.removeItem(KEY);
-  if(localStorage.getItem(KEY)!==null)throw Error('Suppression impossible');
+  if(localStorage.getItem(KEY)!==null||localStorage.getItem(mbpV4RecoveryKey)!==null)throw Error('Suppression incomplète');
   data=null;secret=null;show('setup');
  }catch(err){alertMsg('Effacement impossible : le coffre local est toujours présent.')}
  finally{mbpVaultDeleting=false}
-};if(!crypto?.subtle){$('subtitle').textContent='Erreur : ce navigateur ne fournit pas le chiffrement sécurisé requis.';$('msg').textContent='Ouvre cette application via une adresse HTTPS.'}else show(localStorage.getItem(KEY)?'unlock':'setup');if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});
+};if(!crypto?.subtle){$('subtitle').textContent='Erreur : ce navigateur ne fournit pas le chiffrement sécurisé requis.';$('msg').textContent='Ouvre cette application via une adresse HTTPS.'}else show((localStorage.getItem(KEY)||localStorage.getItem(mbpV4RecoveryKey))?'unlock':'setup');if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 // v1.7: additions are stored inside the existing encrypted data object.
 const V17_GROUPS=['Résidence principale','Abonnements & télécoms','Banque & assurances','Vie quotidienne & loisirs','Provisions & investissements','Impôts','Revenus'];
