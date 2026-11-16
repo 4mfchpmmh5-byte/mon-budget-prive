@@ -964,6 +964,7 @@ document.body.append(mbpV4ContributionDialog);
 let mbpV4ContributionPlan=null,mbpV4ContributionBusy=false;
 $('mbpV4ContributionCancel').onclick=()=>{if(!mbpV4ContributionBusy)mbpV4ContributionDialog.close()};
 mbpV4ContributionDialog.addEventListener('close',()=>{mbpV4ContributionPlan=null;$('mbpV4ContributionError').textContent=''});
+mbpV4ContributionDialog.addEventListener('cancel',e=>{if(mbpV4ContributionBusy)e.preventDefault()});
 function mbpV4OpenContribution(p){
  if(!p||mbpV4ContributionBusy||mbpV4ContributionDialog.open)return;
  mbpV4ContributionPlan={id:p.id,goalId:p.goalId||'',name:p.name};
@@ -989,6 +990,7 @@ $('mbpV4ContributionForm').onsubmit=async e=>{
  mbpV4ContributionBusy=true;
  $('mbpV4ContributionSubmit').disabled=true;
  $('mbpV4ContributionCancel').disabled=true;
+ const hadMoves=Array.isArray(data.envelopeMoves),hadStart=Object.prototype.hasOwnProperty.call(data,'envelopeStart');
  v17Ensure();
  const move={id:uid(),planId:match.id,goalId:match.goalId||p.goalId,kind:'fund',amount:Math.round(amount*100)/100,date};
  data.envelopeMoves.push(move);
@@ -997,6 +999,8 @@ $('mbpV4ContributionForm').onsubmit=async e=>{
   mbpV4ContributionDialog.close();render();alertMsg('Provision enregistrée (sans modifier tes comptes bancaires).');
  }catch(err){
   data.envelopeMoves=data.envelopeMoves.filter(x=>x.id!==move.id);
+  if(!hadMoves)delete data.envelopeMoves;
+  if(!hadStart)delete data.envelopeStart;
   fail('Enregistrement impossible : la contribution n’a pas été conservée.');
  }finally{
   mbpV4ContributionBusy=false;
