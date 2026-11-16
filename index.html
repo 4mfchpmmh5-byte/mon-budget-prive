@@ -774,18 +774,42 @@ $('resetEnvelopes').onclick=async()=>{if(!data)return;if(await mbpPrompt('Remett
 $('budgetmonth').onchange=e=>{selectedMonth=e.target.value;render()};
 $('planform').onsubmit=async e=>{
  e.preventDefault();
- const p={id:editingPlan||uid(),name:$('planname').value.trim(),amount:Number($('planamount').value),cat:$('plancat').value,group:$('plangroup').value};
- if(!p.name||!Number.isFinite(p.amount)||p.amount<0)return;
- const plans=monthPlans().map(x=>({...x}));const i=plans.findIndex(x=>x.id===editingPlan);if(i>=0&&plans[i].goalId)p.goalId=plans[i].goalId;else if(['Provisions','Investissements'].includes(p.cat))p.goalId='goal:'+p.id;
+ if(!data)return;
+ const name=$('planname').value.trim(),amount=Number($('planamount').value),cat=$('plancat').value;
+ const group=$('plangroup').value,recurring=$('planrecurring').checked,day=Number($('planrecurringday').value);
+ if(!name||!Number.isFinite(amount)||amount<0){
+  alertMsg('Vérifie le nom et le montant du budget.');return;
+ }
+ if(recurring&&cat!=='Revenus'&&(!Number.isInteger(day)||day<1||day>31)){
+  alertMsg('Le jour de récurrence doit être compris entre 1 et 31.');return;
+ }
+ const previousPlans=monthPlans().map(p=>({...p}));
+ const previousRecurring=Array.isArray(data.recurring)?data.recurring.map(r=>({...r})):null;
+ const plans=previousPlans.map(p=>({...p}));
+ const id=editingPlan||uid();
+ const i=plans.findIndex(p=>String(p.id)===String(id));
+ const old=i>=0?plans[i]:null;
+ const p={...(old||{}),id,name,amount,cat,group};
+ if(['Provisions','Investissements'].includes(cat))p.goalId=p.goalId||'goal:'+id;
+ else delete p.goalId;
  if(i>=0)plans[i]=p;else plans.push(p);
  saveMonthPlans(plans);
- if($('planrecurring').checked&&p.cat!=='Revenus'){
+ if(recurring&&cat!=='Revenus'){
   if(!Array.isArray(data.recurring))data.recurring=[];
-  let r=data.recurring.find(r=>r.planId===p.id);
-  if(!r){r={id:uid(),planId:p.id};data.recurring.push(r)}
-  Object.assign(r,{name:p.name,amount:Number(p.amount),cat:p.cat,day:Number($('planrecurringday').value)||5});
+  let r=data.recurring.find(r=>String(r.planId)===String(id));
+  if(!r){r={id:uid(),planId:id};data.recurring.push(r)}
+  Object.assign(r,{name,amount,cat,day});
  }
- editingPlan=null;await save();$('planform').reset();$('plandialog').close();render();
+ try{
+  await save();
+ }catch(err){
+  saveMonthPlans(previousPlans);
+  if(previousRecurring===null)delete data.recurring;
+  else data.recurring=previousRecurring;
+  alertMsg('Sauvegarde impossible : modifications du budget annulées.');return;
+ }
+ editingPlan=null;
+ $('planform').reset();$('plandialog').close();render();
 };
 document.addEventListener('click',async e=>{
  const edit=e.target.closest('[data-edit-plan]'),del=e.target.closest('[data-delete-plan]');
