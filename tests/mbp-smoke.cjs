@@ -57,7 +57,7 @@ const vm = require('node:vm');
       const januaryExplicit=monthPlans().map(x=>({name:x.name,amount:x.amount}));
       const p1={id:'p1',name:'EDF',cat:'Fixes',amount:50};
       const p2={id:'p2',name:'EDF',cat:'Fixes',amount:50};
-      data={...data,plans:[p1,p2],recurring:[],transactions:[{id:'t',type:'expense',name:'EDF',cat:'Fixes',amount:50,date:'2027-01-10'}]};
+      data={...data,plans:[p1,p2],monthBudgets:{},recurring:[],transactions:[{id:'t',type:'expense',name:'EDF',cat:'Fixes',amount:50,date:'2027-01-10'}]};
       const initiallyPaid=paymentItems().filter(x=>x.match).length;
       data.transactions[0].planId='p1';
       const afterPaid=paymentItems().filter(x=>x.match).map(x=>x.p.id);
