@@ -544,6 +544,14 @@ button,nav,summary,.v24-chip,.btn{touch-action:manipulation;-webkit-tap-highligh
  if(!obj||!Array.isArray(obj.plans)||!Array.isArray(obj.transactions)||!Array.isArray(obj.assets))throw Error('Structure financière invalide');
  const originalVersion=Number(obj.schemaVersion)||1;
  if(originalVersion>2)throw Error('Cette sauvegarde provient d’une version plus récente');
+ // Reject inconsistent backups before touching the active encrypted vault.
+ if(obj.monthBudgets!==undefined&&(!obj.monthBudgets||typeof obj.monthBudgets!=='object'||Array.isArray(obj.monthBudgets)||
+   Object.values(obj.monthBudgets).some(v=>!Array.isArray(v))))throw Error('Budgets mensuels endommagés');
+ if(obj.envelopeMoves!==undefined&&!Array.isArray(obj.envelopeMoves))throw Error('Mouvements de provisions endommagés');
+ if(obj.recurring!==undefined&&!Array.isArray(obj.recurring))throw Error('Modèles récurrents endommagés');
+ if(obj.snapshots!==undefined&&!Array.isArray(obj.snapshots))throw Error('Historique de patrimoine endommagé');
+ if(obj.transactions.some(t=>!t||typeof t!=='object'||typeof t.id!=='string'||!Number.isFinite(Number(t.amount))||
+   Number(t.amount)<=0||typeof t.date!=='string'))throw Error('Opérations endommagées');
  if(originalVersion===2)return obj;
  const all=[...(obj.plans||[]),...Object.values(obj.monthBudgets||{}).flat().filter(Boolean)];
  const byId=new Map(),byName=new Map();
@@ -658,7 +666,7 @@ function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA
   await mbpSaveQueue.catch(()=>{});
   const ciphertext=JSON.stringify(await seal(imported,pw));
   const verified=await unseal(JSON.parse(ciphertext),pw);
-  if(!verified||verified.transactions.length!==imported.transactions.length)throw Error('Vérification de sauvegarde échouée');
+  if(!verified||JSON.stringify(verified)!==JSON.stringify(imported))throw Error('Vérification de sauvegarde échouée');
   try{
    localStorage.setItem(KEY,ciphertext);
    if(localStorage.getItem(KEY)!==ciphertext)throw Error('Enregistrement incomplet');
@@ -694,7 +702,7 @@ function mbpV4GoalLedger(plan,through){
  }
  const belongs=x=>{
   if(!x)return false;
-  if(goalId&&x.goalId&&String(x.goalId)===goalId)return true;
+  if(goalId&&x.goalId)return String(x.goalId)===goalId;
   return x.planId!==undefined&&x.planId!==null&&ids.has(String(x.planId));
  };
  const inRange=x=>typeof x.date==='string'&&x.date>=from&&x.date<=cutoff;
