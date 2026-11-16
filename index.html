@@ -784,6 +784,7 @@ $('planform').onsubmit=async e=>{
   alertMsg('Le jour de récurrence doit être compris entre 1 et 31.');return;
  }
  const previousPlans=monthPlans().map(p=>({...p}));
+ const hadMonthOverride=selectedMonth==='2026-11'||Object.prototype.hasOwnProperty.call(data.monthBudgets||{},selectedMonth);
  const previousRecurring=Array.isArray(data.recurring)?data.recurring.map(r=>({...r})):null;
  const plans=previousPlans.map(p=>({...p}));
  const id=editingPlan||uid();
@@ -803,7 +804,8 @@ $('planform').onsubmit=async e=>{
  try{
   await save();
  }catch(err){
-  saveMonthPlans(previousPlans);
+  if(hadMonthOverride)saveMonthPlans(previousPlans);
+  else if(data.monthBudgets)delete data.monthBudgets[selectedMonth];
   if(previousRecurring===null)delete data.recurring;
   else data.recurring=previousRecurring;
   alertMsg('Sauvegarde impossible : modifications du budget annulées.');return;
