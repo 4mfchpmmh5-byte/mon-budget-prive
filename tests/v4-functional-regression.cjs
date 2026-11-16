@@ -83,7 +83,7 @@ const record=(section,scenario,pass,detail={})=>{const out={section,scenario,pas
   return result;
  },password);
  record('budgets','Dépenses homonymes non liées : aucun rapprochement fictif',checks.sameLabel.paid.length===0,{observed:checks.sameLabel});
- record('budgets','Une transaction sans identifiant ne doit pas être comptée dans deux budgets identiques',checks.sameLabel.budgetSpentA+checks.sameLabel.budgetSpentB===checks.sameLabel.totalTx,{observed:checks.sameLabel});
+ record('budgets','Une transaction ambiguë reste non affectée et ne gonfle aucun budget homonyme',checks.sameLabel.budgetSpentA+checks.sameLabel.budgetSpentB<=checks.sameLabel.totalTx&&checks.sameLabel.budgetSpentA===0&&checks.sameLabel.budgetSpentB===0,{observed:checks.sameLabel});
  record('budgets','Un identifiant explicite lie une écriture à un seul des deux budgets homonymes',checks.sameLabelById.a===0&&checks.sameLabelById.b===100&&checks.sameLabelById.paid.length===1&&checks.sameLabelById.paid[0]==='b',{observed:checks.sameLabelById});
  record('budgets','Ancienne écriture sans ID rapprochée uniquement si un seul plan du même nom existe',checks.legacyUnique.spent===100&&checks.legacyUnique.paid.length===1&&checks.legacyUnique.paid[0]==='a',{observed:checks.legacyUnique});
  record('budgets','Mois futurs isolés des mois précédents',checks.monthIsolation.november===938.17,{observed:checks.monthIsolation});
