@@ -956,7 +956,16 @@ document.addEventListener('click',async e=>{
  function drawChoices(){const opts=choices();if(!opts.some(x=>x[0]===quickCat))quickCat='';document.getElementById('v24cats').innerHTML=opts.map(([id,label])=>'<button type="button" class="v24-chip '+(id.startsWith('custom:')?'v26-custom-chip ':'')+(quickCat===id?'active':'')+'" data-v24cat="'+quickEscape(id)+'"'+(quickCat===id?' aria-pressed="true"':' aria-pressed="false"')+'><span class="mbp375-icon" aria-hidden="true"></span><span class="mbp375-label">'+quickEscape(label)+'</span></button>').join('')}
  window.mbpRefreshQuickChoices=drawChoices;
  function setType(type){quickType=type;quickCat='';document.getElementById('v24expense').classList.toggle('active',type==='expense');document.getElementById('v24income').classList.toggle('active',type==='income');drawChoices()}
- document.getElementById('v24expense').onclick=()=>setType('expense');document.getElementById('v24income').onclick=()=>setType('income');document.getElementById('v24cats').onclick=e=>{const b=e.target.closest('[data-v24cat]');if(b){quickCat=b.dataset.v24cat;drawChoices()}};drawChoices();
+ document.getElementById('v24expense').onclick=()=>setType('expense');document.getElementById('v24income').onclick=()=>setType('income');document.getElementById('v24cats').onclick=e=>{
+  const b=e.target.closest('button[data-v24cat]');if(!b)return;
+  // Ne pas reconstruire les SVG au toucher : le même DOM / dessin reste en place.
+  quickCat=b.dataset.v24cat;
+  for(const chip of document.querySelectorAll('#v24cats button[data-v24cat]')){
+   const active=chip===b;
+   chip.classList.toggle('active',active);
+   chip.setAttribute('aria-pressed',String(active));
+  }
+ };drawChoices();
  function matchingPlan(cat){const old=selectedMonth;selectedMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);const all=monthPlans();selectedMonth=old;const vars=all.filter(p=>p.cat==='Variables');const re=cat==='courses'?/course|participation/i:cat==='midi'?/repas du midi|midi/i:cat==='sorties'?/restaurant|sortie/i:null;return re?vars.find(p=>re.test(p.name)):null}
  document.getElementById('v24save').onclick=async()=>{
   if(!data)return;const amount=Number(document.getElementById('v24amount').value),feedback=document.getElementById('v24feedback');
@@ -1289,7 +1298,9 @@ tab=function(which){oldTab(which);if(button)button.style.display=which==='settin
   if(!data)return;
   const {key,isIncome}=activeCategory();
   const labels={courses:'Courses',midi:'Repas du midi',sorties:'Restaurants / sorties',transport:'Transport',logement:'Logement',sante:'Santé',shopping:'Shopping',loisirs:'Loisirs',exception:'Imprévu',autre:'Autre',salaire:'Salaire',prime:'Prime',ticketresto:'Ticket resto',remboursement:'Remboursement',cadeau:'Cadeau'};
-  const name=labels[key]||'Choisir une catégorie';
+  const selectedChip=document.querySelector('#v24cats button[data-v24cat].active');
+  const selectedLabel=selectedChip?.querySelector('.mbp375-label')?.textContent?.trim();
+  const name=selectedLabel||(key?.startsWith('custom:')?key.slice(7):labels[key])||'Choisir une catégorie';
   const label=document.getElementById('v264catlabel'),content=document.getElementById('v264budgetcontent');
   if(!content)return;
   label.textContent=name;
@@ -3786,5 +3797,36 @@ body:has(#app:not(.hidden)) .v32-lock-footer{display:none!important}
 #add #v24cats .v24-chip.active .mbp375-icon *{font-weight:inherit!important;text-shadow:none!important;filter:none!important;-webkit-text-stroke:0!important}
 #add #v24cats .mbp375-icon svg,#add #v24cats .v24-chip.active .mbp375-icon svg{stroke-width:1.8!important}
 #add #v24cats .mbp375-label{min-width:0!important;font-weight:650!important;font-size:clamp(12px,3.3vw,14px)!important;letter-spacing:-.015em}
+</style>
+
+<!-- MBP ergonomie : icônes immuables au clic, alignements constants, confort tactile -->
+<style id="mbp379-ergonomic-stability">
+#add #v24cats button[data-v24cat],
+#add #v24cats button[data-v24cat].active{
+ appearance:none!important;-webkit-appearance:none!important;
+ display:flex!important;align-items:center!important;
+ gap:9px!important;box-sizing:border-box!important;
+ border-width:1px!important;font-weight:650!important;
+ transform:none!important;filter:none!important;
+}
+#add #v24cats button[data-v24cat] .mbp375-icon,
+#add #v24cats button[data-v24cat].active .mbp375-icon{
+ flex:0 0 23px!important;width:23px!important;height:23px!important;
+ font-weight:normal!important;transform:none!important;filter:none!important;
+}
+#add #v24cats button[data-v24cat] .mbp375-icon svg,
+#add #v24cats button[data-v24cat].active .mbp375-icon svg{
+ width:20px!important;height:20px!important;stroke:#c3d5ed!important;
+ stroke-width:1.8!important;fill:none!important;
+ stroke-linecap:round!important;stroke-linejoin:round!important;
+ opacity:1!important;transform:none!important;filter:none!important;
+}
+#add #v24cats button[data-v24cat] .mbp375-label,
+#add #v24cats button[data-v24cat].active .mbp375-label{
+ font-weight:650!important;line-height:1.25!important;
+ min-width:0!important;overflow-wrap:normal!important;
+}
+#v264budgetpanel .v264-panelhead{gap:10px!important;align-items:flex-start!important}
+#v264catlabel{min-width:0!important;overflow-wrap:anywhere!important;text-align:right!important}
 </style>
 </body></html>
