@@ -53,6 +53,15 @@ const vm = require('node:vm');
   await page.locator('#v24cats [data-v24cat="custom:Essence"]').click();
   assert.equal(await page.locator('#v264catlabel').innerText(),'Essence');
   assert.equal(await page.locator('#v24cats [data-v24cat="custom:Essence"] svg').evaluate(el=>el.outerHTML),essenceSvgBefore);
+  await page.waitForTimeout(120);
+  assert.equal(await page.locator('#v24cats [data-v24cat="custom:Essence"] svg').evaluate(el=>el.outerHTML),essenceSvgBefore,'L’icône Essence change après la stabilisation DOM');
+  await page.locator('#v24income').click();
+  await page.locator('#v24expense').click();
+  await page.locator('#v24cats [data-v24cat="courses"] svg').waitFor();
+  const svgUnselected=await page.locator('#v24cats [data-v24cat="courses"] svg').evaluate(el=>el.outerHTML);
+  await page.locator('#v24cats [data-v24cat="courses"]').click();
+  await page.waitForTimeout(120);
+  assert.equal(await page.locator('#v24cats [data-v24cat="courses"] svg').evaluate(el=>el.outerHTML),svgUnselected,'Courses change de dessin après changement de type');
   const allExpense=await page.locator('#v24cats button[data-v24cat]').count();
   assert(allExpense>=10,'Catégories dépenses manquantes');
   await page.locator('#v24cats [data-v24cat="courses"]').click();
@@ -74,6 +83,18 @@ const vm = require('node:vm');
         selectedView:[...document.querySelectorAll('.view')].filter(x=>!x.classList.contains('hidden')).map(x=>x.id)
       }));
       assert(metrics.document<=metrics.viewport+3,'Débordement horizontal écran '+view+' à '+width+'px : '+JSON.stringify(metrics));
+    }
+    for(const selector of ['#txdialog','#assetdialog','#recurringdialog']){
+      const geo=await page.evaluate(selector=>{
+        const d=document.querySelector(selector);
+        if(!d)return null;
+        d.showModal();
+        const rect=d.getBoundingClientRect(),v=window.innerWidth;
+        const out={left:rect.left,right:rect.right,viewport:v,height:rect.height};
+        d.close();
+        return out;
+      },selector);
+      if(geo)assert(geo.left>=-3&&geo.right<=geo.viewport+3,'Dialog déborde à '+width+'px : '+selector+' '+JSON.stringify(geo));
     }
   }
   await page.setViewportSize({width:390,height:844});
