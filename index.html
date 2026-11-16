@@ -903,8 +903,11 @@ document.addEventListener('click',async e=>{
  const date=selectedMonth+'-'+d;
  if(!await mbpConfirm(`Confirmer le paiement de « ${p.name} » (${fmt(p.amount)}) le ${date} ?\n\nSi la date ou le montant diffère, utilise plutôt « Ajouter » dans Opérations.`))return;
  if(paymentItems().find(x=>x.p.id===p.id)?.match)return;
- data.transactions.push({id:uid(),type:'expense',name:p.name,amount:Number(p.amount),cat:p.cat,date,planId:p.id,...(entry.r?{recurringId:entry.r.id}:{})});
- await save();render();alertMsg('Paiement enregistré une seule fois.');
+ const payment={id:uid(),type:'expense',name:p.name,amount:Number(p.amount),cat:p.cat,date,planId:p.id,...(entry.r?{recurringId:entry.r.id}:{})};
+ data.transactions.push(payment);
+ try{await save();render();alertMsg('Paiement enregistré une seule fois.')}
+ catch(err){data.transactions=data.transactions.filter(t=>t.id!==payment.id);alertMsg('Enregistrement impossible : paiement non conservé.')}
+
 });
 
 // v2.1 — Ne change ni le format des données ni les clés de chiffrement.
