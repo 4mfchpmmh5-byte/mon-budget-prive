@@ -28,6 +28,7 @@ jobs:
           node tests/v4-erasure-recovery.cjs
           node tests/v4-reset-rollback.cjs
           node tests/v4-operation-editor.cjs
+          node tests/v4-native-numeric.cjs
       - name: Vérifier la page GitHub Pages en production
         if: github.ref == 'refs/heads/main'
         run: |
