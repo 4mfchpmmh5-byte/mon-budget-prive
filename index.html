@@ -904,9 +904,20 @@ document.addEventListener('click',async e=>{
  e.stopImmediatePropagation();e.preventDefault();
  const id=edit?.dataset.editPlan||del.dataset.deletePlan;
  const p=monthPlans().find(p=>p.id===id);if(!p)return;
- if(del){if(!await mbpConfirm('Supprimer cette ligne uniquement pour le mois sélectionné ?'))return;
-  saveMonthPlans(monthPlans().filter(p=>p.id!==id).map(p=>({...p})));
-  await save();render();return;
+ if(del){
+  if(!await mbpConfirm('Supprimer cette ligne uniquement pour le mois sélectionné ?'))return;
+  const month=selectedMonth;
+  const before=monthPlans().map(p=>({...p}));
+  const hadOverride=month==='2026-11'||Object.prototype.hasOwnProperty.call(data.monthBudgets||{},month);
+  if(!before.some(p=>String(p.id)===String(id)))return;
+  saveMonthPlans(before.filter(p=>String(p.id)!==String(id)));
+  try{await save();render();}
+  catch(err){
+   if(hadOverride)saveMonthPlans(before);
+   else if(data.monthBudgets)delete data.monthBudgets[month];
+   alertMsg('Suppression impossible : budget conservé.');
+  }
+  return;
  }
  editingPlan=p.id;$('planname').value=p.name;$('planamount').value=p.amount;
  $('plancat').value=p.cat;$('plangroup').value=p.group||'auto';
