@@ -2823,7 +2823,7 @@ function drawGoals(){if(!data||!q('v32tasks'))return;
  const wealthWidget=q('v33wealthtask');q('v32tasks').innerHTML=`<div class="v32-head"><h2>Mes tâches du mois</h2><span class="v32-muted">${new Date(m+'-02T12:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</span></div><p class="v32-sub">${done.length} / ${goals.length} objectifs atteints</p>${todo.map(p=>row(p,false)).join('')}${done.length?`<details class="v36-done" style="margin-top:10px"><summary class="v32-muted">✓ Effectuées (${done.length})</summary>${done.map(p=>row(p,true)).join('')}</details>`:''}${goals.length?'':'<p class="v32-muted">Aucun objectif pour ce mois.</p>'}`;if(wealthWidget)q('v32tasks').append(wealthWidget);
 }
 function showGoal(id){if(!data)return;const p=goalsFor(now().slice(0,7)).find(x=>x.id===id)||findPlan(id);if(!p)return;activeGoal=p.id;const m=now().slice(0,7),deposited=paidMonth(p,m),b=balance(p,m),history=goalMoves(p,m).sort((a,b)=>b.date.localeCompare(a.date)),expenses=data.transactions.filter(t=>t.type==='expense'&&t.planId===p.id&&t.date?.slice(0,7)<=m).sort((a,b)=>b.date.localeCompare(a.date));
- goalDialog.innerHTML=`<h2>${esc(p.name)}</h2><p class="muted" style="font-size:12px;margin:0">${isInvestment(p)?'Suivi des versements investis':'Provision cumulée'} · ${esc(m)}</p><div class="v36-goalmetrics"><div><span>Objectif du mois</span><b>${euros(p.amount)}</b></div><div><span>Versé ce mois</span><b>${euros(deposited)}</b></div><div><span>Cumul des versements</span><b>${euros(b.funded)}</b></div><div><span>${isInvestment(p)?'Versements nets suivis':'Solde disponible suivi'}</span><b>${euros(b.remaining)}</b></div></div><div class="v36-goalactions"><button type="button" class="btn" data-v36action="add">+ Versement</button>${isInvestment(p)?'<button type="button" class="btn secondary" data-v36action="investment">Mouvements</button>':'<button type="button" class="btn secondary" data-v36action="spend">Utiliser</button>'}</div><h3 style="font-size:14px;margin:18px 0 4px">Historique</h3><div class="v36-history">${[...history.map(x=>({date:x.date,name:'Versement',value:x.amount,sign:1})),...expenses.map(x=>({date:x.date,name:x.name,value:x.amount,sign:-1}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20).map(x=>`<div><span>${esc(x.date)} · ${esc(x.name)}</span><b style="color:${x.sign>0?'#57cfae':'#f1a6ae'}">${x.sign>0?'+':'−'}${euros(x.value)}</b></div>`).join('')||'<p class="muted">Aucun mouvement enregistré.</p>'}</div><button type="button" class="btn secondary v36-close" data-v36action="close">Fermer</button>`;
+ goalDialog.innerHTML=`<h2>${esc(p.name)}</h2><p class="muted" style="font-size:12px;margin:0">${isInvestment(p)?'Suivi des versements investis':'Provision cumulée'} · ${new Date(m+'-02T12:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</p><div class="v36-goalmetrics"><div><span>Objectif du mois</span><b>${euros(p.amount)}</b></div><div><span>Versé ce mois</span><b>${euros(deposited)}</b></div><div><span>Cumul des versements</span><b>${euros(b.funded)}</b></div><div><span>${isInvestment(p)?'Versements nets suivis':'Solde disponible suivi'}</span><b>${euros(b.remaining)}</b></div></div><div class="v36-goalactions"><button type="button" class="btn" data-v36action="add">+ Versement</button>${isInvestment(p)?'<button type="button" class="btn secondary" data-v36action="investment">Mouvements</button>':'<button type="button" class="btn secondary" data-v36action="spend">Utiliser</button>'}</div><h3 style="font-size:14px;margin:18px 0 4px">Historique</h3><div class="v36-history">${[...history.map(x=>({date:x.date,name:'Versement',value:x.amount,sign:1})),...expenses.map(x=>({date:x.date,name:x.name,value:x.amount,sign:-1}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20).map(x=>`<div><span>${new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})} · ${esc(x.name)}</span><b style="color:${x.sign>0?'#57cfae':'#f1a6ae'}">${x.sign>0?'+':'−'}${euros(x.value)}</b></div>`).join('')||'<p class="muted">Aucun mouvement enregistré.</p>'}</div><button type="button" class="btn secondary v36-close" data-v36action="close">Fermer</button>`;
  goalDialog.showModal();
 }
 function openGoalContribution(id){
@@ -3197,13 +3197,32 @@ dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,86
  const plans=()=>[...(data?.plans||[]),...Object.values(data?.monthBudgets||{}).flat()];
  const availableGoals=()=>{const unique=new Map();for(const p of plans())if(['Provisions','Investissements'].includes(p.cat)){const key=p.goalId||'goal:'+p.id;unique.set(key,p)}return [...unique.values()]};
  const movementMatches=(e,p)=>e.goalId&&p.goalId?e.goalId===p.goalId:String(e.planId)===String(p.id);
- const balance=(p,month)=>{const from=data.envelopeStart||'2026-11';let v=0;for(const e of data.envelopeMoves||[])if(movementMatches(e,p)&&e.date?.slice(0,7)>=from&&e.date?.slice(0,7)<=month){v+=cents(e.amount)*(e.kind==='fund'||e.kind==='transfer-in'?1:-1)}for(const t of data.transactions||[])if(t.type==='expense'&&movementMatches(t,p)&&t.date?.slice(0,7)>=from&&t.date?.slice(0,7)<=month)v-=cents(t.amount);return v/100};
- const dlg=document.createElement('dialog');dlg.id='mbp37transferdialog';dlg.innerHTML='<form method="dialog" id="mbp37form"><h2 style="font-size:19px;margin:0 0 12px">Transfert entre enveloppes</h2><p style="font-size:12px;color:#adbbcc">Un transfert ne crée ni revenu ni dépense.</p><label>Enveloppe source<select id="mbp37source" required></select></label><label>Enveloppe destination<select id="mbp37target" required></select></label><label>Montant (€)<input id="mbp37amount" inputmode="decimal" type="number" min="0.01" step="0.01" required></label><label>Date<input id="mbp37date" type="date" required></label><p class="mbp37-error" id="mbp37error" role="alert"></p><div class="mbp37-actions"><button type="button" class="btn secondary" id="mbp37cancel">Annuler</button><button type="submit" class="btn">Transférer</button></div></form>';document.body.append(dlg);
- function openTransfer(fromId){if(!data)return;const goals=availableGoals().filter(g=>g.cat==='Provisions');if(goals.length<2){alertMsg('Ajoute au moins deux provisions pour effectuer un transfert.');return}const opts=goals.map(g=>'<option value="'+esc(g.goalId||'goal:'+g.id)+'">'+esc(g.name)+'</option>').join('');q('mbp37source').innerHTML=opts;q('mbp37target').innerHTML=opts;q('mbp37source').value=fromId||goals[0].goalId;q('mbp37target').value=goals.find(g=>g.goalId!==q('mbp37source').value)?.goalId||'';q('mbp37date').value=local();q('mbp37amount').value='';q('mbp37error').textContent='';dlg.showModal()}
+ const balance=(p,day)=>{const from=data.envelopeStart||'2026-11';let v=0;for(const e of data.envelopeMoves||[])if(movementMatches(e,p)&&e.date?.slice(0,7)>=from&&e.date<=day){v+=cents(e.amount)*(e.kind==='fund'||e.kind==='transfer-in'?1:-1)}for(const t of data.transactions||[])if(t.type==='expense'&&movementMatches(t,p)&&t.date?.slice(0,7)>=from&&t.date<=day)v-=cents(t.amount);return v/100};
+ const dlg=document.createElement('dialog');dlg.id='mbp37transferdialog';dlg.setAttribute('aria-labelledby','mbp37heading');dlg.innerHTML='<form id="mbp37form"><h2 id="mbp37heading" tabindex="-1">Transfert entre enveloppes</h2><p class="mbp37-help">Déplacer une somme sans créer de revenu ni de dépense.</p><div class="mbp373-field"><span class="mbp373-label">Enveloppe source</span><div id="mbp37sourceview" class="mbp373-static"></div><input type="hidden" id="mbp37source"></div><div class="mbp373-field"><span class="mbp373-label">Enveloppe destination</span><input type="hidden" id="mbp37target"><button type="button" id="mbp37targetbutton" class="mbp373-picker" aria-expanded="false" aria-controls="mbp37choices"><span id="mbp37targetlabel">Choisir une destination</span><span aria-hidden="true">⌄</span></button><div id="mbp37choices" class="mbp373-choices" hidden role="group" aria-label="Choix de la destination"></div></div><div class="mbp373-field"><label for="mbp37amount" class="mbp373-label">Montant (€)</label><input id="mbp37amount" inputmode="decimal" type="number" min="0.01" step="0.01" required><div id="mbp37available" class="mbp373-available"></div></div><div class="mbp373-field"><label for="mbp37date" class="mbp373-label">Date</label><input id="mbp37date" type="date" required></div><p class="mbp37-error" id="mbp37error" role="alert" aria-live="polite"></p><div class="mbp37-actions"><button type="button" class="btn secondary" id="mbp37cancel">Annuler</button><button type="submit" class="btn" id="mbp37submit" disabled>Transférer</button></div></form>';document.body.append(dlg);
+ const goalKey=g=>String(g.goalId||'goal:'+g.id);
+ const sourceGoal=()=>availableGoals().find(g=>goalKey(g)===q('mbp37source').value);
+ const targetGoal=()=>availableGoals().find(g=>g.cat==='Provisions'&&goalKey(g)===q('mbp37target').value);
+ const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&new Date(s+'T12:00:00').toLocaleDateString('sv-SE')===s;
+ function updateTransferValidity(){const source=sourceGoal(),target=targetGoal(),amount=Number(q('mbp37amount').value),date=q('mbp37date').value;
+   const available=source&&isDate(date)?balance(source,date):0;
+   q('mbp37available').textContent='Disponible : '+money(Math.max(0,available));
+   q('mbp37submit').disabled=!(source&&target&&goalKey(source)!==goalKey(target)&&q('mbp37amount').value!==''&&Number.isFinite(amount)&&cents(amount)>0&&cents(amount)<=cents(available)&&isDate(date));
+ }
+ function setChoices(open){q('mbp37choices').hidden=!open;q('mbp37targetbutton').setAttribute('aria-expanded',String(open));}
+ q('mbp37targetbutton').addEventListener('click',()=>setChoices(q('mbp37choices').hidden));
+ q('mbp37choices').addEventListener('click',e=>{const btn=e.target.closest('[data-goal]');if(!btn)return;const goal=availableGoals().find(g=>goalKey(g)===btn.dataset.goal);if(!goal)return;q('mbp37target').value=goalKey(goal);q('mbp37targetlabel').textContent=goal.name;setChoices(false);q('mbp37error').textContent='';updateTransferValidity()});
+ q('mbp37amount').addEventListener('input',updateTransferValidity);q('mbp37date').addEventListener('change',updateTransferValidity);
+ function openTransfer(fromId){if(!data)return;const goals=availableGoals().filter(g=>g.cat==='Provisions');if(goals.length<2){alertMsg('Ajoute au moins deux provisions pour effectuer un transfert.');return}
+  const selected=goals.find(g=>goalKey(g)===String(fromId))||goals[0];q('mbp37source').value=goalKey(selected);q('mbp37sourceview').textContent=selected.name;
+  q('mbp37target').value='';q('mbp37targetlabel').textContent='Choisir une destination';
+  q('mbp37choices').innerHTML=goals.filter(g=>goalKey(g)!==goalKey(selected)).map(g=>'<button class="mbp373-choice" type="button" data-goal="'+esc(goalKey(g))+'">'+esc(g.name)+'</button>').join('');setChoices(false);
+  q('mbp37date').value=local();q('mbp37amount').value='';q('mbp37error').textContent='';updateTransferValidity();
+  dlg.showModal();q('mbp37heading').focus({preventScroll:true});
+ }
  q('mbp37cancel').onclick=()=>dlg.close();
- q('mbp37form').onsubmit=async e=>{e.preventDefault();if(!data)return;const source=availableGoals().find(g=>g.goalId===q('mbp37source').value),target=availableGoals().find(g=>g.goalId===q('mbp37target').value),amount=Number(q('mbp37amount').value),date=q('mbp37date').value;
- if(!source||!target||source.goalId===target.goalId||!Number.isFinite(amount)||cents(amount)<=0||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(new Date(date+'T12:00:00').getTime())||new Date(date+'T12:00:00').toLocaleDateString('sv-SE')!==date){q('mbp37error').textContent='Vérifie les enveloppes, la date et le montant.';return}
- if(cents(amount)>cents(balance(source,date.slice(0,7)))){q('mbp37error').textContent='Solde insuffisant dans la provision source.';return}
+ q('mbp37form').onsubmit=async e=>{e.preventDefault();if(!data)return;const source=sourceGoal(),target=targetGoal(),amount=Number(q('mbp37amount').value),date=q('mbp37date').value;
+ if(!source||!target||goalKey(source)===goalKey(target)||!Number.isFinite(amount)||cents(amount)<=0||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(new Date(date+'T12:00:00').getTime())||new Date(date+'T12:00:00').toLocaleDateString('sv-SE')!==date){q('mbp37error').textContent='Vérifie les enveloppes, la date et le montant.';return}
+ if(cents(amount)>cents(balance(source,date))){q('mbp37error').textContent='Solde insuffisant dans la provision source.';return}
  const group=crypto.randomUUID(),transfer=[{id:crypto.randomUUID(),transferId:group,planId:source.id,goalId:source.goalId,kind:'transfer-out',amount:cents(amount)/100,date},{id:crypto.randomUUID(),transferId:group,planId:target.id,goalId:target.goalId,kind:'transfer-in',amount:cents(amount)/100,date}];
  if(!Array.isArray(data.envelopeMoves))data.envelopeMoves=[];data.envelopeMoves.push(...transfer);
  try{await save();dlg.close();render();alertMsg('Transfert enregistré, sans revenu ni dépense supplémentaire.')}catch(err){data.envelopeMoves=data.envelopeMoves.filter(x=>x.transferId!==group);q('mbp37error').textContent='Sauvegarde impossible : aucun transfert conservé.'}
@@ -3306,4 +3325,68 @@ dialog[open],#mbp-ui-dialog[open]{
  document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(n=>{n.textContent=n.textContent.replace(/Version\s+3\.[67]\s+bêta\s+\d+/gi,'Version 3.7 bêta 2')});
 })();
 </script>
+<style id="mbp373-polish">
+/* Unified, compact, stable controls. No automatic iOS picker or nested blue focus rings. */
+#mbp37transferdialog[open]{width:min(calc(100vw - 28px),440px)!important;padding:18px!important;overflow-x:hidden!important;}
+#mbp37transferdialog form{margin:0!important;padding:0!important;min-width:0!important;}
+#mbp37transferdialog h2{font-size:20px!important;line-height:1.2!important;margin:0 0 7px!important;outline:none!important;}
+#mbp37transferdialog .mbp37-help{font-size:12px!important;color:#b7c4d3!important;margin:0 0 14px!important;}
+#mbp37transferdialog .mbp373-field{display:flex!important;flex-direction:column!important;gap:6px!important;margin:0 0 14px!important;min-width:0!important;}
+#mbp37transferdialog .mbp373-label{display:block!important;font-weight:600!important;color:#cbd5e2!important;font-size:13px!important;line-height:1.3!important;margin:0!important;padding:0!important;}
+#mbp37transferdialog .mbp373-static,#mbp37transferdialog .mbp373-picker,#mbp37transferdialog input:not([type=hidden]){display:flex!important;align-items:center!important;justify-content:space-between!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:46px!important;height:46px!important;padding:9px 12px!important;margin:0!important;background:#141c2d!important;border:1px solid #52647e!important;border-radius:12px!important;color:#f5f7ff!important;font-size:16px!important;font-weight:500!important;text-align:left!important;line-height:1.2!important;box-shadow:none!important;outline:none!important;}
+#mbp37transferdialog .mbp373-static{color:#d8e1ec!important;background:#202e42!important;}
+#mbp37transferdialog .mbp373-picker{cursor:pointer;}
+#mbp37transferdialog .mbp373-picker[aria-expanded=true]{border-color:#8fb6df!important;}
+#mbp37transferdialog input:not([type=hidden]):focus{border-color:#8fb6df!important;outline:none!important;box-shadow:none!important;}
+#mbp37transferdialog button:focus,#mbp37transferdialog button:focus-visible,#mbp37transferdialog input:focus-visible{outline:none!important;outline-offset:0!important;box-shadow:none!important;}
+#mbp37transferdialog button:focus-visible{border-color:#b6d4f4!important;}
+#mbp37transferdialog .mbp373-choices[hidden]{display:none!important;}
+#mbp37transferdialog .mbp373-choices{display:flex!important;flex-direction:column!important;gap:6px!important;margin-top:6px!important;padding:7px!important;background:#202d41!important;border:1px solid #465a73!important;border-radius:12px!important;max-height:190px!important;overflow-y:auto!important;}
+#mbp37transferdialog .mbp373-choice{width:100%!important;min-height:43px!important;text-align:left!important;box-sizing:border-box!important;border:1px solid transparent!important;border-radius:9px!important;background:#2a3950!important;color:#f4f7fc!important;padding:9px 11px!important;font-size:15px!important;}
+#mbp37transferdialog .mbp373-choice:active{background:#355371!important;}
+#mbp37transferdialog .mbp373-available{font-size:12px!important;color:#b6c8dc!important;min-height:17px;}
+#mbp37transferdialog .mbp37-actions{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:9px!important;margin-top:8px!important;}
+#mbp37transferdialog .mbp37-actions button{width:100%!important;min-width:0!important;min-height:43px!important;}
+#mbp37transferdialog .mbp37-actions button:disabled{opacity:.48!important;cursor:not-allowed;}
+/* Last focus ring should be a single border; touch-activated controls remain clean. */
+#mbp36goaldialog .v36-goalactions button:focus,#mbp36goaldialog .v36-goalactions button:focus-visible,
+#v32taskdialog input:focus,#v32taskdialog input:focus-visible,#v32taskdialog button:focus,
+#txdialog input:focus,#txdialog select:focus{outline:0!important;outline-offset:0!important;box-shadow:none!important;}
+#mbp36goaldialog .v36-goalactions button:focus-visible,#v32taskdialog button:focus-visible{border-color:#b3d0ed!important;}
+#mbp36goaldialog .v36-goalactions{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:9px!important;}
+#mbp36goaldialog .v36-goalactions #mbp37transferbutton{grid-column:1/-1!important;width:100%!important;}
+#mbp36goaldialog .v36-history{max-height:210px!important;}
+#mbp36goaldialog .v36-history>div{align-items:baseline!important;}
+#mbp36goaldialog .v36-history>div span{min-width:0!important;overflow-wrap:anywhere!important;}
+#mbp36goaldialog .v36-history>div b{white-space:nowrap!important;}
+/* Smaller date controls must stay inside their modal, including Safari's localized date rendering. */
+dialog input[type=date],dialog input[type=number]{box-sizing:border-box!important;min-width:0!important;max-width:100%!important;}
+@media(max-width:380px){#mbp37transferdialog[open]{padding:14px!important;}#mbp36goaldialog .v36-goalmetrics>div{padding:9px!important;}}
+/* Goal bars in all views: 0 neutral, started amber, attained mint. Spending is green/amber/orange/red. */
+#v32summary .v32-fill.mbp372-status,#v32tasks .v32-fill.mbp372-status,.mb35-section .v32-fill.mbp372-status,#v30profile .v32-fill.mbp372-status,#v30profile .trackfill.mbp372-status{background:var(--mbp372-status)!important;background-color:var(--mbp372-status)!important;}
+</style>
+<script id="mbp373-stability">
+(()=>{'use strict';
+ const fmt=t=>{const n=String(t).replace(/[\s\u00a0\u202f]/g,'').replace(/[^\d,.\-]/g,'');return Number(n.replace(',','.'))};
+ let pending=false;
+ function apply(){pending=false;document.querySelectorAll('#v32summary .v32-line,#v32tasks .v36-goal,.mb35-section .v32-line,#v30profile .v32-line,#v30profile .tracker').forEach(row=>{
+  const fill=row.querySelector('.v32-fill,.trackfill');if(!fill)return;
+  const text=(row.querySelector('.v32-monthrow,.tracker-top,.v36-goal-main')||row).textContent||'';
+  const pair=text.match(/([\d\s\u00a0\u202f.,]+)\s*€\s*\/\s*([\d\s\u00a0\u202f.,]+)\s*€/);if(!pair)return;
+  const n=fmt(pair[1]),goal=fmt(pair[2]);if(!(goal>0)||!Number.isFinite(n))return;
+  const header=row.closest('.mb35-section,.v32-card')?.querySelector('h2')?.textContent||'';
+  const savings=!!row.closest('#v32tasks')||/épargne|provisions|investissements|objectifs/i.test(header);
+  const ratio=n/goal,color=savings?(n<=0?'#77879a':ratio>=1?'#4dc69f':'#e8ae68'):(ratio>=1?'#f08e9c':ratio>=.85?'#e88b55':ratio>=.6?'#e8ae68':'#4dc69f');
+  if(fill.style.getPropertyValue('--mbp372-status')!==color)fill.style.setProperty('--mbp372-status',color);
+  fill.classList.add('mbp372-status');
+ });}
+ function schedule(){if(!pending){pending=true;requestAnimationFrame(apply)}};
+ for(const id of ['v32summary','v32tasks','v30profile']){const el=document.getElementById(id);if(el)new MutationObserver(schedule).observe(el,{childList:true,subtree:true,characterData:true});}
+ schedule();document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});
+ // Reposition on any visualViewport scroll, not just resize, during iOS keyboard interactions.
+ const vv=window.visualViewport;function viewport(){const height=vv?.height||window.innerHeight;document.documentElement.style.setProperty('--mbp372-viewport-height',height+'px');document.documentElement.style.setProperty('--mbp372-viewport-mid',((vv?.offsetTop||0)+height/2)+'px')};vv?.addEventListener('scroll',viewport);viewport();
+ // A focus target should only be scrolled INSIDE the modal, never move the whole page.
+ document.addEventListener('focusin',e=>{const el=e.target,modal=el.closest?.('dialog[open]');if(!modal||!el.matches('input,textarea'))return;requestAnimationFrame(()=>{const a=el.getBoundingClientRect(),b=modal.getBoundingClientRect();if(a.bottom>b.bottom-18)modal.scrollTop+=a.bottom-(b.bottom-18);else if(a.top<b.top+16)modal.scrollTop-=b.top+16-a.top;});});
+ document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(n=>{n.textContent=n.textContent.replace(/Version\s+3\.[67]\s+bêta\s+\d+/gi,'Version 3.7 bêta 3')});
+})();</script>
 </body></html>
