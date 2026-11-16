@@ -70,3 +70,11 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - La feuille de contribution conserve simultanément le montant, la date, le bouton d'annulation et la validation dans un seul dialogue; limites de hauteur pour un petit écran.
 - Nouveau test Playwright mobile de focus des montants et de l'unicité de la feuille de contribution, ajouté à GitHub Actions. La présence de vrais claviers Safari/iOS n'est **pas** simulable avec Chromium ; un essai réel reste indispensable.
 - Résultat du nouveau workflow à confirmer. Aucun déploiement sur `main`.
+
+
+## Tests de positionnement mobile — 17 novembre 2026
+- Ajout de `tests/v4-dialog-geometry.cjs` : 35 contrôles sur 5 tailles d'écran (320×568, 375×667, 390×844, 430×932 et 768×880), 7 familles de fenêtres, y compris contribution, transaction et transfert.
+- Chaque contrôle ouvre une fenêtre après défilement de page, simule le focus d'un champ si disponible, puis vérifie les limites horizontales et verticales et l'absence de débordement du contenu.
+- GitHub Actions n°194 : **succès** sur la branche V4, avec l'ensemble des régressions existantes.
+- Le vrai clavier Safari iOS et la zone visible mobile réduite par le clavier ne sont pas totalement reproduits par Chromium : essai physique à conserver avant publication.
+- Pas de modification de `main` ni de déploiement iPhone.
