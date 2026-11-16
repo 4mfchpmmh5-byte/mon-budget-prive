@@ -872,12 +872,13 @@ $('txform').onsubmit=async e=>{
  if(pw===null)return;
  if(!data||!secret||mbpVaultRestoring||mbpVaultDeleting||mbpVaultResetting)return;
  mbpVaultResetting=true;
- let previousData=null,previousPayload=null;
+ let previousData=null,previousPayload=null,previousBackup=null,previousMonth=selectedMonth;
  try{
   // Drain all earlier mutations before confirming the actual encrypted vault password.
   await mbpSaveQueue.catch(()=>{});
   previousData=data;
   previousPayload=localStorage.getItem(KEY);
+  previousBackup=localStorage.getItem(mbpV4RecoveryKey);
   if(!previousPayload)throw Error('Coffre absent');
   await unseal(JSON.parse(previousPayload),pw);
   if(secret!==pw)throw Error('Phrase secrète incompatible');
@@ -905,9 +906,20 @@ $('txform').onsubmit=async e=>{
   mbpSaveQueue=Promise.resolve();
   alertMsg('Données réinitialisées. Coffre conservé.');
  }catch(err){
-  // Never report success when local storage or password verification failed.
-  if(previousData&&data!==previousData)data=previousData;
-  alertMsg('Réinitialisation impossible : les données précédentes ont été conservées si le stockage le permet.');
+  // Restore both storage and in-memory state when any post-write step fails.
+  let rolledBack=true;
+  try{
+   if(previousPayload!==null&&localStorage.getItem(KEY)!==previousPayload){
+    localStorage.setItem(KEY,previousPayload);
+    if(localStorage.getItem(KEY)!==previousPayload)throw Error('Coffre précédent non restauré');
+   }
+   if(previousBackup!==null&&localStorage.getItem(mbpV4RecoveryKey)!==previousBackup){
+    localStorage.setItem(mbpV4RecoveryKey,previousBackup);
+    if(localStorage.getItem(mbpV4RecoveryKey)!==previousBackup)throw Error('Copie précédente non restaurée');
+   }
+  }catch(_){rolledBack=false}
+  if(previousData){data=previousData;selectedMonth=previousMonth;try{render()}catch(_){}}
+  alertMsg(rolledBack?'Réinitialisation annulée : données précédentes conservées.':'Réinitialisation interrompue : état du stockage à vérifier avant de continuer.');
  }finally{mbpVaultResetting=false}
 };
 $('wipe').onclick=async()=>{
