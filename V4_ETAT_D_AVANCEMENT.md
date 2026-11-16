@@ -46,3 +46,12 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - Une régression Playwright valide le refus de restaurer un coffre sain et la récupération d'un coffre volontairement altéré.
 - Le test historique de fumée a été ajusté pour contrôler la présence de la copie de secours plutôt qu'une ancienne déclaration JavaScript devenue obsolète.
 - **Validation CI sur la dernière révision encore à vérifier**. Safari iOS et stockage défaillant pendant la restauration restent des risques ouverts; aucune diffusion.
+
+
+## Régressions de récupération et effacement — 17 novembre 2026
+- Diagnostic GitHub Actions : 16/16 tests financiers, scénario multi-mois et simulation de quota validés sur la révision précédente; échec restant dû à une assertion trop précoce du test asynchrone de récupération. Le test attend désormais explicitement la réponse.
+- Récupération proposée au déverrouillage même si la clé du coffre principal a disparu, tant qu'une copie chiffrée précédente est encore stockée.
+- Effacement définitif : suppression des **deux** clés chiffrées, coffre actif et secours.
+- Réinitialisation : purge de la copie chiffrée de l'ancien historique après succès; en cas d'erreur, tentative de restauration du coffre précédent, de sa copie et de l'état mémoire. Le message distingue une restauration réussie d'un état de stockage incertain.
+- Tests ajoutés pour récupération sans coffre principal, suppression des deux copies et réinitialisation interrompue par une erreur de stockage.
+- La suite CI complète de cette révision, ainsi que Safari iOS, nécessitent confirmation. Aucun déploiement sur `main`.
