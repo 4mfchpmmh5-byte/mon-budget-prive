@@ -804,8 +804,56 @@ document.addEventListener('click',e=>{
   s.value=id;
  }
 });
-document.addEventListener('click',async e=>{const b=e.target.closest('[data-v17fund],[data-v17expense]');if(!b||!data)return;const id=b.dataset.v17fund||b.dataset.v17expense,p=data.plans.find(p=>p.id===id);if(!p)return;if(b.dataset.v17expense){openTx('expense',p.name,p.cat);$('txbudget').value=p.id;return}const value=await mbpPrompt(`Montant réellement mis de côté pour « ${p.name} » (€) :`,String(p.amount));if(value===null)return;const amount=Number(value.replace(',','.'));if(!Number.isFinite(amount)||amount<=0){alertMsg('Montant invalide');return}const date=await mbpPrompt('Date de la contribution (AAAA-MM-JJ) :',new Date().toLocaleDateString('sv-SE'));if(date===null)return;if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(new Date(date).getTime())){alertMsg('Date invalide');return}v17Ensure();data.envelopeMoves.push({id:uid(),planId:p.id,kind:'fund',amount,date});await save();render();alertMsg('Provision enregistrée (sans modifier tes comptes bancaires).')});
-$('resetEnvelopes').onclick=async()=>{if(!data)return;if(await mbpPrompt('Remettre à zéro les enveloppes à partir du mois sélectionné ? Tape ZERO :')!=='ZERO')return;v17Ensure();data.envelopeStart=selectedMonth;data.envelopeMoves=data.envelopeMoves.filter(x=>x.date.slice(0,7)<selectedMonth);await save();render();alertMsg('Enveloppes remises à zéro pour '+selectedMonth)};
+document.addEventListener('click',async e=>{
+ const b=e.target.closest('[data-v17fund],[data-v17expense]');
+ if(!b||!data)return;
+ const id=b.dataset.v17fund||b.dataset.v17expense;
+ const p=monthPlans().find(p=>String(p.id)===String(id));
+ if(!p)return;
+ if(b.dataset.v17expense){
+  openTx('expense',p.name,p.cat);
+  $('txdate').value=selectedMonth+'-'+String(new Date().getDate()).padStart(2,'0');
+  // Use a real calendar day in the selected month.
+  const d=new Date().getDate(),last=new Date(Number(selectedMonth.slice(0,4)),Number(selectedMonth.slice(5)),0).getDate();
+  $('txdate').value=selectedMonth+'-'+String(Math.min(d,last)).padStart(2,'0');
+  v17FillTxBudgets();
+  $('txbudget').value=String(p.id);
+  return;
+ }
+ const value=await mbpPrompt('Montant réellement mis de côté pour « '+p.name+' » (€) :',String(p.amount));
+ if(value===null)return;
+ const amount=Number(String(value).trim().replace(',','.'));
+ if(!Number.isFinite(amount)||amount<=0||Math.round(amount*100)!==amount*100&&Math.abs(amount*100-Math.round(amount*100))>1e-6){
+  alertMsg('Montant invalide (deux décimales maximum).');return;
+ }
+ const date=await mbpPrompt('Date de la contribution (AAAA-MM-JJ) :',selectedMonth+'-01');
+ if(date===null)return;
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||new Date(date+'T12:00:00').toLocaleDateString('sv-SE')!==date){
+  alertMsg('Date invalide');return;
+ }
+ // A selected plan may have a different planId on the date of contribution.
+ const dated=mbpV4PlansForMonth(date.slice(0,7));
+ const matching=dated.find(x=>String(x.id)===String(p.id))||
+  (p.goalId?dated.find(x=>String(x.goalId||'')===String(p.goalId)):null);
+ if(!matching||matching.cat!=='Provisions'){
+  alertMsg('Aucune provision correspondante pour cette date.');return;
+ }
+ v17Ensure();
+ const move={id:uid(),planId:matching.id,goalId:matching.goalId||p.goalId,kind:'fund',amount:Math.round(amount*100)/100,date};
+ data.envelopeMoves.push(move);
+ try{await save();render();alertMsg('Provision enregistrée (sans modifier tes comptes bancaires).')}
+ catch(err){data.envelopeMoves=data.envelopeMoves.filter(x=>x.id!==move.id);alertMsg('Enregistrement impossible : contribution non conservée.')}
+});
+$('resetEnvelopes').onclick=async()=>{
+ if(!data)return;
+ if(await mbpPrompt('Remettre à zéro les enveloppes à partir du mois sélectionné ? Tape ZERO :')!=='ZERO')return;
+ v17Ensure();
+ const priorStart=data.envelopeStart,priorMoves=data.envelopeMoves.slice();
+ data.envelopeStart=selectedMonth;
+ data.envelopeMoves=data.envelopeMoves.filter(x=>x.date?.slice(0,7)<selectedMonth);
+ try{await save();render();alertMsg('Enveloppes remises à zéro pour '+selectedMonth)}
+ catch(err){data.envelopeStart=priorStart;data.envelopeMoves=priorMoves;alertMsg('Réinitialisation impossible : mouvements conservés.')}
+};
 // Re-link matching existing transactions to recurring templates only when explicitly chosen.
 
 // v2.0: month-scoped plan editing, no changes to older months.
