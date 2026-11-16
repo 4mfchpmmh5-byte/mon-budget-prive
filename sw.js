@@ -1,6 +1,6 @@
-/* MBP v3.7 bêta 7 : retour à la version validée, cache renouvelé.
+/* MBP v3.7 bêta 8 : version validée par tests Chromium, cache renouvelé.
    Aucune action sur le coffre chiffré ou le stockage local. */
-const CACHE='mon-budget-shell-v3.7-beta7-rollback-1';
+const CACHE='mon-budget-shell-v3.7-beta8-verified-1';
 const FILES=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting()));
