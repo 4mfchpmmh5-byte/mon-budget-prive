@@ -956,7 +956,16 @@ document.addEventListener('click',async e=>{
  function drawChoices(){const opts=choices();if(!opts.some(x=>x[0]===quickCat))quickCat='';document.getElementById('v24cats').innerHTML=opts.map(([id,label])=>'<button type="button" class="v24-chip '+(id.startsWith('custom:')?'v26-custom-chip ':'')+(quickCat===id?'active':'')+'" data-v24cat="'+quickEscape(id)+'"'+(quickCat===id?' aria-pressed="true"':' aria-pressed="false"')+'><span class="mbp375-icon" aria-hidden="true"></span><span class="mbp375-label">'+quickEscape(label)+'</span></button>').join('')}
  window.mbpRefreshQuickChoices=drawChoices;
  function setType(type){quickType=type;quickCat='';document.getElementById('v24expense').classList.toggle('active',type==='expense');document.getElementById('v24income').classList.toggle('active',type==='income');drawChoices()}
- document.getElementById('v24expense').onclick=()=>setType('expense');document.getElementById('v24income').onclick=()=>setType('income');document.getElementById('v24cats').onclick=e=>{const b=e.target.closest('[data-v24cat]');if(b){quickCat=b.dataset.v24cat;drawChoices()}};drawChoices();
+ document.getElementById('v24expense').onclick=()=>setType('expense');document.getElementById('v24income').onclick=()=>setType('income');document.getElementById('v24cats').onclick=e=>{
+  const b=e.target.closest('button[data-v24cat]');if(!b)return;
+  // Ne pas reconstruire les SVG au toucher : le même DOM / dessin reste en place.
+  quickCat=b.dataset.v24cat;
+  for(const chip of document.querySelectorAll('#v24cats button[data-v24cat]')){
+   const active=chip===b;
+   chip.classList.toggle('active',active);
+   chip.setAttribute('aria-pressed',String(active));
+  }
+ };drawChoices();
  function matchingPlan(cat){const old=selectedMonth;selectedMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);const all=monthPlans();selectedMonth=old;const vars=all.filter(p=>p.cat==='Variables');const re=cat==='courses'?/course|participation/i:cat==='midi'?/repas du midi|midi/i:cat==='sorties'?/restaurant|sortie/i:null;return re?vars.find(p=>re.test(p.name)):null}
  document.getElementById('v24save').onclick=async()=>{
   if(!data)return;const amount=Number(document.getElementById('v24amount').value),feedback=document.getElementById('v24feedback');
@@ -1289,7 +1298,9 @@ tab=function(which){oldTab(which);if(button)button.style.display=which==='settin
   if(!data)return;
   const {key,isIncome}=activeCategory();
   const labels={courses:'Courses',midi:'Repas du midi',sorties:'Restaurants / sorties',transport:'Transport',logement:'Logement',sante:'Santé',shopping:'Shopping',loisirs:'Loisirs',exception:'Imprévu',autre:'Autre',salaire:'Salaire',prime:'Prime',ticketresto:'Ticket resto',remboursement:'Remboursement',cadeau:'Cadeau'};
-  const name=labels[key]||'Choisir une catégorie';
+  const selectedChip=document.querySelector('#v24cats button[data-v24cat].active');
+  const selectedLabel=selectedChip?.querySelector('.mbp375-label')?.textContent?.trim();
+  const name=selectedLabel||(key?.startsWith('custom:')?key.slice(7):labels[key])||'Choisir une catégorie';
   const label=document.getElementById('v264catlabel'),content=document.getElementById('v264budgetcontent');
   if(!content)return;
   label.textContent=name;
@@ -3635,13 +3646,31 @@ html,body{overflow-x:clip!important;}
  cadeau:'<path d="M3 9h18v12H3zM2 6h20v4H2zM12 6v15M12 6c-3-8-9-3-5 0m5 0c3-8 9-3 5 0"/>'
  };
  const customPath={fuel:'<path d="M3 4h12v17H3V4Zm3 4h6m3 2 3 3v5a2 2 0 0 0 4 0v-8l-3-3"/>',shopping:'<path d="M3 6h2l2 12h12l2-9H6"/>',wallet:paths.autre,car:paths.transport,home:paths.logement,heart:paths.sante,gift:paths.cadeau,plane:'<path d="m3 12 18-8-5 16-4-6-9-2Zm9 2 4-10"/>',coffee:'<path d="M4 7h12v7a6 6 0 0 1-12 0V7Zm12 1h3a3 3 0 0 1 0 6h-3M3 21h16"/>',briefcase:paths.salaire,utensils:paths.midi,sparkles:paths.prime,'shopping-cart':paths.shopping};
- function decorate(){if(!root)return;for(const b of root.querySelectorAll('button[data-v24cat]')){
-  const box=b.querySelector('.mbp375-icon');if(!box||box.querySelector('svg'))continue;
-  const key=b.dataset.v24cat,custom=key.startsWith('custom:')?key.slice(7):null;
-  const preferred=custom?window.mbp375GetIcon?.(custom):null;
-  const icon=custom?(customPath[preferred]||(/essence|carburant/i.test(custom)?customPath.fuel:paths.autre)):(paths[key]||paths.autre);
-  box.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+icon+'</svg>';
- }}
+ function decorate(){if(!root)return;
+  for(const b of root.querySelectorAll('button[data-v24cat]')){
+   const key=b.dataset.v24cat||'';
+   const custom=key.startsWith('custom:')?key.slice(7):null;
+   // Normaliser les anciennes icônes v30-ico qui sont parfois recréées au changement de type.
+   let box=b.querySelector('.mbp375-icon');
+   if(!box){
+    const label=b.querySelector('.mbp375-label')?.textContent?.trim()||b.textContent.trim();
+    const ico=b.querySelector('.v30-ico');
+    if(ico){ico.className='mbp375-icon';box=ico;}
+    else{box=document.createElement('span');box.className='mbp375-icon';b.prepend(box);}
+    if(!b.querySelector('.mbp375-label')){
+     for(const node of [...b.childNodes])if(node.nodeType===Node.TEXT_NODE)node.remove();
+     const span=document.createElement('span');span.className='mbp375-label';span.textContent=label;b.append(span);
+    }
+   }
+   const preferred=custom?(data?.v31Shortcuts?.[custom]?.icon||window.mbp375GetIcon?.(custom)):null;
+   const icon=custom?(customPath[preferred]||(/essence|carburant/i.test(custom)?customPath.fuel:paths.autre)):(paths[key]||paths.autre);
+   const current=box.querySelector('svg');
+   // La catégorie conserve un unique SVG canonique, quelle que soit son apparence précédente.
+   if(!current||current.innerHTML!==icon||current.getAttribute('viewBox')!=='0 0 24 24'){
+    box.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+icon+'</svg>';
+   }
+  }
+ }
  // Observateur uniquement sur les mutations directes de la grille : pas de boucle CSS / SVG.
  if(root){let pending=false;const queue=()=>{if(pending)return;pending=true;queueMicrotask(()=>{pending=false;decorate()})};new MutationObserver(queue).observe(root,{childList:true});queue();}
  window.mbp375GetIcon=name=>{try{return window.mbpCurrentShortcutIcons?.[name]||''}catch{return ''}};
@@ -3704,7 +3733,7 @@ html,body{overflow-x:clip!important;}
 <script id="mbp376-finishing">
 (()=>{'use strict';
  const text1='Espace personnel et confidentiel';
- const text2='Mon Budget Privé · v3.7 bêta 8';
+ const text2='Mon Budget Privé · v3.7 bêta 9';
  const desiredHelp='Conserve ta phrase secrète en lieu sûr. Si tu l’oublies, seule une sauvegarde chiffrée avec son mot de passe te permettra de restaurer tes données.';
  function fixFooter(){
   const footer=document.querySelector('.v32-lock-footer');
@@ -3771,7 +3800,7 @@ html,body{overflow-x:clip!important;}
   }).observe(lock,{childList:true,characterData:true,subtree:true});
  }
  document.querySelectorAll('#settings .v262-version').forEach(el=>{
-  el.textContent=el.textContent.replace(/Version\s+3\.7\s+bêta\s+\d+/gi,'Version 3.7 bêta 8');
+  el.textContent=el.textContent.replace(/Version\s+3\.7\s+bêta\s+\d+/gi,'Version 3.7 bêta 9');
  });
 })();
 </script>
@@ -3786,5 +3815,36 @@ body:has(#app:not(.hidden)) .v32-lock-footer{display:none!important}
 #add #v24cats .v24-chip.active .mbp375-icon *{font-weight:inherit!important;text-shadow:none!important;filter:none!important;-webkit-text-stroke:0!important}
 #add #v24cats .mbp375-icon svg,#add #v24cats .v24-chip.active .mbp375-icon svg{stroke-width:1.8!important}
 #add #v24cats .mbp375-label{min-width:0!important;font-weight:650!important;font-size:clamp(12px,3.3vw,14px)!important;letter-spacing:-.015em}
+</style>
+
+<!-- MBP ergonomie : icônes immuables au clic, alignements constants, confort tactile -->
+<style id="mbp379-ergonomic-stability">
+#add #v24cats button[data-v24cat],
+#add #v24cats button[data-v24cat].active{
+ appearance:none!important;-webkit-appearance:none!important;
+ display:flex!important;align-items:center!important;
+ gap:9px!important;box-sizing:border-box!important;
+ border-width:1px!important;font-weight:650!important;
+ transform:none!important;filter:none!important;
+}
+#add #v24cats button[data-v24cat] .mbp375-icon,
+#add #v24cats button[data-v24cat].active .mbp375-icon{
+ flex:0 0 23px!important;width:23px!important;height:23px!important;
+ font-weight:normal!important;transform:none!important;filter:none!important;
+}
+#add #v24cats button[data-v24cat] .mbp375-icon svg,
+#add #v24cats button[data-v24cat].active .mbp375-icon svg{
+ width:20px!important;height:20px!important;stroke:#c3d5ed!important;
+ stroke-width:1.8!important;fill:none!important;
+ stroke-linecap:round!important;stroke-linejoin:round!important;
+ opacity:1!important;transform:none!important;filter:none!important;
+}
+#add #v24cats button[data-v24cat] .mbp375-label,
+#add #v24cats button[data-v24cat].active .mbp375-label{
+ font-weight:650!important;line-height:1.25!important;
+ min-width:0!important;overflow-wrap:normal!important;
+}
+#v264budgetpanel .v264-panelhead{gap:10px!important;align-items:flex-start!important}
+#v264catlabel{min-width:0!important;overflow-wrap:anywhere!important;text-align:right!important}
 </style>
 </body></html>
