@@ -31,6 +31,7 @@ const assert=require('node:assert/strict');
     await save();
   });
   await page.evaluate(()=>{mbpPrompt=async()=> 'EFFACER';});
+  await page.evaluate(()=>tab('settings'));
   await page.locator('#wipe').click();
   await page.locator('#setup:not(.hidden)').waitFor();
   const after=await page.evaluate(()=>({active:localStorage.getItem(KEY),previous:localStorage.getItem(KEY+'-previous-v4')}));
