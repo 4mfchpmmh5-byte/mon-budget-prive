@@ -910,21 +910,30 @@ document.addEventListener('click',async e=>{
  const period=document.createElement('div');period.className='v24-period';period.innerHTML='<label for="v24period" style="font-size:12px">Période</label><select id="v24period" aria-label="Période du bilan"></select>';
  home.prepend(period);
  const annual=document.createElement('div');annual.id='v24annual';annual.className='card';period.after(annual);
- const choices=()=>quickType==='expense'?[['courses','Courses'],['midi','Repas midi'],['sorties','Sorties'],['transport','Transport'],['logement','Logement'],['sante','Santé'],['shopping','Shopping'],['loisirs','Loisirs'],['exception','Imprévu'],['autre','Autre']]:[['salaire','Salaire'],['prime','Prime'],['ticketresto','Ticket resto'],['remboursement','Remboursement'],['cadeau','Cadeau'],['autre','Autre']];
- function drawChoices(){const opts=choices();if(!opts.some(x=>x[0]===quickCat))quickCat='';document.getElementById('v24cats').innerHTML=opts.map(([id,label])=>'<button type="button" class="v24-chip '+(quickCat===id?'active':'')+'" data-v24cat="'+id+'">'+label+'</button>').join('')}
+ const baseChoices=()=>quickType==='expense'?[['courses','Courses'],['midi','Repas midi'],['sorties','Sorties'],['transport','Transport'],['logement','Logement'],['sante','Santé'],['shopping','Shopping'],['loisirs','Loisirs'],['exception','Imprévu'],['autre','Autre']]:[['salaire','Salaire'],['prime','Prime'],['ticketresto','Ticket resto'],['remboursement','Remboursement'],['cadeau','Cadeau'],['autre','Autre']];
+ const customNames=()=>Array.isArray(data?.quickLabels)?data.quickLabels.slice(0,12).filter(n=>{const c=data.v31Shortcuts?.[n]||{};return c.visible!==false&&(c.type||'expense')===quickType;}):[];
+ const choices=()=>[...baseChoices(),...customNames().map(n=>['custom:'+n,n])];
+ const quickEscape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function drawChoices(){const opts=choices();if(!opts.some(x=>x[0]===quickCat))quickCat='';document.getElementById('v24cats').innerHTML=opts.map(([id,label])=>'<button type="button" class="v24-chip '+(id.startsWith('custom:')?'v26-custom-chip ':'')+(quickCat===id?'active':'')+'" data-v24cat="'+quickEscape(id)+'"'+(quickCat===id?' aria-pressed="true"':' aria-pressed="false"')+'><span class="mbp375-icon" aria-hidden="true"></span><span class="mbp375-label">'+quickEscape(label)+'</span></button>').join('')}
+ window.mbpRefreshQuickChoices=drawChoices;
  function setType(type){quickType=type;quickCat='';document.getElementById('v24expense').classList.toggle('active',type==='expense');document.getElementById('v24income').classList.toggle('active',type==='income');drawChoices()}
  document.getElementById('v24expense').onclick=()=>setType('expense');document.getElementById('v24income').onclick=()=>setType('income');document.getElementById('v24cats').onclick=e=>{const b=e.target.closest('[data-v24cat]');if(b){quickCat=b.dataset.v24cat;drawChoices()}};drawChoices();
  function matchingPlan(cat){const old=selectedMonth;selectedMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);const all=monthPlans();selectedMonth=old;const vars=all.filter(p=>p.cat==='Variables');const re=cat==='courses'?/course|participation/i:cat==='midi'?/repas du midi|midi/i:cat==='sorties'?/restaurant|sortie/i:null;return re?vars.find(p=>re.test(p.name)):null}
  document.getElementById('v24save').onclick=async()=>{
   if(!data)return;const amount=Number(document.getElementById('v24amount').value),feedback=document.getElementById('v24feedback');
   if(!Number.isFinite(amount)||amount<=0||amount>100000000){feedback.textContent='Saisis un montant valide.';return}if(!quickCat){feedback.textContent='Choisis une catégorie avant d’enregistrer.';return}
-  const p=quickType==='expense'?matchingPlan(quickCat):null;
+  const shortcutName=quickCat.startsWith('custom:')?quickCat.slice(7):'';
+  const shortcut=shortcutName?(data.v31Shortcuts?.[shortcutName]||{}):null;
+  const p=quickType==='expense'&&!shortcutName?matchingPlan(quickCat):null;
   const defaultNames={courses:'Courses',midi:'Repas du midi',sorties:'Restaurants / sorties',transport:'Transport',logement:'Logement',sante:'Santé',shopping:'Shopping',loisirs:'Loisirs',salaire:'Salaire',prime:'Prime',ticketresto:'Ticket restaurant',remboursement:'Remboursement',cadeau:'Cadeau',exception:'Dépense exceptionnelle',autre:'Autre'};
-  let name=p?.name||defaultNames[quickCat]||'Opération';
+  let name=shortcutName||p?.name||defaultNames[quickCat]||'Opération';
   if(quickCat==='autre'){const custom=await mbpPrompt('Libellé de cette opération :','');if(custom===null)return;name=custom.trim().slice(0,100)||'Autre'}
   const date=new Date().toLocaleDateString('sv-SE');
   const t={id:uid(),type:quickType,name,amount,cat:quickType==='income'?(quickCat==='ticketresto'?'Titres-restaurant':'Revenus'):(quickCat==='exception'?'Exceptionnelles':({courses:'Alimentation',midi:'Restauration',sorties:'Loisirs',transport:'Transport',logement:'Logement',sante:'Santé',shopping:'Shopping',loisirs:'Loisirs'}[quickCat]||'Variables')),date,...(quickCat==='ticketresto'?{nonCash:true}:{})};
   if(p)t.planId=p.id;
+  if(shortcut){t.cat=shortcut.category||(quickType==='income'?'Revenus':/essence|carburant/i.test(shortcutName)?'Transport':'Variables');
+    if(shortcut.planId){const nowMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);const plan=getMonthPlans(nowMonth).find(x=>String(x.id)===String(shortcut.planId)&&((quickType==='income'&&x.cat==='Revenus')||(quickType==='expense'&&x.cat!=='Revenus')));if(plan)t.planId=plan.id;}
+  }
   // Avoid a duplicate salary when the quick entry is tapped twice accidentally.
   if(quickType==='income'&&quickCat==='salaire'&&data.transactions.some(x=>x.type==='income'&&x.date===date&&x.name===name&&Number(x.amount)===amount)){
    if(!await mbpConfirm('Un salaire identique est déjà enregistré aujourd’hui. Ajouter quand même ?'))return;
@@ -1095,8 +1104,7 @@ render();
  const box=document.createElement('div');box.className='card';box.id='v26custombox';box.innerHTML='<h3>Mes raccourcis personnalisés</h3><p class="muted">Ajoute tes libellés favoris. Ils apparaissent sur Ajouter. Touche un raccourci pour enregistrer une opération ; personnalise son budget avec « Configurer ».</p><form id="v26customform"><label>Nouveau raccourci<input id="v26custominput" maxlength="40" placeholder="Ex. Essence, Santé, Cadeaux" required></label><button class="btn" type="submit">Ajouter le raccourci</button></form><div id="v26customlist"></div><p id="v26customstatus" class="muted" role="status"></p>';
  el('settings').append(box);
  function drawCustom(){if(!data)return;const names=Array.isArray(data.quickLabels)?data.quickLabels:[];el('v26customlist').innerHTML=names.map((n,i)=>`<div class="row"><span>${safe(n)}</span><button type="button" class="v22-action" data-v26remove="${i}">Retirer</button></div>`).join('');
-  const cats=el('v24cats');if(!cats)return;cats.querySelectorAll('.v26-custom-chip').forEach(x=>x.remove());
-  for(const n of names.slice(0,12)){const c=data.v31Shortcuts?.[n]||{};if(c.visible===false)continue;const activeType=el('v24income')?.classList.contains('active')?'income':'expense';if((c.type||'expense')!==activeType)continue;const b=document.createElement('button');b.type='button';b.className='v24-chip v26-custom-chip';b.textContent='＋ '+n;b.title='Ouvrir une opération détaillée';b.onclick=()=>{const cat=c.category||(c.type==='income'?'Revenus':/essence|carburant|transport/i.test(n)?'Transport':/santé|médecin/i.test(n)?'Santé':/cadeau/i.test(n)?'Cadeaux':'Variables');openTx(c.type||'expense',n,cat)};cats.append(b)}
+  window.mbpRefreshQuickChoices?.();
  }
  el('v26customform').onsubmit=async e=>{e.preventDefault();if(!data)return;const name=el('v26custominput').value.trim();if(!name)return;const previous=[...(data.quickLabels||[])];if(previous.some(x=>x.toLowerCase()===name.toLowerCase())){el('v26customstatus').textContent='Ce raccourci existe déjà.';return}data.quickLabels=[...previous,name].slice(0,12);try{await save();el('v26custominput').value='';drawCustom();el('v26customstatus').textContent='Raccourci enregistré.'}catch(err){data.quickLabels=previous;el('v26customstatus').textContent='Échec de l’enregistrement.'}};
  el('v26customlist').onclick=async e=>{const b=e.target.closest('[data-v26remove]');if(!b||!data)return;const previous=[...(data.quickLabels||[])];data.quickLabels=previous.filter((_,i)=>i!==Number(b.dataset.v26remove));try{await save();drawCustom()}catch(err){data.quickLabels=previous;drawCustom()}};
@@ -2325,7 +2333,7 @@ function buildSummary(){
 }
 const icons={courses:'shopping',midi:'meal',sorties:'glass',exception:'bolt',autre:'wallet',salaire:'wallet',prime:'sparkles'};
 const paths={shopping:'<path d="M3 9h18l-2 11H5L3 9ZM8 9l4-6 4 6M9 13v3m6-3v3"/>',meal:'<path d="M4 3v7a3 3 0 0 0 6 0V3M7 3v18M17 21V3c-4 2-4 9 0 11"/>',glass:'<path d="M5 3h14l-2 8a5 5 0 0 1-10 0L5 3ZM12 16v5m-5 0h10"/>',bolt:'<path d="m13 2-9 11h7l-1 9 10-12h-7l0-8Z"/>',wallet:'<rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M16 15h2"/>',sparkles:'<path d="m12 3 2 7 7 2-7 2-2 7-2-7-7-2 7-2 2-7Z"/>',fuel:'<path d="M4 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M4 12h11M3 21h14m-2-14 4 4v7a2 2 0 0 0 4 0v-7l-3-3"/>'};
-function premiumIcons(){const root=$('v24cats');if(!root)return;for(const btn of root.querySelectorAll('button')){if(btn.querySelector('svg'))continue;const key=btn.dataset.v24cat,kind=icons[key]||(btn.textContent.toLowerCase().includes('essence')?'fuel':null);if(!kind)continue;const label=btn.textContent.replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF\uFE0E\uFE0F]/gu,'').trim();btn.innerHTML=`<span class="v30-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths[kind]}</svg></span>${h(label)}`;}}
+function premiumIcons(){const root=$('v24cats');if(!root)return;for(const btn of root.querySelectorAll('button')){if(btn.querySelector('svg')||btn.querySelector('.mbp375-icon'))continue;const key=btn.dataset.v24cat,kind=icons[key]||(btn.textContent.toLowerCase().includes('essence')?'fuel':null);if(!kind)continue;const label=btn.textContent.replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF\uFE0E\uFE0F]/gu,'').trim();btn.innerHTML=`<span class="v30-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths[kind]}</svg></span>${h(label)}`;}}
 const cats=$('v24cats');if(cats){let busy=false;const observer=new MutationObserver(()=>{if(busy)return;busy=true;observer.disconnect();premiumIcons();observer.observe(cats,{childList:true,subtree:true});busy=false});observer.observe(cats,{childList:true,subtree:true});premiumIcons()}
 // Compact history. Existing transaction handlers remain the only edit/delete implementation.
 const recent=$('v32recent');
@@ -2881,7 +2889,7 @@ orderList?.addEventListener('dragend',()=>dragIndex=null);
 document.addEventListener('pointerup',e=>{if(e.pointerType==='touch'){const target=e.target.closest('button');if(target)queueMicrotask(()=>target.blur())}},true);
 
 const extraIcons={transport:'<path d="M4 14V6a2 2 0 012-2h12a2 2 0 012 2v8M3 14h18l-1 5H4l-1-5Zm3 6v2m12-2v2M6 9h12"/>',logement:'<path d="m3 11 9-8 9 8M5 10v11h14V10M9 21v-7h6v7"/>',sante:'<path d="M12 21s-9-5.7-9-12a5 5 0 019-3 5 5 0 019 3c0 6.3-9 12-9 12Z"/><path d="M9 12h6m-3-3v6"/>',shopping:'<path d="M3 6h2l2 12h12l2-9H6m4 12h.01m7 0h.01"/>',loisirs:'<path d="M3 10h18v10H3zM7 10V6l5-3 5 3v4"/>',ticketresto:'<path d="M4 5h16v14H4zM7 9h10M7 13h5"/>',remboursement:'<path d="M4 8h16M4 8l4-4M4 8l4 4M20 16H4m16 0-4-4m4 4-4 4"/>',cadeau:'<path d="M3 9h18v12H3zM2 6h20v4H2zM12 6v15M12 6c-3-8-9-3-5 0m5 0c3-8 9-3 5 0"/>'};
-function decorateExtras(){const root=q('v24cats');if(!root)return;for(const b of root.querySelectorAll('[data-v24cat]')){const icon=extraIcons[b.dataset.v24cat];if(!icon)continue;const svg=b.querySelector('svg');if(svg)svg.innerHTML=icon;}for(const b of root.querySelectorAll('.v26-custom-chip')){if(b.querySelector('svg'))continue;const n=b.textContent.replace(/^\s*[+＋]\s*/,'').trim(),c=data?.v31Shortcuts?.[n]||{};const icon=extraIcons[c.icon]||extraIcons[/essence/i.test(n)?'transport':'shopping'];b.innerHTML=`<span class="v30-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icon}</svg></span>${esc(n)}`;}}
+function decorateExtras(){const root=q('v24cats');if(!root)return;for(const b of root.querySelectorAll('[data-v24cat]')){if(b.querySelector('.mbp375-icon'))continue;const icon=extraIcons[b.dataset.v24cat];if(!icon)continue;const svg=b.querySelector('svg');if(svg)svg.innerHTML=icon;}for(const b of root.querySelectorAll('.v26-custom-chip')){if(b.querySelector('svg')||b.querySelector('.mbp375-icon'))continue;const n=b.textContent.replace(/^\s*[+＋]\s*/,'').trim(),c=data?.v31Shortcuts?.[n]||{};const icon=extraIcons[c.icon]||extraIcons[/essence/i.test(n)?'transport':'shopping'];b.innerHTML=`<span class="v30-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icon}</svg></span>${esc(n)}`;}}
 const priorRender=render;
 render=function(){priorRender();if(!data)return;decorateExtras();drawGoals();redrawRecurrings();enableDrag();const dlg=q('v31dialog');if(dlg?.open)renderExtra()};
 if(data)render();
@@ -3523,8 +3531,96 @@ dialog input[type="date"],dialog input[type="number"],dialog select,dialog input
  transfer?.addEventListener('close',()=>{const choices=by('mbp37choices');if(choices)choices.hidden=true;update()});
  // L'ancienne version du badge peut persister dans plusieurs sections.
  document.querySelectorAll('.v32-lock-footer,#settings .v262-version').forEach(n=>{
-  n.textContent=n.textContent.replace(/Version\s+3\.7\s+bêta\s+\d+/gi,'Version 3.7 bêta 4');
+  n.textContent=n.textContent.replace(/Version\s+3\.7\s+bêta\s+\d+/gi,'Version 3.7 bêta 5');
  });
+})();
+</script>
+<!-- MBP V3.7 Bêta 5 : raccourcis cohérents et modales iPhone -->
+<style id="mbp375-corrections">
+/* Un seul système d'alignement. Les icônes sont réservées sur toutes les lignes. */
+#add #v24cats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;}
+#add #v24cats .v24-chip{display:grid!important;grid-template-columns:23px minmax(0,1fr)!important;align-items:center!important;justify-items:start!important;column-gap:9px!important;text-align:left!important;padding:7px 11px!important;min-width:0!important;min-height:49px!important;box-sizing:border-box!important;}
+#add #v24cats .mbp375-icon{display:flex;align-items:center;justify-content:center;width:23px;height:23px;flex:none;}
+#add #v24cats .mbp375-icon svg{width:20px!important;height:20px!important;stroke:#c3d5ed!important;fill:none!important;stroke-width:1.8!important;stroke-linecap:round;stroke-linejoin:round;}
+#add #v24cats .mbp375-label{min-width:0;white-space:normal;overflow-wrap:anywhere;line-height:1.2!important;font-size:clamp(12px,3.55vw,14px)!important;}
+#add #v24cats .v24-chip:last-child:nth-child(odd){grid-column:1/-1!important;}
+/* Toute fenêtre doit se référer aux dimensions de l'écran, jamais à la carte cliquée. */
+#txdialog[open],#v32taskdialog[open],#v312funddialog[open],#mbp36goaldialog[open],#mbp37transferdialog[open],dialog[open],#mbp-ui-dialog[open]{
+ position:fixed!important;
+ inset:auto!important;
+ left:max(12px,calc((100vw - 450px)/2))!important;
+ right:auto!important;
+ top:var(--mbp374-center,50dvh)!important;
+ bottom:auto!important;
+ transform:translateY(-50%)!important;
+ translate:none!important;
+ margin:0!important;
+ width:min(calc(100vw - 24px),450px)!important;
+ max-width:calc(100vw - 24px)!important;
+ max-height:var(--mbp374-height,calc(100dvh - 24px))!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ box-sizing:border-box!important;overscroll-behavior:contain!important;
+}
+dialog[open] input,dialog[open] select,dialog[open] textarea,dialog[open] button{max-width:100%!important;box-sizing:border-box!important;}
+/* Verrouillage iOS : aucun déplacement horizontal n'est permis. */
+html,body{overflow-x:clip!important;}
+/* Pied de déverrouillage : séparer réellement les lignes. */
+.v32-lock-footer{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center!important;white-space:normal!important;max-width:calc(100vw - 48px)!important;margin:22px auto 0!important;line-height:1.45!important;}
+#unlock input:-webkit-autofill,#unlock input:-webkit-autofill:focus{-webkit-text-fill-color:#e8f2ff!important;-webkit-box-shadow:0 0 0 1000px #141d2e inset!important;transition:background-color 5000s ease-in-out 0s!important;}
+#unlock input:focus{outline:none!important;box-shadow:none!important;border-color:#9bbfe9!important;}
+/* Informations secondaires n'allongent pas l'Accueil inutilement. */
+#v264budgetpanel{margin-top:9px!important;padding:10px 13px!important;border-radius:13px!important;}
+#v264budgetpanel h3,#v264budgetpanel h2{font-size:13px!important;margin:0 0 3px!important;}
+#v264budgetpanel p{font-size:12px!important;line-height:1.35!important;margin:0!important;}
+</style>
+<script id="mbp375-behaviour">
+(()=>{'use strict';
+ const root=document.getElementById('v24cats');
+ // Les icônes sont construites pour toutes les catégories, y compris les personnalisées.
+ // Un seul rendu est utilisé après chaque reconstruction du groupe de boutons.
+ const paths={
+ courses:'<path d="M3 8h18l-2 12H5L3 8Zm3-4 4 4m8-4-4 4M9 12v4m6-4v4"/>',
+ midi:'<path d="M5 3v8m3-8v8m3-8v8M8 11v10m9-18v18m0-18c-4 3-4 9 0 9"/>',
+ sorties:'<path d="M5 3h14l-2 9a5 5 0 0 1-10 0L5 3Zm7 14v4m-5 0h10"/>',
+ transport:'<path d="M4 15V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8H4Zm0 0-1 4h18l-1-4M7 19v2m10-2v2M7 9h10"/>',
+ logement:'<path d="m3 11 9-8 9 8M5 10v11h14V10M9 21v-7h6v7"/>',
+ sante:'<path d="M12 21s-9-5.7-9-12a5 5 0 019-3 5 5 0 019 3c0 6.3-9 12-9 12Z"/><path d="M9 12h6m-3-3v6"/>',
+ shopping:'<path d="M3 6h2l2 12h12l2-9H6m4 12h.01m7 0h.01"/>',
+ loisirs:'<path d="M3 10h18v10H3zM7 10V6l5-3 5 3v4"/>',
+ exception:'<path d="m13 2-9 12h7l-1 8 10-13h-7l1-7Z"/>',
+ autre:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',
+ salaire:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',
+ prime:'<path d="m12 2 2.7 7.3L22 12l-7.3 2.7L12 22l-2.7-7.3L2 12l7.3-2.7L12 2Z"/>',
+ ticketresto:'<path d="M4 5h16v14H4zM7 9h10M7 13h5"/>',
+ remboursement:'<path d="M4 8h16M4 8l4-4M4 8l4 4M20 16H4m16 0-4-4m4 4-4 4"/>',
+ cadeau:'<path d="M3 9h18v12H3zM2 6h20v4H2zM12 6v15M12 6c-3-8-9-3-5 0m5 0c3-8 9-3 5 0"/>'
+ };
+ const customPath={fuel:'<path d="M3 4h12v17H3V4Zm3 4h6m3 2 3 3v5a2 2 0 0 0 4 0v-8l-3-3"/>',shopping:'<path d="M3 6h2l2 12h12l2-9H6"/>',wallet:paths.autre,car:paths.transport,home:paths.logement,heart:paths.sante,gift:paths.cadeau,plane:'<path d="m3 12 18-8-5 16-4-6-9-2Zm9 2 4-10"/>',coffee:'<path d="M4 7h12v7a6 6 0 0 1-12 0V7Zm12 1h3a3 3 0 0 1 0 6h-3M3 21h16"/>',briefcase:paths.salaire,utensils:paths.midi,sparkles:paths.prime,'shopping-cart':paths.shopping};
+ function decorate(){if(!root)return;for(const b of root.querySelectorAll('button[data-v24cat]')){
+  const box=b.querySelector('.mbp375-icon');if(!box||box.querySelector('svg'))continue;
+  const key=b.dataset.v24cat,custom=key.startsWith('custom:')?key.slice(7):null;
+  const preferred=custom?window.mbp375GetIcon?.(custom):null;
+  const icon=custom?(customPath[preferred]||(/essence|carburant/i.test(custom)?customPath.fuel:paths.autre)):(paths[key]||paths.autre);
+  box.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+icon+'</svg>';
+ }}
+ // Observateur uniquement sur les mutations directes de la grille : pas de boucle CSS / SVG.
+ if(root){let pending=false;const queue=()=>{if(pending)return;pending=true;queueMicrotask(()=>{pending=false;decorate()})};new MutationObserver(queue).observe(root,{childList:true});queue();}
+ window.mbp375GetIcon=name=>{try{return window.mbpCurrentShortcutIcons?.[name]||''}catch{return ''}};
+ const lockFooter=document.querySelector('.v32-lock-footer');if(lockFooter){lockFooter.innerHTML='<span>Espace personnel et confidentiel</span><span>Mon Budget Privé · V3.7 Bêta 5</span>';}
+ const help=document.querySelector('#unlock .notice'); // Ne pas modifier les flux de sécurité.
+ const footerLabel=document.querySelector('#unlockform ~ p');
+ const allParagraphs=[...document.querySelectorAll('#unlock p')];
+ const text=allParagraphs.find(n=>/Si tu oublies ta phrase secrète/i.test(n.textContent));
+ if(text)text.textContent='Garde ta phrase secrète en lieu sûr. En cas d’oubli, tu auras besoin d’une sauvegarde chiffrée et de son mot de passe pour retrouver tes données.';
+ // La position de la fenêtre est recalculée à l'ouverture et au changement de clavier.
+ function keepWithinViewport(){for(const d of document.querySelectorAll('dialog[open]')){
+  const rect=d.getBoundingClientRect(),view=window.innerWidth;
+  if(rect.left<-2||rect.right>view+2){d.style.setProperty('left',Math.max(12,(view-Math.min(view-24,450))/2)+'px','important');d.style.setProperty('transform','translateY(-50%)','important');}
+ }}
+ const check=()=>requestAnimationFrame(keepWithinViewport);
+ new MutationObserver(check).observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});
+ window.visualViewport?.addEventListener('resize',check,{passive:true});
+ window.addEventListener('resize',check,{passive:true});
 })();
 </script>
 </body></html>
