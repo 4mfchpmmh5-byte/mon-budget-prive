@@ -21,7 +21,6 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/mbp-test-server.log 2>&1 &
           node tests/mbp-smoke.cjs
       - name: Vérifier la page GitHub Pages en production
-        if: github.ref == 'refs/heads/main'
         run: |
           for i in $(seq 1 18); do
             if curl -fsSL --max-time 15 'https://4mfchpmmh5-byte.github.io/mon-budget-prive/' -o /tmp/mbp-prod.html \
