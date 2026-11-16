@@ -3665,7 +3665,7 @@ html,body{overflow-x:clip!important;}
 <script id="mbp376-finishing">
 (()=>{'use strict';
  const text1='Espace personnel et confidentiel';
- const text2='Mon Budget Privé · v3.7 bêta 6';
+ const text2='Mon Budget Privé · v3.7 bêta 7';
  const desiredHelp='Conserve ta phrase secrète en lieu sûr. Si tu l’oublies, seule une sauvegarde chiffrée avec son mot de passe te permettra de restaurer tes données.';
  function fixFooter(){
   const footer=document.querySelector('.v32-lock-footer');
@@ -3695,6 +3695,44 @@ html,body{overflow-x:clip!important;}
  // Display-only version label (never reaches encrypted vault).
  document.querySelectorAll('#settings .v262-version').forEach(el=>{
   el.textContent=el.textContent.replace(/Version\s+3\.7\s+bêta\s+\d+/gi,'Version 3.7 bêta 6');
+ });
+})();
+</script>
+
+<!-- V3.7 Bêta 7 : corrections visuelles uniquement, aucune modification de données -->
+<style id="mbp377-style">
+/* Icônes : apparence strictement identique entre état sélectionné et non sélectionné. */
+#add #v24cats .v24-chip .mbp375-icon,
+#add #v24cats .v24-chip.active .mbp375-icon,
+#add #v24cats .v24-chip .mbp375-icon svg,
+#add #v24cats .v24-chip.active .mbp375-icon svg{
+ color:#c3d5ed!important;stroke:#c3d5ed!important;
+ stroke-width:1.8!important;opacity:1!important;
+ filter:none!important;text-shadow:none!important;
+ transform:none!important;scale:1!important;
+ -webkit-text-stroke:0!important;
+}
+#add #v24cats .mbp375-icon svg *{stroke-width:inherit!important;vector-effect:non-scaling-stroke;}
+#unlock .mbp376-lock-help{font-size:13px!important;line-height:1.5!important;}
+</style>
+<script id="mbp377-finish">
+(()=>{'use strict';
+ const shortHelp='Conserve ta phrase secrète. Elle protège l’accès à tes données.';
+ const lock=document.getElementById('unlock');
+ function updateHelp(){
+  const p=lock?.querySelector('.mbp376-lock-help');
+  if(p&&p.textContent!==shortHelp)p.textContent=shortHelp;
+ }
+ updateHelp();
+ if(lock){
+  let pending=false;
+  new MutationObserver(()=>{
+   if(pending)return;pending=true;
+   queueMicrotask(()=>{pending=false;updateHelp();});
+  }).observe(lock,{childList:true,characterData:true,subtree:true});
+ }
+ document.querySelectorAll('#settings .v262-version').forEach(el=>{
+  el.textContent=el.textContent.replace(/Version\s+3\.7\s+bêta\s+\d+/gi,'Version 3.7 bêta 7');
  });
 })();
 </script>
