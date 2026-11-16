@@ -63,3 +63,10 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - La suite simule ensuite une annulation de suppression, une erreur de stockage chiffré avec retour arrière, puis une suppression confirmée dont la persistance chiffrée est relue.
 - Ajout au workflow CI ; résultat du nouveau scénario **non encore confirmé** lors de la rédaction.
 - Restent les tests Safari iOS et la revue complète du parcours de modification sur le clavier natif.
+
+
+## Ergonomie mobile — clavier numérique natif (17 novembre 2026)
+- Uniformisation du rendu des champs numériques : taille de police d'au moins 16 px pour éviter le zoom de focus iOS et maintien des champs numériques natifs, sans clavier applicatif supplémentaire.
+- La feuille de contribution conserve simultanément le montant, la date, le bouton d'annulation et la validation dans un seul dialogue; limites de hauteur pour un petit écran.
+- Nouveau test Playwright mobile de focus des montants et de l'unicité de la feuille de contribution, ajouté à GitHub Actions. La présence de vrais claviers Safari/iOS n'est **pas** simulable avec Chromium ; un essai réel reste indispensable.
+- Résultat du nouveau workflow à confirmer. Aucun déploiement sur `main`.
