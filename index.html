@@ -542,7 +542,17 @@ async function save(){
   if(generation!==mbpVaultGeneration)throw Error('Écriture annulée : coffre remplacé');
   const payload=await seal(snapshot,pass);
   if(generation!==mbpVaultGeneration)throw Error('Écriture annulée : coffre remplacé');
-  localStorage.setItem(KEY,JSON.stringify(payload));
+  const next=JSON.stringify(payload);
+  const previous=localStorage.getItem(KEY);
+  const backupKey=KEY+'-previous-v4';
+  // V4: preserve the last encrypted committed snapshot before replacing the active vault.
+  // If quota or storage access fails, reject the write rather than risking a partial update.
+  if(previous!==null){
+   localStorage.setItem(backupKey,previous);
+   if(localStorage.getItem(backupKey)!==previous)throw Error('Copie de secours incomplète');
+  }
+  localStorage.setItem(KEY,next);
+  if(localStorage.getItem(KEY)!==next)throw Error('Écriture du coffre incomplète');
   return true;
  };
  mbpSaveQueue=mbpSaveQueue.catch(()=>{}).then(task);
