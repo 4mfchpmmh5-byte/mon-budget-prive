@@ -1,7 +1,7 @@
 name: Test Mon Budget Prive
 on:
   push:
-    branches: [fix/v3.7-beta8-verified]
+    branches: [main, fix/v3.7-beta8-verified]
   pull_request:
     branches: [main]
 jobs:
@@ -20,3 +20,17 @@ jobs:
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/mbp-test-server.log 2>&1 &
           node tests/mbp-smoke.cjs
+      - name: Vérifier la page GitHub Pages en production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          for i in $(seq 1 18); do
+            if curl -fsSL --max-time 15 'https://4mfchpmmh5-byte.github.io/mon-budget-prive/' -o /tmp/mbp-prod.html \
+              && grep -q 'mbp378-verified-ui' /tmp/mbp-prod.html; then
+              echo 'GitHub Pages sert bien la V3.7 bêta 8'
+              exit 0
+            fi
+            echo "La publication n'est pas encore visible (contrôle $i/18)"
+            sleep 8
+          done
+          echo 'GitHub Pages ne présente pas encore le bon fichier'
+          exit 1
