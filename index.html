@@ -3646,13 +3646,31 @@ html,body{overflow-x:clip!important;}
  cadeau:'<path d="M3 9h18v12H3zM2 6h20v4H2zM12 6v15M12 6c-3-8-9-3-5 0m5 0c3-8 9-3 5 0"/>'
  };
  const customPath={fuel:'<path d="M3 4h12v17H3V4Zm3 4h6m3 2 3 3v5a2 2 0 0 0 4 0v-8l-3-3"/>',shopping:'<path d="M3 6h2l2 12h12l2-9H6"/>',wallet:paths.autre,car:paths.transport,home:paths.logement,heart:paths.sante,gift:paths.cadeau,plane:'<path d="m3 12 18-8-5 16-4-6-9-2Zm9 2 4-10"/>',coffee:'<path d="M4 7h12v7a6 6 0 0 1-12 0V7Zm12 1h3a3 3 0 0 1 0 6h-3M3 21h16"/>',briefcase:paths.salaire,utensils:paths.midi,sparkles:paths.prime,'shopping-cart':paths.shopping};
- function decorate(){if(!root)return;for(const b of root.querySelectorAll('button[data-v24cat]')){
-  const box=b.querySelector('.mbp375-icon');if(!box||box.querySelector('svg'))continue;
-  const key=b.dataset.v24cat,custom=key.startsWith('custom:')?key.slice(7):null;
-  const preferred=custom?window.mbp375GetIcon?.(custom):null;
-  const icon=custom?(customPath[preferred]||(/essence|carburant/i.test(custom)?customPath.fuel:paths.autre)):(paths[key]||paths.autre);
-  box.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+icon+'</svg>';
- }}
+ function decorate(){if(!root)return;
+  for(const b of root.querySelectorAll('button[data-v24cat]')){
+   const key=b.dataset.v24cat||'';
+   const custom=key.startsWith('custom:')?key.slice(7):null;
+   // Normaliser les anciennes icônes v30-ico qui sont parfois recréées au changement de type.
+   let box=b.querySelector('.mbp375-icon');
+   if(!box){
+    const label=b.querySelector('.mbp375-label')?.textContent?.trim()||b.textContent.trim();
+    const ico=b.querySelector('.v30-ico');
+    if(ico){ico.className='mbp375-icon';box=ico;}
+    else{box=document.createElement('span');box.className='mbp375-icon';b.prepend(box);}
+    if(!b.querySelector('.mbp375-label')){
+     for(const node of [...b.childNodes])if(node.nodeType===Node.TEXT_NODE)node.remove();
+     const span=document.createElement('span');span.className='mbp375-label';span.textContent=label;b.append(span);
+    }
+   }
+   const preferred=custom?(data?.v31Shortcuts?.[custom]?.icon||window.mbp375GetIcon?.(custom)):null;
+   const icon=custom?(customPath[preferred]||(/essence|carburant/i.test(custom)?customPath.fuel:paths.autre)):(paths[key]||paths.autre);
+   const current=box.querySelector('svg');
+   // La catégorie conserve un unique SVG canonique, quelle que soit son apparence précédente.
+   if(!current||current.innerHTML!==icon||current.getAttribute('viewBox')!=='0 0 24 24'){
+    box.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+icon+'</svg>';
+   }
+  }
+ }
  // Observateur uniquement sur les mutations directes de la grille : pas de boucle CSS / SVG.
  if(root){let pending=false;const queue=()=>{if(pending)return;pending=true;queueMicrotask(()=>{pending=false;decorate()})};new MutationObserver(queue).observe(root,{childList:true});queue();}
  window.mbp375GetIcon=name=>{try{return window.mbpCurrentShortcutIcons?.[name]||''}catch{return ''}};
