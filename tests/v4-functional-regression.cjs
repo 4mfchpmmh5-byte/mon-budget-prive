@@ -95,6 +95,29 @@ const record=(section,scenario,pass,detail={})=>{const out={section,scenario,pas
  record('provisions','Transfert conserve les 200 € au total sans opération de compte',Math.abs(checks.envelopes.voyages.remaining-600)<.001&&Math.abs(checks.envelopes.festivals.remaining-100)<.001&&checks.envelopes.transactionCount===0&&checks.envelopes.netTransfer===0,{observed:checks.envelopes});
  record('patrimoine','Plus-value calculée sur un capital connu',checks.wealth.gain.includes('100')&&checks.wealth.invested.includes('2'),{observed:checks.wealth});
  record('sauvegardes','Persistance locale chiffrée sans perte',checks.persistence.count===1&&checks.persistence.amount===13.21&&checks.persistence.encrypted,{observed:checks.persistence});
+  const duplicateGoal=await page.evaluate(async()=>{
+    const old=data,oldMonth=selectedMonth;
+    const a={id:'g1',goalId:'goal:g1',name:'Épargne identique',cat:'Provisions',amount:250};
+    const b={id:'g2',goalId:'goal:g2',name:'Épargne identique',cat:'Provisions',amount:300};
+    try{
+      data={...old,plans:[a,b],monthBudgets:{},envelopeMoves:[],transactions:[],assets:[],recurring:[],snapshots:[],envelopeStart:'2026-11'};
+      selectedMonth='2026-11';render();
+      const btn=document.querySelector('#v32tasks [data-v36detail="g2"]');
+      if(!btn)return {error:'second goal button missing'};
+      btn.click();
+      await new Promise(r=>setTimeout(r,80));
+      const goalDialog=document.getElementById('mbp36goaldialog');
+      const stored=goalDialog.dataset.mbpV4GoalId;
+      const transfer=goalDialog.querySelector('#mbp37transferbutton');
+      if(!transfer)return {stored,error:'transfer button missing'};
+      transfer.click();
+      await new Promise(r=>setTimeout(r,50));
+      const source=document.getElementById('mbp37source')?.value;
+      document.getElementById('mbp37transferdialog')?.close();
+      return {stored,source};
+    }finally{document.getElementById('mbp36goaldialog')?.close();data=old;selectedMonth=oldMonth;render()}
+  });
+  record('provisions','Deux enveloppes homonymes ouvrent le transfert depuis le bon identifiant',duplicateGoal.stored==='g2'&&duplicateGoal.source==='goal:g2',{observed:duplicateGoal});
  record('application','Absence d’erreurs JavaScript',errors.length===0,{observed:errors});
  console.log('AUDIT_FUNCTIONAL_SUMMARY '+JSON.stringify({total:results.length,passed:results.filter(x=>x.pass).length,failed:results.filter(x=>!x.pass).length}));
  await browser.close();
