@@ -650,13 +650,16 @@ function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA
  }
  const chosen=$('txbudget').value;
  const chosenPlan=chosen?mbpV4PlansForMonth(item.date.slice(0,7)).find(p=>String(p.id)===String(chosen)):null;
- if(chosen&&!chosenPlan){alertMsg('Ce budget ne correspond pas au mois sélectionné.');return;}
+ const historicalSelection=!!(chosen&&original&&String(original.planId||'')===String(chosen)&&
+    original.date?.slice(0,7)===item.date.slice(0,7)&&original.type===item.type);
+ if(chosen&&!chosenPlan&&!historicalSelection){alertMsg('Ce budget ne correspond pas au mois sélectionné.');return;}
  if(chosenPlan){
   if((item.type==='income')!==(chosenPlan.cat==='Revenus')){
    alertMsg('Le type d’opération ne correspond pas au budget choisi.');return;
   }
   item.planId=chosenPlan.id;
- }else delete item.planId;
+ }else if(historicalSelection)item.planId=original.planId;
+ else delete item.planId;
  // Les titres-restaurant sont des avantages non liquides, jamais des dépenses.
  // Un changement de type ou de catégorie ne doit pas conserver l'ancien marqueur.
  if(item.type==='income'){
@@ -790,7 +793,16 @@ $('txtype').addEventListener('change',()=>v17FillTxBudgets(true));
 document.addEventListener('click',e=>{
  const b=e.target.closest('[data-edit-tx]');if(!b)return;
  const t=data?.transactions.find(x=>x.id===b.dataset.editTx);
- if(t){v17FillTxBudgets();$('txbudget').value=t.planId||'';}
+ if(t){
+  v17FillTxBudgets();
+  const s=$('txbudget'),id=String(t.planId||'');
+  if(id&&!Array.from(s.options).some(o=>o.value===id)){
+   const legacy=new Option('Budget historique (supprimé ou modifié)',id);
+   legacy.dataset.mbpHistorical='true';
+   s.add(legacy);
+  }
+  s.value=id;
+ }
 });
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-v17fund],[data-v17expense]');if(!b||!data)return;const id=b.dataset.v17fund||b.dataset.v17expense,p=data.plans.find(p=>p.id===id);if(!p)return;if(b.dataset.v17expense){openTx('expense',p.name,p.cat);$('txbudget').value=p.id;return}const value=await mbpPrompt(`Montant réellement mis de côté pour « ${p.name} » (€) :`,String(p.amount));if(value===null)return;const amount=Number(value.replace(',','.'));if(!Number.isFinite(amount)||amount<=0){alertMsg('Montant invalide');return}const date=await mbpPrompt('Date de la contribution (AAAA-MM-JJ) :',new Date().toLocaleDateString('sv-SE'));if(date===null)return;if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(new Date(date).getTime())){alertMsg('Date invalide');return}v17Ensure();data.envelopeMoves.push({id:uid(),planId:p.id,kind:'fund',amount,date});await save();render();alertMsg('Provision enregistrée (sans modifier tes comptes bancaires).')});
 $('resetEnvelopes').onclick=async()=>{if(!data)return;if(await mbpPrompt('Remettre à zéro les enveloppes à partir du mois sélectionné ? Tape ZERO :')!=='ZERO')return;v17Ensure();data.envelopeStart=selectedMonth;data.envelopeMoves=data.envelopeMoves.filter(x=>x.date.slice(0,7)<selectedMonth);await save();render();alertMsg('Enveloppes remises à zéro pour '+selectedMonth)};
