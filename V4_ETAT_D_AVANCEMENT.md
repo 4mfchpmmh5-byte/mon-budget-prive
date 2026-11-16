@@ -24,3 +24,16 @@ Première tranche de la V4 préparée sur la branche `v4/beta1-finance-engine` ;
 5. **Bêta V4 déployée seulement après revue des risques et possibilité claire de revenir à la V3.7 Bêta 9**.
 
 Ce document reflète les contrôles exécutés, pas une certification exhaustive de l'application.
+
+
+## Lot supplémentaire — 17 novembre 2026 (sur branche V4 seulement)
+- Couverture de régression ajoutée pour les objectifs et provisions de novembre à décembre, notamment quand l'identifiant du budget mensuel change, qu'un objectif a un homonyme et que des transferts traversent les mois.
+- Le chemin habituel de sauvegarde chiffrée conserve désormais le précédent coffre chiffré sous la clé distincte `mbp-encrypted-v1-previous-v4` **avant** de remplacer le coffre actif, puis vérifie la relecture de la valeur persistée.
+- Si la copie de secours ou l'enregistrement actif échoue (p. ex. quota de stockage), la tentative de sauvegarde rejette l'erreur. Le format chiffré existant et la clé active `mbp-encrypted-v1` ne changent pas.
+- Scénarios automatisés ajoutés pour injecter une erreur `QuotaExceededError` lors de la copie de secours puis lors de l'écriture active.
+- Les tests ont été ajoutés au workflow CI; **leur exécution réussie n'est pas encore confirmée** sur ce nouveau commit. Aucune publication effectuée.
+
+### Précautions restantes
+- La copie de secours utilise plus d'espace local; contrôler son comportement dans Safari iOS et en stockage saturé avant toute diffusion.
+- La restauration et la réinitialisation n'exploitent pas encore automatiquement cette copie, ce qui demande un lot de développement séparé et une confirmation utilisateur explicite.
+- Les erreurs de sauvegarde ne doivent jamais être présentées comme une opération enregistrée ; auditer les formulaires concernés.
