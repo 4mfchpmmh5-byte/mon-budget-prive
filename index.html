@@ -3472,10 +3472,11 @@ input[type=checkbox]{accent-color:#9bc7f6!important}
  // Replace goal dialog detail content after it opens, without changing or persisting any data.
  const dlg=q('mbp36goaldialog');
  function refreshGoalDetail(){if(!dlg?.open||!data)return;
-   const p=(typeof monthPlans==='function'?monthPlans():[]).find(x=>x.name===dlg.querySelector('h2')?.textContent&&['Provisions','Investissements'].includes(x.cat));if(!p)return;
+   const goalId=dlg.dataset.mbpV4GoalId;
+   const p=[...(data.plans||[]),...Object.values(data.monthBudgets||{}).flat()].find(x=>String(x.id)===String(goalId)&&['Provisions','Investissements'].includes(x.cat));if(!p)return;
    const m=today().slice(0,7),s=goalDetails(p,m),cards=dlg.querySelectorAll('.v36-goalmetrics b');
    if(cards.length>=4){cards[0].textContent=money(p.amount);cards[1].textContent=money(s.month);cards[2].textContent=money(s.total);cards[3].textContent=money(s.total-s.spent)}
-   const hist=dlg.querySelector('.v36-history');if(hist){const lines=[...s.funds.map(x=>({date:x.date,name:'Versement',amount:x.amount,positive:true})),...s.expenses.map(x=>({date:x.date,name:x.name,amount:x.amount,positive:false}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,35);hist.innerHTML=lines.map(x=>`<div><span>${escape(new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}))} · ${escape(x.name)}</span><b style="color:${x.positive?'#4ed0aa':'#f19ba9'}">${x.positive?'+':'−'}${money(x.amount)}</b></div>`).join('')||'<p class="muted">Aucun mouvement enregistré.</p>'}
+   const hist=dlg.querySelector('.v36-history');if(hist){const lines=[...s.funds.map(x=>({date:x.date,name:'Versement',amount:x.amount,positive:true})),...s.expenses.map(x=>({date:x.date,name:x.name||'Dépense',amount:x.amount,positive:false})),...s.transfers.map(x=>({date:x.date,name:x.kind==='transfer-in'?'Transfert reçu':x.kind==='transfer-out'?'Transfert envoyé':x.kind==='withdraw'?'Retrait':'Utilisation',amount:x.amount,positive:x.kind==='transfer-in'}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,35);hist.innerHTML=lines.map(x=>`<div><span>${escape(new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}))} · ${escape(x.name)}</span><b style="color:${x.positive?'#4ed0aa':'#f19ba9'}">${x.positive?'+':'−'}${money(x.amount)}</b></div>`).join('')||'<p class="muted">Aucun mouvement enregistré.</p>'}
  }
  new MutationObserver(()=>queueMicrotask(refreshGoalDetail)).observe(dlg,{attributes:true,attributeFilter:['open']});
  // A budget type is different from the category of a transaction. We do not silently rewrite
