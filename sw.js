@@ -1,6 +1,6 @@
-/* MBP v3.7 bêta 9 : version validée par tests Chromium, cache renouvelé.
-   Aucune action sur le coffre chiffré ou le stockage local. */
-const CACHE='mon-budget-shell-v3.7-beta9-ui-1';
+/* MBP V4 development shell: distinct cache name prevents stale V3.7 assets during beta tests.
+   Never cache, read or transfer local encrypted financial data. */
+const CACHE='mon-budget-shell-v4-beta1-offline-1';
 const FILES=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting()));
