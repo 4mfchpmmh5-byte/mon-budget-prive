@@ -23,6 +23,7 @@ jobs:
           node tests/visual-audit.cjs
           node tests/v4-functional-regression.cjs
           node tests/v4-cross-month-goals.cjs
+          node tests/v4-vault-failure.cjs
       - name: Vérifier la page GitHub Pages en production
         if: github.ref == 'refs/heads/main'
         run: |
