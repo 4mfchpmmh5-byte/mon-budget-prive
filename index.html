@@ -3847,4 +3847,24 @@ body:has(#app:not(.hidden)) .v32-lock-footer{display:none!important}
 #v264budgetpanel .v264-panelhead{gap:10px!important;align-items:flex-start!important}
 #v264catlabel{min-width:0!important;overflow-wrap:anywhere!important;text-align:right!important}
 </style>
+
+<!-- Audit ergonomique : cibles tactiles sur operations et raccourcis -->
+<style id="mbp-visual-tap-target-fixes">
+#transactions #txlist .v21-more,
+#plans #planlist .v21-more{
+ min-height:42px!important;min-width:42px!important;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ padding:6px 10px!important;box-sizing:border-box!important;
+}
+#v26customlist .v31-shortrow .v31-actions{flex-wrap:wrap!important;gap:6px!important}
+#v26customlist .v31-shortrow .v31-actions button{
+ min-height:40px!important;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ padding:8px 10px!important;box-sizing:border-box!important;
+}
+#v26customlist .v31-shortrow .v31-actions button[data-v31up],
+#v26customlist .v31-shortrow .v31-actions button[data-v31down]{
+ min-width:38px!important;
+}
+</style>
 </body></html>
