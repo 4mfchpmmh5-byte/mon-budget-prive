@@ -1129,9 +1129,16 @@ document.addEventListener('click',async e=>{
    const inc=sum(plans.filter(p=>p.cat==='Revenus'&&!/ticket.?resto|titre.?resto/i.test(p.name)));
    const fixed=sum(plans.filter(p=>['Fixes','Impôts'].includes(p.cat))),variable=sum(plans.filter(p=>p.cat==='Variables')),savings=sum(plans.filter(p=>['Provisions','Investissements'].includes(p.cat)));
    forecastIncome+=inc;forecastOut+=fixed+variable+savings;
-   const earned=sum(tx.filter(t=>t.type==='income'&&!t.nonCash));const variableSpent=sum(tx.filter(t=>t.type==='expense'&&(t.cat==='Variables'||plans.some(p=>p.cat==='Variables'&&p.id===t.planId))));
-   const fixedEntries=tx.filter(t=>t.type==='expense'&&plans.some(p=>['Fixes','Impôts'].includes(p.cat)&&(p.id===t.planId||p.name?.trim().toLowerCase()===t.name?.trim().toLowerCase())));
-   const fixedIds=new Set(fixedEntries.map(t=>t.id));const other=sum(tx.filter(t=>t.type==='expense'&&!fixedIds.has(t.id)&&t.cat!=='Variables'&&!plans.some(p=>p.cat==='Variables'&&p.id===t.planId)&&!['Provisions','Investissements'].includes(t.cat)));
+   const earned=sum(tx.filter(t=>t.type==='income'&&!t.nonCash));
+   // Each transaction is resolved once. An explicit planId always overrides a label/category guess.
+   const classified=tx.filter(t=>t.type==='expense').map(t=>{
+    const p=mbpV4ResolvePlan(t,plans);
+    const category=p?.cat||(t.planId?'Hors budget':t.cat);
+    return {t,category};
+   });
+   const variableSpent=sum(classified.filter(x=>x.category==='Variables').map(x=>x.t));
+   const fixedEntries=classified.filter(x=>['Fixes','Impôts'].includes(x.category)).map(x=>x.t);
+   const other=sum(classified.filter(x=>!['Fixes','Impôts','Variables','Provisions','Investissements'].includes(x.category)).map(x=>x.t));
    if(m<=now){realIncome+=earned;realVariable+=variableSpent;realOther+=other;realFixed+=sum(fixedEntries)}
    rows.push({m,forecast:inc-fixed-variable-savings,actual:earned-variableSpent-other-sum(fixedEntries),future:m>now});
   }
