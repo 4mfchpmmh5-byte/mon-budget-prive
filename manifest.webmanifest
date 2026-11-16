@@ -1,7 +1,7 @@
 {
   "name": "Mon Budget Privé",
   "short_name": "Mon Budget",
-  "start_url": "./",
+  "start_url": "./app-v378.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0b1220",
