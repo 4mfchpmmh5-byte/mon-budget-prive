@@ -1,0 +1,22 @@
+name: Test Mon Budget Prive
+on:
+  push:
+    branches: [fix/v3.7-beta8-verified]
+  pull_request:
+    branches: [main]
+jobs:
+  mobile-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Installer Playwright
+        run: |
+          npm install --no-save playwright@1.58.0
+          npx playwright install --with-deps chromium
+      - name: Démarrer le site et exécuter les tests
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/mbp-test-server.log 2>&1 &
+          node tests/mbp-smoke.cjs
