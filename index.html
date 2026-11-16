@@ -3747,12 +3747,42 @@ dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,86
   dlg.showModal();q('mbp37heading').focus({preventScroll:true});
  }
  q('mbp37cancel').onclick=()=>dlg.close();
- q('mbp37form').onsubmit=async e=>{e.preventDefault();if(!data)return;const source=sourceGoal(),target=targetGoal(),amount=Number(q('mbp37amount').value),date=q('mbp37date').value;
- if(!source||!target||goalKey(source)===goalKey(target)||!Number.isFinite(amount)||cents(amount)<=0||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(new Date(date+'T12:00:00').getTime())||new Date(date+'T12:00:00').toLocaleDateString('sv-SE')!==date){q('mbp37error').textContent='Vérifie les enveloppes, la date et le montant.';return}
- if(cents(amount)>cents(balance(source,date))){q('mbp37error').textContent='Solde insuffisant dans la provision source.';return}
- const group=crypto.randomUUID(),transfer=[{id:crypto.randomUUID(),transferId:group,planId:source.id,goalId:source.goalId,kind:'transfer-out',amount:cents(amount)/100,date},{id:crypto.randomUUID(),transferId:group,planId:target.id,goalId:target.goalId,kind:'transfer-in',amount:cents(amount)/100,date}];
- if(!Array.isArray(data.envelopeMoves))data.envelopeMoves=[];data.envelopeMoves.push(...transfer);
- try{await save();dlg.close();render();alertMsg('Transfert enregistré, sans revenu ni dépense supplémentaire.')}catch(err){data.envelopeMoves=data.envelopeMoves.filter(x=>x.transferId!==group);q('mbp37error').textContent='Sauvegarde impossible : aucun transfert conservé.'}
+ let mbpV4TransferBusy=false;
+ dlg.addEventListener('cancel',e=>{if(mbpV4TransferBusy)e.preventDefault()});
+ q('mbp37cancel').onclick=()=>{if(!mbpV4TransferBusy)dlg.close()};
+ q('mbp37form').onsubmit=async e=>{
+  e.preventDefault();
+  if(!data||mbpV4TransferBusy)return;
+  const source=sourceGoal(),target=targetGoal(),amount=Number(q('mbp37amount').value),date=q('mbp37date').value;
+  if(!source||!target||goalKey(source)===goalKey(target)||q('mbp37amount').value===''||
+   !Number.isFinite(amount)||amount<=0||Math.abs(amount*100-Math.round(amount*100))>1e-6||
+   !isDate(date)){
+   q('mbp37error').textContent='Vérifie les enveloppes, la date et le montant (deux décimales maximum).';return;
+  }
+  if(cents(amount)>cents(balance(source,date))){
+   q('mbp37error').textContent='Solde insuffisant dans la provision source.';return;
+  }
+  mbpV4TransferBusy=true;
+  q('mbp37submit').disabled=true;
+  q('mbp37cancel').disabled=true;
+  const group=crypto.randomUUID(),transfer=[
+   {id:crypto.randomUUID(),transferId:group,planId:source.id,goalId:source.goalId,kind:'transfer-out',amount:cents(amount)/100,date},
+   {id:crypto.randomUUID(),transferId:group,planId:target.id,goalId:target.goalId,kind:'transfer-in',amount:cents(amount)/100,date}
+  ];
+  const hadMoves=Array.isArray(data.envelopeMoves);
+  if(!hadMoves)data.envelopeMoves=[];
+  data.envelopeMoves.push(...transfer);
+  try{
+   await save();dlg.close();render();alertMsg('Transfert enregistré, sans revenu ni dépense supplémentaire.');
+  }catch(err){
+   data.envelopeMoves=data.envelopeMoves.filter(x=>x.transferId!==group);
+   if(!hadMoves)delete data.envelopeMoves;
+   q('mbp37error').textContent='Sauvegarde impossible : aucun transfert conservé.';
+  }finally{
+   mbpV4TransferBusy=false;
+   q('mbp37cancel').disabled=false;
+   updateTransferValidity();
+  }
  };
  // Place transfer access near existing goal controls while preserving all existing interactions.
  const goalsDialog=q('mbp36goaldialog');
