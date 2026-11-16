@@ -52,6 +52,10 @@ const vm = require('node:vm');
   const essenceSvgBefore=await page.locator('#v24cats [data-v24cat="custom:Essence"] svg').evaluate(el=>el.outerHTML);
   await page.locator('#v24cats [data-v24cat="custom:Essence"]').click();
   assert.equal(await page.locator('#v264catlabel').innerText(),'Essence');
+  const chipAlignment=await page.locator('#v24cats [data-v24cat="custom:Essence"]').evaluate(el=>({justify:getComputedStyle(el).justifyContent,textAlign:getComputedStyle(el).textAlign}));
+  assert.equal(chipAlignment.justify,'flex-start','Essence doit rester alignée à gauche dans sa ligne complète');
+  assert.equal(chipAlignment.textAlign,'left');
+
   assert.equal(await page.locator('#v24cats [data-v24cat="custom:Essence"] svg').evaluate(el=>el.outerHTML),essenceSvgBefore);
   await page.waitForTimeout(120);
   assert.equal(await page.locator('#v24cats [data-v24cat="custom:Essence"] svg').evaluate(el=>el.outerHTML),essenceSvgBefore,'L’icône Essence change après la stabilisation DOM');
