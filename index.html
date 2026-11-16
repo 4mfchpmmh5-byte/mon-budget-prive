@@ -678,7 +678,55 @@ function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA
   else data.snapshots=oldSnapshots;
   alertMsg('Échec de la sauvegarde : historique précédent conservé.');
  }
-} function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function start(){show('app');tab('add')};$('create').onclick=async()=>{const a=$('newpass').value;if(a.length<12||a!==$('confpass').value){$('setupmsg').textContent='Utilise au moins 12 caractères et confirme la même phrase.';return}try{secret=a;data=mbpMigrate37(empty());await save();$('newpass').value=$('confpass').value='';start()}catch(e){$('setupmsg').textContent='Impossible de créer le coffre : '+e.message}};$('unlockform').onsubmit=async(e)=>{e.preventDefault();try{const s=$('pass').value;data=mbpMigrate37(await unseal(JSON.parse(localStorage.getItem(KEY)),s));secret=s;$('pass').value='';$('unlockmsg').textContent='';start()}catch(e){$('unlockmsg').textContent='Phrase secrète incorrecte ou données endommagées.'}};document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.tab));document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());$('addExpense').onclick=()=>openTx('expense');$('addIncome').onclick=()=>openTx('income');$('newtx').onclick=()=>openTx('expense');let editingTx=null;function openTx(type,name='',cat='Variables'){editingTx=null;$('txform').reset();$('txsubmit').textContent='Enregistrer';$('txtype').value=type;$('txname').value=name;$('txcat').value=cat;$('txdate').value=new Date().toLocaleDateString('sv-SE');$('txdialog').showModal()}let mbpV4TxSubmitting=false;
+} function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function start(){show('app');tab('add')};$('create').onclick=async()=>{const a=$('newpass').value;if(a.length<12||a!==$('confpass').value){$('setupmsg').textContent='Utilise au moins 12 caractères et confirme la même phrase.';return}try{secret=a;data=mbpMigrate37(empty());await save();$('newpass').value=$('confpass').value='';start()}catch(e){$('setupmsg').textContent='Impossible de créer le coffre : '+e.message}};$('unlockform').onsubmit=async(e)=>{e.preventDefault();try{const s=$('pass').value;data=mbpMigrate37(await unseal(JSON.parse(localStorage.getItem(KEY)),s));secret=s;$('pass').value='';$('unlockmsg').textContent='';start()}catch(e){$('unlockmsg').textContent='Phrase secrète incorrecte ou données endommagées.'}};
+// V4 recovery is offered only on the locked screen and never silently overwrites a readable active vault.
+const mbpV4RecoveryKey=KEY+'-previous-v4';
+const mbpV4RecoverButton=document.createElement('button');
+mbpV4RecoverButton.type='button';
+mbpV4RecoverButton.className='btn secondary';
+mbpV4RecoverButton.id='mbpV4Recover';
+mbpV4RecoverButton.textContent='Récupérer la sauvegarde locale précédente';
+mbpV4RecoverButton.style.marginTop='10px';
+$('unlockform').after(mbpV4RecoverButton);
+const mbpV4UpdateRecoveryVisibility=()=>{
+ try{mbpV4RecoverButton.hidden=!localStorage.getItem(mbpV4RecoveryKey)}
+ catch(_){mbpV4RecoverButton.hidden=true}
+};
+mbpV4UpdateRecoveryVisibility();
+mbpV4RecoverButton.onclick=async()=>{
+ if(mbpVaultDeleting||mbpVaultRestoring||mbpVaultResetting)return;
+ const entered=$('pass').value;
+ if(!entered){$('unlockmsg').textContent='Saisis ta phrase secrète avant de récupérer la copie locale.';return}
+ mbpVaultRestoring=true;
+ mbpV4RecoverButton.disabled=true;
+ try{
+  await mbpSaveQueue.catch(()=>{});
+  const original=localStorage.getItem(KEY);
+  const fallback=localStorage.getItem(mbpV4RecoveryKey);
+  if(!fallback)throw Error('Pas de copie locale disponible');
+  let activeReadable=false;
+  if(original){
+   try{mbpMigrate37(await unseal(JSON.parse(original),entered));activeReadable=true}catch(_){}
+  }
+  if(activeReadable)throw Error('Le coffre principal est lisible : aucune restauration nécessaire');
+  const restored=mbpMigrate37(await unseal(JSON.parse(fallback),entered));
+  if(!await mbpConfirm('Le coffre principal ne peut pas être ouvert avec cette phrase. Récupérer la copie chiffrée précédente ? Les dernières modifications non incluses dans cette copie seront perdues.'))return;
+  if(localStorage.getItem(KEY)!==original||localStorage.getItem(mbpV4RecoveryKey)!==fallback)throw Error('Le stockage a changé pendant la confirmation');
+  localStorage.setItem(KEY,fallback);
+  if(localStorage.getItem(KEY)!==fallback){
+   if(original===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,original);
+   throw Error('Restauration incomplète');
+  }
+  mbpVaultGeneration++;
+  mbpSaveQueue=Promise.resolve();
+  data=restored;secret=entered;$('pass').value='';$('unlockmsg').textContent='';
+  start();
+  alertMsg('Copie locale chiffrée récupérée. Vérifie les dernières opérations.');
+ }catch(err){
+  $('unlockmsg').textContent='Récupération non effectuée : '+err.message;
+ }finally{mbpVaultRestoring=false;mbpV4RecoverButton.disabled=false;mbpV4UpdateRecoveryVisibility()}
+};
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.tab));document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());$('addExpense').onclick=()=>openTx('expense');$('addIncome').onclick=()=>openTx('income');$('newtx').onclick=()=>openTx('expense');let editingTx=null;function openTx(type,name='',cat='Variables'){editingTx=null;$('txform').reset();$('txsubmit').textContent='Enregistrer';$('txtype').value=type;$('txname').value=name;$('txcat').value=cat;$('txdate').value=new Date().toLocaleDateString('sv-SE');$('txdialog').showModal()}let mbpV4TxSubmitting=false;
 $('txform').onsubmit=async e=>{
  e.preventDefault();
  if(!data||mbpV4TxSubmitting)return;
