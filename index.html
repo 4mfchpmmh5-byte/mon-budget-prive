@@ -4476,4 +4476,17 @@ body:has(#app:not(.hidden)) .v32-lock-footer{display:none!important}
  min-width:38px!important;
 }
 </style>
+<style id="mbp-v4-native-numeric-focus">
+/* V4: all amount controls use Safari's native decimal pad, never a secondary input sheet.
+   iOS avoids focus zoom when controls use a legible font size. */
+input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
+ font-size:max(16px,1rem)!important;
+ touch-action:manipulation;
+}
+#mbpV4ContributionDialog[open]{
+ max-height:min(var(--mbp374-height,calc(100dvh - 32px)),calc(100dvh - 24px));
+ overflow-y:auto;
+}
+#mbpV4ContributionDialog input{max-width:100%;min-width:0;}
+</style>
 </body></html>
