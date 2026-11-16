@@ -661,9 +661,10 @@ function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA
   else data.snapshots=oldSnapshots;
   alertMsg('Échec de la sauvegarde : historique précédent conservé.');
  }
-} function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function start(){show('app');tab('add')};$('create').onclick=async()=>{const a=$('newpass').value;if(a.length<12||a!==$('confpass').value){$('setupmsg').textContent='Utilise au moins 12 caractères et confirme la même phrase.';return}try{secret=a;data=mbpMigrate37(empty());await save();$('newpass').value=$('confpass').value='';start()}catch(e){$('setupmsg').textContent='Impossible de créer le coffre : '+e.message}};$('unlockform').onsubmit=async(e)=>{e.preventDefault();try{const s=$('pass').value;data=mbpMigrate37(await unseal(JSON.parse(localStorage.getItem(KEY)),s));secret=s;$('pass').value='';$('unlockmsg').textContent='';start()}catch(e){$('unlockmsg').textContent='Phrase secrète incorrecte ou données endommagées.'}};document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.tab));document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());$('addExpense').onclick=()=>openTx('expense');$('addIncome').onclick=()=>openTx('income');$('newtx').onclick=()=>openTx('expense');let editingTx=null;function openTx(type,name='',cat='Variables'){editingTx=null;$('txform').reset();$('txsubmit').textContent='Enregistrer';$('txtype').value=type;$('txname').value=name;$('txcat').value=cat;$('txdate').value=new Date().toLocaleDateString('sv-SE');$('txdialog').showModal()}$('txform').onsubmit=async e=>{
+} function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function start(){show('app');tab('add')};$('create').onclick=async()=>{const a=$('newpass').value;if(a.length<12||a!==$('confpass').value){$('setupmsg').textContent='Utilise au moins 12 caractères et confirme la même phrase.';return}try{secret=a;data=mbpMigrate37(empty());await save();$('newpass').value=$('confpass').value='';start()}catch(e){$('setupmsg').textContent='Impossible de créer le coffre : '+e.message}};$('unlockform').onsubmit=async(e)=>{e.preventDefault();try{const s=$('pass').value;data=mbpMigrate37(await unseal(JSON.parse(localStorage.getItem(KEY)),s));secret=s;$('pass').value='';$('unlockmsg').textContent='';start()}catch(e){$('unlockmsg').textContent='Phrase secrète incorrecte ou données endommagées.'}};document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.tab));document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());$('addExpense').onclick=()=>openTx('expense');$('addIncome').onclick=()=>openTx('income');$('newtx').onclick=()=>openTx('expense');let editingTx=null;function openTx(type,name='',cat='Variables'){editingTx=null;$('txform').reset();$('txsubmit').textContent='Enregistrer';$('txtype').value=type;$('txname').value=name;$('txcat').value=cat;$('txdate').value=new Date().toLocaleDateString('sv-SE');$('txdialog').showModal()}let mbpV4TxSubmitting=false;
+$('txform').onsubmit=async e=>{
  e.preventDefault();
- if(!data)return;
+ if(!data||mbpV4TxSubmitting)return;
  const oldIndex=editingTx?data.transactions.findIndex(t=>t.id===editingTx):-1;
  if(editingTx&&oldIndex<0)return;
  const original=oldIndex>=0?data.transactions[oldIndex]:null;
@@ -699,6 +700,7 @@ function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA
  else if(original&&String(original.planId||'')!==String(item.planId||'')){
   delete item.recurringId;delete item.goalId;
  }
+ mbpV4TxSubmitting=true;
  if(oldIndex>=0)data.transactions[oldIndex]=item;
  else data.transactions.push(item);
  try{
@@ -707,7 +709,7 @@ function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA
   if(oldIndex>=0)data.transactions[oldIndex]=original;
   else data.transactions=data.transactions.filter(t=>t.id!==item.id);
   alertMsg('Sauvegarde impossible. L’opération n’a pas été enregistrée.');return;
- }
+ }finally{mbpV4TxSubmitting=false;}
  editingTx=null;$('txdialog').close();render();
 };$('newplan').onclick=()=>{editingPlan=null;$('planform').reset();$('plantitle').textContent='Ajouter une ligne au budget';$('plansubmit').textContent='Ajouter';$('plandialog').showModal()};$('planform').onsubmit=async e=>{e.preventDefault();const p={id:editingPlan||uid(),name:$('planname').value.trim(),amount:Number($('planamount').value),cat:$('plancat').value};if(!p.name||!Number.isFinite(p.amount)||p.amount<0)return;const i=data.plans.findIndex(x=>x.id===editingPlan);if(i>=0)data.plans[i]=p;else data.plans.push(p);editingPlan=null;await save();$('planform').reset();$('plandialog').close();render()};$('snapshot').onclick=saveSnapshot;$('newasset').onclick=()=>{editingAsset=null;$('assetform').reset();$('assettitle').textContent='Ajouter un actif';$('assetsubmit').textContent='Ajouter';$('assetdialog').showModal()};$('assetform').onsubmit=async e=>{
  e.preventDefault();if(!data)return;
@@ -932,9 +934,10 @@ $('resetEnvelopes').onclick=async()=>{
 
 // v2.0: month-scoped plan editing, no changes to older months.
 $('budgetmonth').onchange=e=>{selectedMonth=e.target.value;render()};
+let mbpV4PlanSubmitting=false;
 $('planform').onsubmit=async e=>{
  e.preventDefault();
- if(!data)return;
+ if(!data||mbpV4PlanSubmitting)return;
  const name=$('planname').value.trim(),amount=Number($('planamount').value),cat=$('plancat').value;
  const group=$('plangroup').value,recurring=$('planrecurring').checked,day=Number($('planrecurringday').value);
  if(!name||!Number.isFinite(amount)||amount<0){
@@ -954,6 +957,7 @@ $('planform').onsubmit=async e=>{
  if(['Provisions','Investissements'].includes(cat))p.goalId=p.goalId||'goal:'+id;
  else delete p.goalId;
  if(i>=0)plans[i]=p;else plans.push(p);
+ mbpV4PlanSubmitting=true;
  saveMonthPlans(plans);
  if(recurring&&cat!=='Revenus'){
   if(!Array.isArray(data.recurring))data.recurring=[];
@@ -969,7 +973,7 @@ $('planform').onsubmit=async e=>{
   if(previousRecurring===null)delete data.recurring;
   else data.recurring=previousRecurring;
   alertMsg('Sauvegarde impossible : modifications du budget annulées.');return;
- }
+ }finally{mbpV4PlanSubmitting=false;}
  editingPlan=null;
  $('planform').reset();$('plandialog').close();render();
 };
