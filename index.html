@@ -947,7 +947,8 @@ document.addEventListener('click',async e=>{
     // Les mouvements de provision/épargne ne sont pas des achats supplémentaires au budget réservé.
    }else extraExpenses+=Number(t.amount);
   }
-  const cashBefore=cashIncome-fixed-extraFixed-variable-extraExpenses;
+  // Planned variable spending is already reserved; only the excess over budget reduces the forecast further.
+  const cashBefore=cashIncome-fixed-extraFixed-Math.max(variable,spentVariable)-extraExpenses;
   const cashAfter=cashBefore-savings;
   const remainingVariable=Math.max(0,variable-spentVariable);
   const line=(label,value)=>`<div class="v21-line"><span>${safe(label)}</span><b>${fmt(value)}</b></div>`;
