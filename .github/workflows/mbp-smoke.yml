@@ -1,7 +1,7 @@
 name: Test Mon Budget Prive
 on:
   push:
-    branches: [main, fix/v3.7-beta8-verified]
+    branches: [main, fix/v3.7-beta8-verified, audit/ergonomie-v379]
   pull_request:
     branches: [main]
 jobs:
