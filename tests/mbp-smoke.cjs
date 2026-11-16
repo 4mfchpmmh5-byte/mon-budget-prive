@@ -43,6 +43,30 @@ const vm = require('node:vm');
   assert.equal(await page.locator('.v32-lock-footer').isVisible(),false);
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
   assert(overflow<=2,'Horizontal overflow: '+overflow);
+  const finance=await page.evaluate(()=>{
+    const originalData=data,originalMonth=selectedMonth;
+    try{
+      const credit={id:'credit',name:'Crédit immobilier',cat:'Fixes',amount:1200};
+      const tax={id:'tax',name:'Impôt',cat:'Impôts',amount:1576};
+      data={...data,plans:[credit,tax],monthBudgets:{},recurring:[],transactions:[]};
+      selectedMonth='2026-12';
+      const december=monthPlans().map(x=>({name:x.name,amount:x.amount}));
+      selectedMonth='2027-01';
+      const january=monthPlans().map(x=>({name:x.name,amount:x.amount}));
+      const p1={id:'p1',name:'EDF',cat:'Fixes',amount:50};
+      const p2={id:'p2',name:'EDF',cat:'Fixes',amount:50};
+      data={...data,plans:[p1,p2],recurring:[],transactions:[{id:'t',type:'expense',name:'EDF',cat:'Fixes',amount:50,date:'2027-01-10'}]};
+      const initiallyPaid=paymentItems().filter(x=>x.match).length;
+      data.transactions[0].planId='p1';
+      const afterPaid=paymentItems().filter(x=>x.match).map(x=>x.p.id);
+      return {december,january,initiallyPaid,afterPaid};
+    }finally{data=originalData;selectedMonth=originalMonth}
+  });
+  assert.deepEqual(finance.december,[{name:'Crédit immobilier',amount:1200},{name:'Impôt',amount:1576}]);
+  assert.deepEqual(finance.january,[{name:'Crédit immobilier',amount:1200},{name:'Impôt',amount:1576}]);
+  assert.equal(finance.initiallyPaid,0);
+  assert.deepEqual(finance.afterPaid,['p1']);
+  console.log('Tests financiers OK — prévisions futures intactes, rapprochement par identifiant et homonymes distincts.');
   assert.deepEqual(errors,[],'Browser errors: '+errors.join('; '));
   console.log('Smoke test navigateur mobile OK — création, déverrouillage, sélection, icônes, pied de page et débordement.');
   await browser.close();
