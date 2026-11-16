@@ -78,3 +78,11 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - GitHub Actions n°194 : **succès** sur la branche V4, avec l'ensemble des régressions existantes.
 - Le vrai clavier Safari iOS et la zone visible mobile réduite par le clavier ne sont pas totalement reproduits par Chromium : essai physique à conserver avant publication.
 - Pas de modification de `main` ni de déploiement iPhone.
+
+
+## Navigation et identité Ice Glass — 17 novembre 2026
+- Les quatre onglets principaux (Accueil, Synthèse, Profil, Patrimoine) ont désormais un traitement d'état actif bleu/violet Ice Glass cohérent. Le sous-menu Profil utilise la même logique de sélection.
+- Les onglets exposent un seul `aria-current="page"` à la fois; les deux sous-onglets Finances/Sécurité exposent `aria-pressed`. Un contour de focus visible est conservé pour l'accessibilité.
+- Test Playwright ajouté pour parcourir les quatre onglets au toucher, vérifier le panneau visible, la sélection unique et les sous-onglets du Profil; intégré au workflow GitHub Actions.
+- Ne touche pas aux soldes, transactions, migrations ni au stockage chiffré.
+- Nouveau test CI en attente de validation; Safari iOS physique toujours à essayer avant diffusion.
