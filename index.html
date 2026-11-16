@@ -3241,13 +3241,51 @@ const renderExtra=()=>{if(!configDialog?.open||!q('v31shortcutform')||q('v36shor
 };
 configDialog&&new MutationObserver(renderExtra).observe(configDialog,{childList:true,subtree:false});
 // Directly open the existing edit form when tapping a recent transaction: no intermediate action sheet.
-q('v32recent')?.addEventListener('click',e=>{const row=e.target.closest('[data-mb35tx]');if(!row||!data)return;e.preventDefault();e.stopImmediatePropagation();const id=row.dataset.mb35tx;const b=[...document.querySelectorAll('#txlist [data-edit-tx]')].find(x=>x.dataset.editTx===id);b?.click();},true);
+q('v32recent')?.addEventListener('click',e=>{
+ const row=e.target.closest('[data-mb35tx]');if(!row||!data)return;
+ e.preventDefault();e.stopImmediatePropagation();
+ const tx=data.transactions.find(t=>String(t.id)===String(row.dataset.mb35tx));
+ if(!tx)return;
+ const month=tx.date?.slice(0,7);
+ if(month&&selectedMonth!==month){selectedMonth=month;render();}
+ const button=[...document.querySelectorAll('#txlist [data-edit-tx]')]
+  .find(x=>String(x.dataset.editTx)===String(tx.id));
+ if(button)button.click();else alertMsg('Impossible d’ouvrir cette opération depuis le mois sélectionné.');
+},true);
 // The delete action belongs to the actual operation editor, with existing confirmation.
-const txDialog=q('txdialog');const txForm=q('txform');if(txDialog&&txForm){const del=document.createElement('button');del.type='button';del.className='btn danger v36-delete-tx';del.textContent='Supprimer cette opération';del.style.cssText='margin-top:8px;width:100%';txForm.append(del);del.addEventListener('click',()=>{const id=editingTx;if(!id)return;txDialog.close();const b=[...q('txlist').querySelectorAll('[data-delete-tx]')].find(x=>x.dataset.deleteTx===id);b?.click()});const sync=()=>{del.style.display=editingTx?'block':'none';q('txsubmit').style.width='100%';q('txdialog')?.querySelector('h2')&&(q('txdialog').querySelector('h2').textContent=editingTx?'Modifier une opération':'Nouvelle opération');};new MutationObserver(sync).observe(txDialog,{attributes:true,attributeFilter:['open']});sync()}
+const txDialog=q('txdialog');const txForm=q('txform');if(txDialog&&txForm){const del=document.createElement('button');del.type='button';del.className='btn danger v36-delete-tx';del.textContent='Supprimer cette opération';del.style.cssText='margin-top:8px;width:100%';txForm.append(del);del.addEventListener('click',async()=>{
+ const id=editingTx;if(!id||!data||del.disabled)return;
+ if(!data.transactions.some(t=>String(t.id)===String(id)))return;
+ if(!await mbpConfirm('Supprimer cette opération ?'))return;
+ del.disabled=true;
+ const before=data.transactions;
+ data.transactions=before.filter(t=>String(t.id)!==String(id));
+ try{
+  await save();
+  editingTx=null;txDialog.close();render();alertMsg('Opération supprimée.');
+ }catch(err){
+  data.transactions=before;
+  alertMsg('Suppression impossible : opération conservée.');
+ }finally{del.disabled=false}
+});const sync=()=>{del.style.display=editingTx?'block':'none';q('txsubmit').style.width='100%';q('txdialog')?.querySelector('h2')&&(q('txdialog').querySelector('h2').textContent=editingTx?'Modifier une opération':'Nouvelle opération');};new MutationObserver(sync).observe(txDialog,{attributes:true,attributeFilter:['open']});sync()}
 
 // Open the asset editor directly. A delete action in the same editor removes a redundant action sheet.
 q('wealthlist')?.addEventListener('click',e=>{const row=e.target.closest('[data-b6asset]');if(!row||e.target.closest('button'))return;e.preventDefault();e.stopImmediatePropagation();const edit=row.querySelector('[data-edit-asset]');edit?.click();},true);
-const assetDialog=q('assetdialog');const assetForm=q('assetform');if(assetDialog&&assetForm){const del=document.createElement('button');del.className='btn danger';del.type='button';del.textContent='Supprimer cet actif';del.style.cssText='width:100%;margin-top:7px';assetForm.append(del);del.onclick=()=>{const id=editingAsset;if(!id)return;assetDialog.close();q('wealthlist')?.querySelector(`[data-delete-asset="${CSS.escape(id)}"]`)?.click()};const update=()=>{del.style.display=editingAsset?'block':'none';q('assetsubmit').style.width='100%';};new MutationObserver(update).observe(assetDialog,{attributes:true,attributeFilter:['open']});update()}
+const assetDialog=q('assetdialog');const assetForm=q('assetform');if(assetDialog&&assetForm){const del=document.createElement('button');del.className='btn danger';del.type='button';del.textContent='Supprimer cet actif';del.style.cssText='width:100%;margin-top:7px';assetForm.append(del);del.onclick=async()=>{
+ const id=editingAsset;if(!id||!data||del.disabled)return;
+ if(!data.assets.some(a=>String(a.id)===String(id)))return;
+ if(!await mbpConfirm('Supprimer cet actif ?'))return;
+ del.disabled=true;
+ const before=data.assets;
+ data.assets=before.filter(a=>String(a.id)!==String(id));
+ try{
+  await save();
+  editingAsset=null;assetDialog.close();render();alertMsg('Actif supprimé.');
+ }catch(err){
+  data.assets=before;
+  alertMsg('Suppression impossible : actif conservé.');
+ }finally{del.disabled=false}
+};const update=()=>{del.style.display=editingAsset?'block':'none';q('assetsubmit').style.width='100%';};new MutationObserver(update).observe(assetDialog,{attributes:true,attributeFilter:['open']});update()}
 // Recurring models are discoverable; never synthesize payments or overwrite a previous month.
 const tools=q('v33profiletools');if(tools){const d=document.createElement('details');d.id='v36recurrings';d.className='v32-card';d.innerHTML='<summary>Mes charges récurrentes</summary><p class="muted" style="font-size:11px;margin:8px 0">Les modèles facilitent le suivi des échéances. Ils ne constituent pas des paiements réels.</p><div id="v36recurringrows"></div><button class="btn secondary" type="button" id="v36recurringadd">+ Ajouter un modèle</button>';tools.after(d);q('v36recurringadd').onclick=()=>q('newrecurring')?.click()}
 function redrawRecurrings(){const root=q('v36recurringrows');if(!root||!data)return;root.innerHTML=(data.recurring||[]).map(r=>`<div class="v36-row"><span>${esc(r.name)}<br><small>Le ${Number(r.day)} · ${esc(r.cat)}</small></span><span style="text-align:right"><b>${euros(r.amount)}</b><br><button type="button" class="btn secondary" data-v36rec="${esc(r.id)}">Modifier</button></span></div>`).join('')||'<p class="muted" style="font-size:12px">Aucun modèle défini.</p>'}
