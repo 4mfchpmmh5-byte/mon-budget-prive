@@ -1964,8 +1964,8 @@ const monthLabel=m=>new Date(m+'-02T12:00:00').toLocaleDateString('fr-FR',{month
 const monthsDelta=(m,n)=>{const d=new Date(m+'-02T12:00:00');d.setMonth(d.getMonth()+n);return d.toLocaleDateString('sv-SE').slice(0,7)};
 const plansFor=m=>{const before=selectedMonth;try{selectedMonth=m;return monthPlans().slice()}finally{selectedMonth=before}};
 const monthlyTasks=m=>plansFor(m).filter(p=>['Provisions','Investissements'].includes(p.cat)&&Number(p.amount)>0);
-const movesFor=(p,m)=>Array.isArray(data.envelopeMoves)?data.envelopeMoves.filter(x=>x.planId===p.id&&x.kind==='fund'&&x.date?.slice(0,7)===m):[];
-function target(p,m){return sum(movesFor(p,m))}
+const movesFor=(p,m)=>mbpV4GoalLedger(p,m).funds.filter(x=>x.date?.slice(0,7)===m);
+function target(p,m){return mbpV4GoalLedger(p,m).month}
 function addMonthTaskPanel(){const add=by('add');if(!add)return;const t=document.createElement('section');t.id='v32tasks';t.className='v32-card';add.append(t);const r=document.createElement('section');r.id='v32recent';r.className='v32-card';add.append(r)}
 addMonthTaskPanel();
 // Hide category budget until a deliberate category tap. Render does not reopen it.
@@ -1977,9 +1977,44 @@ by('v24income')?.addEventListener('click',()=>catPanel?.classList.remove('v32-se
 const recent=by('v32recent');recent.addEventListener('click',e=>{const b=e.target.closest('[data-v32edit],[data-v32delete]');if(!b)return;const id=b.dataset.v32edit||b.dataset.v32delete;const original=[...document.querySelectorAll(b.dataset.v32edit?'[data-edit-tx]':'[data-delete-tx]')].find(x=>(b.dataset.v32edit?x.dataset.editTx:x.dataset.deleteTx)===id);if(original)original.click()});
 // Confirm a real transfer into the encrypted envelope movement ledger (never a consumption transaction).
 const dlg=document.createElement('dialog');dlg.id='v32taskdialog';dlg.innerHTML='<h2 id="v32tasktitle">Enregistrer une contribution</h2><p class="v32-muted" id="v32taskstatus"></p><form id="v32taskform"><label>Montant de la contribution (€)<input id="v32taskamount" type="number" inputmode="decimal" min="0.01" step="0.01" required></label><label>Date de la contribution<input id="v32taskdate" type="date" required></label><div class="actions"><button class="btn secondary" type="button" id="v32taskcancel">Annuler</button><button class="btn" type="submit">Confirmer</button></div></form>';document.body.append(dlg);
-let taskId=null;by('v32taskcancel').onclick=()=>dlg.close();
+let taskId=null,mbpV4TaskSubmitting=false;by('v32taskcancel').onclick=()=>{if(!mbpV4TaskSubmitting)dlg.close()};
+dlg.addEventListener('cancel',e=>{if(mbpV4TaskSubmitting)e.preventDefault()});
 by('v32tasks').addEventListener('click',e=>{const b=e.target.closest('[data-v32task]');if(!b||!data)return;const p=monthlyTasks(currentMonth()).find(x=>x.id===b.dataset.v32task);if(!p)return;taskId=p.id;const left=Math.max(.01,Number(p.amount)-target(p,currentMonth()));by('v32tasktitle').textContent='Contribution · '+p.name;by('v32taskstatus').textContent='Tu peux confirmer un montant partiel. Il sera conservé dans le cumul annuel.';by('v32taskamount').value=left.toFixed(2);by('v32taskdate').value=today();dlg.showModal()});
-by('v32taskform').onsubmit=async e=>{e.preventDefault();if(!data||!taskId)return;const amount=Number(by('v32taskamount').value),date=by('v32taskdate').value;if(!Number.isFinite(amount)||amount<=0||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(date)){by('v32taskstatus').textContent='Montant ou date invalide.';return}const p=data.plans.find(x=>x.id===taskId);if(!p)return;if(!Array.isArray(data.envelopeMoves))data.envelopeMoves=[];const entry={id:uid(),planId:taskId,kind:'fund',amount,date};data.envelopeMoves.push(entry);try{await save();dlg.close();render();alertMsg('Contribution confirmée et enregistrée une seule fois.')}catch(err){data.envelopeMoves=data.envelopeMoves.filter(x=>x!==entry);by('v32taskstatus').textContent='Erreur de sauvegarde : réessaie.'}};
+by('v32taskform').onsubmit=async e=>{
+ e.preventDefault();
+ if(!data||!taskId||mbpV4TaskSubmitting)return;
+ const value=by('v32taskamount').value,date=by('v32taskdate').value,amount=Number(value);
+ const invalidDate=!/^\d{4}-\d{2}-\d{2}$/.test(date)||new Date(date+'T12:00:00').toLocaleDateString('sv-SE')!==date;
+ if(value===''||!Number.isFinite(amount)||amount<=0||Math.abs(amount*100-Math.round(amount*100))>1e-6||invalidDate){
+  by('v32taskstatus').textContent='Montant ou date invalide (deux décimales maximum).';return;
+ }
+ const origin=monthlyTasks(currentMonth()).find(x=>String(x.id)===String(taskId));
+ if(!origin){by('v32taskstatus').textContent='Objectif introuvable : sélectionne-le à nouveau.';return}
+ const dated=mbpV4PlansForMonth(date.slice(0,7));
+ const plan=dated.find(x=>String(x.id)===String(origin.id))||
+  (origin.goalId?dated.find(x=>String(x.goalId||'')===String(origin.goalId)):null);
+ if(!plan||!['Provisions','Investissements'].includes(plan.cat)){
+  by('v32taskstatus').textContent='Objectif indisponible pour cette date.';return;
+ }
+ mbpV4TaskSubmitting=true;
+ const submit=by('v32taskform').querySelector('[type="submit"]');
+ if(submit)submit.disabled=true;
+ const hadMoves=Array.isArray(data.envelopeMoves),hadStart=Object.prototype.hasOwnProperty.call(data,'envelopeStart');
+ if(!hadMoves)data.envelopeMoves=[];
+ if(!data.envelopeStart)data.envelopeStart='2026-11';
+ const entry={id:uid(),planId:plan.id,...(plan.goalId?{goalId:plan.goalId}:{}),kind:'fund',amount:Math.round(amount*100)/100,date};
+ data.envelopeMoves.push(entry);
+ try{await save();dlg.close();render();alertMsg('Contribution confirmée et enregistrée une seule fois.')}
+ catch(err){
+  data.envelopeMoves=data.envelopeMoves.filter(x=>x.id!==entry.id);
+  if(!hadMoves)delete data.envelopeMoves;
+  if(!hadStart)delete data.envelopeStart;
+  by('v32taskstatus').textContent='Erreur de sauvegarde : réessaie.';
+ }finally{
+  mbpV4TaskSubmitting=false;
+  if(submit)submit.disabled=false;
+ }
+};
 // Remove redundant actions from settings without removing configuration or encrypted data.
 const profile=by('v30profile');profile?.querySelectorAll('[data-v17fund],[data-v17expense]').forEach(b=>b.style.display='none');
 const monthnav=document.createElement('section');monthnav.id='v32monthnav';monthnav.className='v32-card';monthnav.innerHTML='<div class="v32-monthrow"><button id="v32prev" aria-label="Mois précédent">‹</button><strong id="v32monthtitle"></strong><button id="v32next" aria-label="Mois suivant">›</button></div>';
