@@ -41,6 +41,7 @@ const assert=require('node:assert/strict');
   await page.evaluate(()=>{Object.getPrototypeOf(localStorage).setItem=window.__v4OriginalSetItem});
   await del.click();
   await page.waitForFunction(()=>data.transactions.length===0);
+  await page.waitForFunction(()=>!document.querySelector('#txdialog')?.open);
   assert.equal(await page.locator('#txdialog[open]').count(),0,'Editor must close after successful deletion');
   const persisted=await page.evaluate(async password=>{
     const restored=await unseal(JSON.parse(localStorage.getItem(KEY)),password);
