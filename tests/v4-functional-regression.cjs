@@ -118,6 +118,27 @@ const record=(section,scenario,pass,detail={})=>{const out={section,scenario,pas
     }finally{document.getElementById('mbp36goaldialog')?.close();data=old;selectedMonth=oldMonth;render()}
   });
   record('provisions','Deux enveloppes homonymes ouvrent le transfert depuis le bon identifiant',duplicateGoal.stored==='g2'&&duplicateGoal.source==='goal:g2',{observed:duplicateGoal});
+ const transactionEdit=await page.evaluate(async()=>{
+    const previousData=data,previousMonth=selectedMonth;
+    try{
+      data={...previousData,plans:[{id:'p1',name:'EDF',cat:'Fixes',amount:75}],monthBudgets:{},recurring:[],transactions:[
+        {id:'tx-edit',type:'expense',name:'EDF',amount:75,cat:'Fixes',date:'2026-11-05',planId:'p1',recurringId:'r-recurring',goalId:'goal:test'}
+      ]};
+      selectedMonth='2026-11';
+      editingTx='tx-edit';
+      v17FillTxBudgets();
+      document.getElementById('txtype').value='expense';
+      document.getElementById('txname').value='EDF mise à jour';
+      document.getElementById('txamount').value='76';
+      document.getElementById('txcat').value='Fixes';
+      document.getElementById('txdate').value='2026-11-06';
+      document.getElementById('txbudget').value='p1';
+      await document.getElementById('txform').onsubmit({preventDefault(){}});
+      const saved=data.transactions.find(t=>t.id==='tx-edit');
+      return {id:saved.id,name:saved.name,amount:saved.amount,planId:saved.planId,recurringId:saved.recurringId,goalId:saved.goalId};
+    }finally{data=previousData;selectedMonth=previousMonth;editingTx=null;render()}
+  });
+  record('operations','Modifier une dépense conserve ses identifiants de récurrence et de provision',transactionEdit.id==='tx-edit'&&transactionEdit.amount===76&&transactionEdit.planId==='p1'&&transactionEdit.recurringId==='r-recurring'&&transactionEdit.goalId==='goal:test',{observed:transactionEdit});
  record('application','Absence d’erreurs JavaScript',errors.length===0,{observed:errors});
  console.log('AUDIT_FUNCTIONAL_SUMMARY '+JSON.stringify({total:results.length,passed:results.filter(x=>x.pass).length,failed:results.filter(x=>!x.pass).length}));
  await browser.close();
