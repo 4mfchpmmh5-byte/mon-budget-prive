@@ -21,6 +21,7 @@ const assert=require('node:assert/strict');
   await page.locator('#unlock:not(.hidden)').waitFor();
   await page.locator('#pass').fill(password);
   await page.locator('#mbpV4Recover').click();
+  await page.waitForFunction(()=>document.querySelector('#unlockmsg')?.textContent?.includes('coffre principal est lisible'));
   assert.match(await page.locator('#unlockmsg').innerText(),/coffre principal est lisible/);
   assert.equal(await page.evaluate(()=>localStorage.getItem(KEY)),before.active);
   await page.evaluate(()=>localStorage.setItem(KEY,'{vault-corrupted'));
