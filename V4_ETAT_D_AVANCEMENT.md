@@ -55,3 +55,11 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - Réinitialisation : purge de la copie chiffrée de l'ancien historique après succès; en cas d'erreur, tentative de restauration du coffre précédent, de sa copie et de l'état mémoire. Le message distingue une restauration réussie d'un état de stockage incertain.
 - Tests ajoutés pour récupération sans coffre principal, suppression des deux copies et réinitialisation interrompue par une erreur de stockage.
 - La suite CI complète de cette révision, ainsi que Safari iOS, nécessitent confirmation. Aucun déploiement sur `main`.
+
+
+## Parcours des opérations — 17 novembre 2026
+- GitHub Actions n°174 : suite existante complète validée sur `6f1aa781`, notamment finances, sauvegardes, récupération et effacement.
+- Ajout d'un test navigateur indépendant couvrant le clic sur une opération de l'Accueil, l'ouverture directe du formulaire de modification sans panneau intermédiaire, le bon titre, et la présence de la suppression contextualisée.
+- La suite simule ensuite une annulation de suppression, une erreur de stockage chiffré avec retour arrière, puis une suppression confirmée dont la persistance chiffrée est relue.
+- Ajout au workflow CI ; résultat du nouveau scénario **non encore confirmé** lors de la rédaction.
+- Restent les tests Safari iOS et la revue complète du parcours de modification sur le clavier natif.
