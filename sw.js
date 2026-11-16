@@ -1,45 +1,37 @@
-/* Mon Budget Privé — actualisation du cache pour V3.7 bêta 8.
-   Ce service worker ne modifie jamais les données locales chiffrées. */
-const CACHE = 'mon-budget-shell-v3.7-beta8-refresh-1';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
-
+/* Mon Budget Privé V3.7 bêta 8 — entrée indépendante de l'ancien cache.
+   Ne touche pas au localStorage ni au coffre chiffré. */
+const CACHE = 'mon-budget-shell-v3.7-beta8-fresh-entry-2';
+const ENTRY = './app-v378.html';
+const FILES = [ENTRY, './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting())
-  );
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));
 });
-
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    Promise.all([
-      caches.keys().then(keys => Promise.all(
-        keys.filter(key => key.startsWith('mon-budget-shell-') && key !== CACHE)
-          .map(key => caches.delete(key))
-      )),
-      self.clients.claim()
-    ])
-  );
+  event.waitUntil(Promise.all([
+    caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('mon-budget-shell-') && key !== CACHE).map(key => caches.delete(key)))),
+    self.clients.claim()
+  ]));
 });
-
 self.addEventListener('fetch', event => {
   const request = event.request;
   const url = new URL(request.url);
   if (request.method !== 'GET' || url.origin !== self.location.origin) return;
-  event.respondWith(
-    fetch(request).then(response => {
-      if (response.ok && FILES.some(file => new URL(file, self.registration.scope).pathname === url.pathname)) {
-        const copy = response.clone();
-        event.waitUntil(caches.open(CACHE).then(cache => cache.put(request, copy)));
-      }
+  if (request.mode === 'navigate') {
+    // Servir la nouvelle interface, même quand une icône iOS demande l'ancienne URL de départ.
+    const entryUrl = new URL(ENTRY, self.registration.scope);
+    event.respondWith(fetch(entryUrl.href, {cache:'no-store'}).then(response => {
+      if (!response.ok) throw new Error('Entry unavailable');
+      const copy=response.clone();
+      event.waitUntil(caches.open(CACHE).then(cache => cache.put(entryUrl.href, copy)));
       return response;
-    }).catch(async () => {
-      const cached = await caches.match(request, { ignoreSearch: true });
-      if (cached) return cached;
-      if (request.mode === 'navigate') {
-        const shell = await caches.match(new URL('./index.html', self.registration.scope));
-        if (shell) return shell;
-      }
-      return Response.error();
-    })
-  );
+    }).catch(async () => (await caches.match(entryUrl.href)) || Response.error()));
+    return;
+  }
+  event.respondWith(fetch(request).then(response => {
+    if (response.ok && FILES.some(file => new URL(file, self.registration.scope).pathname === url.pathname)) {
+      const copy=response.clone();
+      event.waitUntil(caches.open(CACHE).then(cache => cache.put(request, copy)));
+    }
+    return response;
+  }).catch(async () => (await caches.match(request,{ignoreSearch:true})) || Response.error()));
 });
