@@ -29,12 +29,56 @@ const vm = require('node:vm');
   await page.locator('#confpass').fill(pass);
   await page.locator('#create').click();
   await page.locator('#app:not(.hidden)').waitFor({timeout:15000});
+  // Les icônes ne doivent jamais être recréées ou modifiées lors de la sélection.
+  await page.locator('#v24cats [data-v24cat="courses"] svg').waitFor();
+  const iconBefore=await page.locator('#v24cats [data-v24cat="courses"] svg').evaluate(el=>({markup:el.outerHTML,stroke:getComputedStyle(el).strokeWidth}));
+  await page.locator('#v24cats [data-v24cat="courses"]').click();
+  const iconAfter=await page.locator('#v24cats [data-v24cat="courses"] svg').evaluate(el=>({markup:el.outerHTML,stroke:getComputedStyle(el).strokeWidth}));
+  assert.deepEqual(iconAfter,iconBefore,'SVG Courses différent après sélection');
+  const identity=await page.locator('#v24cats [data-v24cat="courses"]').evaluate(async el=>{
+    const original=el.querySelector('svg');
+    el.click();
+    await new Promise(resolve=>setTimeout(resolve,50));
+    return original===el.querySelector('svg');
+  });
+  assert(identity,'SVG remplacé au second clic');
+  // Une catégorie personnalisée doit avoir son nom exact dans le budget contextuel.
+  await page.evaluate(()=>{
+    data.quickLabels=['Essence'];
+    data.v31Shortcuts={...(data.v31Shortcuts||{}),Essence:{type:'expense',visible:true,icon:'fuel'}};
+    window.mbpRefreshQuickChoices();
+  });
+  await page.locator('#v24cats [data-v24cat="custom:Essence"] svg').waitFor();
+  const essenceSvgBefore=await page.locator('#v24cats [data-v24cat="custom:Essence"] svg').evaluate(el=>el.outerHTML);
+  await page.locator('#v24cats [data-v24cat="custom:Essence"]').click();
+  assert.equal(await page.locator('#v264catlabel').innerText(),'Essence');
+  assert.equal(await page.locator('#v24cats [data-v24cat="custom:Essence"] svg').evaluate(el=>el.outerHTML),essenceSvgBefore);
+  const allExpense=await page.locator('#v24cats button[data-v24cat]').count();
+  assert(allExpense>=10,'Catégories dépenses manquantes');
   await page.locator('#v24cats [data-v24cat="courses"]').click();
   assert.equal(await page.locator('#v24cats [data-v24cat="courses"] .mbp375-icon svg').count(),1);
   await page.locator('#v24income').click();
   await page.locator('#v24cats [data-v24cat="remboursement"]').waitFor();
   const label=await page.locator('#v24cats [data-v24cat="remboursement"]').innerText();
   assert(label.includes('Rembours.'));
+  // Sur un téléphone, les quatre écrans et les boutons doivent rester dans le viewport.
+  for(const width of [320,375,390,430]){
+    await page.setViewportSize({width,height:844});
+    for(const view of ['add','home','settings','wealth']){
+      await page.evaluate(view=>tab(view),view);
+      await page.waitForTimeout(35);
+      const metrics=await page.evaluate(()=>({
+        viewport:document.documentElement.clientWidth,
+        document:document.documentElement.scrollWidth,
+        body:document.body.scrollWidth,
+        selectedView:[...document.querySelectorAll('.view')].filter(x=>!x.classList.contains('hidden')).map(x=>x.id)
+      }));
+      assert(metrics.document<=metrics.viewport+3,'Débordement horizontal écran '+view+' à '+width+'px : '+JSON.stringify(metrics));
+    }
+  }
+  await page.setViewportSize({width:390,height:844});
+  await page.evaluate(()=>tab('add'));
+  console.log('UI audit OK — SVG stable au toucher, catégorie personnalisée, 4 écrans et largeurs 320–430px.');
   await page.reload({waitUntil:'load'});
   await page.locator('#unlock:not(.hidden)').waitFor({timeout:15000});
   await page.locator('#pass').fill(pass);
