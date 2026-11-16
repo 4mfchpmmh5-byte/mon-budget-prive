@@ -861,18 +861,23 @@ function paymentItems(){
   const planCount=plans.filter(x=>String(x.name||'').trim().toLocaleLowerCase('fr')===key).length;
   const r=rec.find(x=>x.planId&&x.planId===p.id)||(legacy.length===1&&planCount===1?legacy[0]:null);
   const activePlans=monthPlans();
-  const match=data.transactions.find(t=>t.date?.startsWith(selectedMonth)&&t.type==='expense'&&(
-    mbpV4ResolvePlan(t,activePlans)?.id===p.id||(r&&t.recurringId&&t.recurringId===r.id)
-  ));
-  return {p,r,match,day:r?.day||null};
+  const matched=data.transactions.filter(t=>{
+    if(t.date?.slice(0,7)!==selectedMonth||t.type!=='expense')return false;
+    const resolved=mbpV4ResolvePlan(t,activePlans);
+    if(resolved)return String(resolved.id)===String(p.id);
+    if(t.planId!==undefined&&t.planId!==null&&String(t.planId)!=='')return false;
+    return !!(r&&t.recurringId&&String(t.recurringId)===String(r.id));
+  });
+  const actual=matched.reduce((total,t)=>total+Math.round(Number(t.amount||0)*100),0)/100;
+  return {p,r,match:matched[0]||null,matched,actual,day:r?.day||null};
  }).sort((a,b)=>(a.day||99)-(b.day||99));
 }
 function renderPayments(){
  const list=paymentItems();
- const paid=list.filter(x=>x.match).reduce((s,x)=>s+Number(x.p.amount),0);
+ const paid=list.reduce((s,x)=>s+x.actual,0);
  const due=list.filter(x=>!x.match).reduce((s,x)=>s+Number(x.p.amount),0);
  const el=document.getElementById('paymentlist');
- if(el)el.innerHTML=`<div class="row"><span>Déjà enregistré</span><b>${fmt(paid)}</b></div><div class="row"><span>Encore prévu</span><b>${fmt(due)}</b></div>`+list.map(({p,r,match,day})=>`<div class="row"><div><b>${escapeHtml(p.name)}</b><div class="muted">${day?'Le '+day+' du mois':'Date non renseignée'} · ${match?'✓ Payé':'À payer'}</div></div><div class="right"><b>${fmt(p.amount)}</b>${!match?`<div><button class="btn secondary smallbtn" data-pay-plan="${p.id}">Marquer payé</button></div>`:''}</div></div>`).join('')||'<p class="muted">Aucune charge fixe ou impôt prévu.</p>';
+ if(el)el.innerHTML=`<div class="row"><span>Déjà enregistré (montants réels)</span><b>${fmt(paid)}</b></div><div class="row"><span>Encore prévu</span><b>${fmt(due)}</b></div>`+list.map(({p,r,match,day,actual})=>`<div class="row"><div><b>${escapeHtml(p.name)}</b><div class="muted">${day?'Le '+day+' du mois':'Date non renseignée'} · ${match?'✓ Payé':'À payer'}</div></div><div class="right"><b>${fmt(match?actual:Number(p.amount))}</b>${!match?`<div><button class="btn secondary smallbtn" data-pay-plan="${p.id}">Marquer payé</button></div>`:''}</div></div>`).join('')||'<p class="muted">Aucune charge fixe ou impôt prévu.</p>';
  const cash=document.getElementById('cashflowview');if(!cash)return;
  const tx=data.transactions.filter(t=>t.date?.startsWith(selectedMonth));
  const income=tx.filter(t=>t.type==='income'&&!t.nonCash).reduce((s,t)=>s+Number(t.amount),0);
@@ -880,7 +885,12 @@ function renderPayments(){
  const plannedIncome=monthPlans().filter(p=>p.cat==='Revenus'&&!/ticket.?resto|titre.?resto/i.test(p.name)).reduce((s,p)=>s+Number(p.amount),0);
  const unpaidIncome=Math.max(0,plannedIncome-income);
  const pendingFixed=due;
- const variableRemaining=monthPlans().filter(p=>p.cat==='Variables').reduce((s,p)=>s+Number(p.amount),0)-tx.filter(t=>t.type==='expense'&&t.cat==='Variables').reduce((s,t)=>s+Number(t.amount),0);
+ const activePlans=monthPlans();
+ const variableRemaining=activePlans.filter(p=>p.cat==='Variables').reduce((s,p)=>s+Number(p.amount),0)-tx.filter(t=>{
+  if(t.type!=='expense')return false;
+  const p=mbpV4ResolvePlan(t,activePlans);
+  return p?p.cat==='Variables':t.cat==='Variables';
+ }).reduce((s,t)=>s+Number(t.amount),0);
  const provisions=monthPlans().filter(p=>['Provisions','Investissements'].includes(p.cat)).reduce((s,p)=>s+Number(p.amount),0);
  const estimate=income+unpaidIncome-expenses-pendingFixed-Math.max(0,variableRemaining)-provisions;
  cash.innerHTML=`<div class="amount" style="font-size:30px">${fmt(estimate)}</div><div class="muted">Projection après charges et budgets restants</div><div class="row"><span>Revenus saisis</span><b>${fmt(income)}</b></div><div class="row"><span>Revenus attendus (estimés)</span><b>${fmt(unpaidIncome)}</b></div><div class="row"><span>Dépenses enregistrées</span><b>${fmt(expenses)}</b></div><div class="row"><span>Charges non payées</span><b>${fmt(pendingFixed)}</b></div><div class="row"><span>Budgets variables non consommés</span><b>${fmt(Math.max(0,variableRemaining))}</b></div><div class="row"><span>Provisions et investissements prévus</span><b>${fmt(provisions)}</b></div>`;
