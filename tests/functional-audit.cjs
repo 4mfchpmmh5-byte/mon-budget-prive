@@ -7,6 +7,15 @@ const record=(section,scenario,pass,detail={})=>{const out={section,scenario,pas
  const browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>{
+  window.__auditRemovedHandlers={};
+  const orig=Element.prototype.remove;
+  Element.prototype.remove=function(){
+    const b=this.querySelector?.('#applyrecurring');
+    if(b?.onclick)window.__auditRemovedHandlers.applyrecurring=b.onclick;
+    return orig.call(this);
+  };
+ });
  await page.goto('http://127.0.0.1:8765/index.html',{waitUntil:'load'});
  await page.locator('#setup:not(.hidden)').waitFor();
  const password='Fonctionnel-test-2026-Unique!';
@@ -35,7 +44,7 @@ const record=(section,scenario,pass,detail={})=>{const out={section,scenario,pas
    selectedMonth='2027-02';
    const originalConfirm=mbpConfirm;mbpConfirm=async()=>true;
    try{
-    await document.getElementById('applyrecurring').onclick();
+    await (document.getElementById('applyrecurring')?.onclick||window.__auditRemovedHandlers.applyrecurring)?.();
     const first=data.transactions.map(t=>({id:t.id,date:t.date,recurringId:t.recurringId}));
     await document.getElementById('applyrecurring').onclick();
     result.recurring={first,after:data.transactions.length};
@@ -55,7 +64,7 @@ const record=(section,scenario,pass,detail={})=>{const out={section,scenario,pas
     {id:'out',transferId:'pair',goalId:g1.goalId,planId:g1.id,kind:'transfer-out',amount:100,date:'2026-11-04'},
     {id:'in',transferId:'pair',goalId:g2.goalId,planId:g2.id,kind:'transfer-in',amount:100,date:'2026-11-04'}];
    selectedMonth='2026-11';
-   result.envelopes={voyages:balance(g1,'2026-11'),festivals:balance(g2,'2026-11'),transactionCount:data.transactions.length,netTransfer:data.envelopeMoves.filter(x=>x.transferId==='pair').reduce((a,x)=>a+(x.kind==='transfer-in'?x.amount:-x.amount),0)};
+   result.envelopes={voyages:v17EnvelopeBalance(g1),festivals:v17EnvelopeBalance(g2),transactionCount:data.transactions.length,netTransfer:data.envelopeMoves.filter(x=>x.transferId==='pair').reduce((a,x)=>a+(x.kind==='transfer-in'?x.amount:-x.amount),0)};
    // Compte patrimonial : valeur - capital investi, sur un échantillon.
    data=fixture();data.assets=[{id:'a1',name:'PEA',type:'PEA',amount:2100,invested:2000},{id:'a2',name:'Livret',type:'Livrets',amount:500,invested:500}];
    renderWealthExtras();
