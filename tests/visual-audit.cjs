@@ -80,6 +80,8 @@ const fs=require('node:fs');
  console.log('AUDIT_VISUEL_RESULTATS '+JSON.stringify(results));
  console.log('AUDIT_VISUEL_ANOMALIES '+JSON.stringify(issues));
  console.log('AUDIT_VISUEL_ERRORS '+JSON.stringify(browserErrors));
+ const small=issues.filter(x=>x.issue==='Cibles tactiles de petite taille');
+ assert.deepEqual(small,[],'Cibles tactiles restantes trop petites : '+JSON.stringify(small));
  assert.deepEqual(browserErrors,[],'Erreurs JS durant audit');
  await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});
