@@ -24,7 +24,7 @@ const assert=require('node:assert/strict');
    await save();render();
   });
   const viewStates=[];
-  for(const [name,id] of [['Accueil','home'],['Synthèse','add'],['Profil','v30profile'],['Patrimoine','wealth']]){
+  for(const [name,id] of [['Accueil','add'],['Synthèse','home'],['Profil','v30profile'],['Patrimoine','wealth']]){
    await page.evaluate(id=>tab(id),id);await page.waitForTimeout(100);
    const state=await page.evaluate(({name,id})=>{
     const root=document.getElementById(id),vw=innerWidth;
