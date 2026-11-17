@@ -129,4 +129,4 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - Test `tests/v4-beta-storage-isolation.cjs` : coffre de production et copie de secours simulés par des sentinelles, création et écriture du coffre de test, rechargement, déverrouillage et comparaison des sentinelles.
 - **La séparation du stockage ne suffit pas à sécuriser un déploiement** : une V4 installée sous la même origine et la même portée service worker que la V3.7 pourrait encore remplacer le contrôleur hors ligne de production. Tester avec une **origine ou une portée PWA distincte**, en conservant `main` inchangée.
 - Ne jamais utiliser une vraie sauvegarde personnelle dans les tests automatisés ; valider Safari iOS sur coffre fictif et sauvegarder la V3.7 avant toute publication.
-- État CI de ce nouveau scénario à confirmer.
+- GitHub Actions n°260 : **succès**, y compris le nouveau scénario d'isolation du coffre V4. Protocole de test manuel créé dans `V4_BETA1_IPHONE_TEST.md`.
