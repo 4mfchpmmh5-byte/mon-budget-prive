@@ -1,13 +1,13 @@
-/* MBP v3.7 bêta 9 : version validée par tests Chromium, cache renouvelé.
-   Aucune action sur le coffre chiffré ou le stockage local. */
-const CACHE='mon-budget-shell-v3.7-beta9-ui-1';
+/* MBP V4 production shell: load only current production assets.
+   Never cache, read or transfer local encrypted financial data. */
+const CACHE='mon-budget-shell-v4-production-offline-1';
 const FILES=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting()));
 });
 self.addEventListener('activate',event=>{
  event.waitUntil(Promise.all([
-  caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('mon-budget-shell-')&&k!==CACHE).map(k=>caches.delete(k)))),
+  caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('mon-budget-shell-v4-production-')&&k!==CACHE).map(k=>caches.delete(k)))),
   self.clients.claim()
  ]));
 });
@@ -21,10 +21,12 @@ self.addEventListener('fetch',event=>{
   }
   return response;
  }).catch(async()=>{
-  const cached=await caches.match(request,{ignoreSearch:true});
+  // Never serve cached content from another installed app or PWA on this origin.
+  const ownCache=await caches.open(CACHE);
+  const cached=await ownCache.match(request,{ignoreSearch:true});
   if(cached)return cached;
   if(request.mode==='navigate'){
-   const fallback=await caches.match(new URL('./index.html',self.registration.scope));
+   const fallback=await ownCache.match(new URL('./index.html',self.registration.scope));
    if(fallback)return fallback;
   }
   return Response.error();

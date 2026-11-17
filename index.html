@@ -526,7 +526,7 @@ button,nav,summary,.v24-chip,.btn{touch-action:manipulation;-webkit-tap-highligh
 <section id="app" class="hidden"><div id="add" class="view hidden"></div><div id="home" class="view"><button type="button" class="btn secondary" style="float:right;margin-bottom:10px" onclick="tab('settings')">⚙ Réglages</button><div style="clear:both"></div><div class="card hero"><span class="pill" id="monthlabel"></span><div class="muted" style="margin-top:15px">Reste prévisionnel mensuel</div><div class="amount" id="available">0,00 €</div><div class="grid"><div class="stat"><small>Revenus du mois</small><strong id="income">0 €</strong></div><div class="stat"><small>Sorties du mois</small><strong id="outgoing">0 €</strong></div></div></div><div class="card" id="cashflowcard"><h2>Reste à vivre · suivi</h2><div id="cashflowview"></div><p class="muted" style="font-size:12px">Projection budgétaire, pas un solde bancaire. Les revenus non encaissés et les tickets restaurant ne sont pas des liquidités disponibles.</p></div><div class="card"><h2>Mes budgets restants</h2><div id="homeTracking"></div></div><div class="card analytics"><div class="section-title"><h2>Répartition du budget</h2><span class="muted">Prévisions</span></div><div class="analytic-layout"><div class="donut" id="budgetDonut"><div class="donut-center"><small>Reste prévu</small><strong id="donutRemaining">0 €</strong></div></div><div class="legend" id="budgetLegend"></div></div><p class="muted" style="margin-bottom:0">Les montants sont prévisionnels et ne représentent pas tes dépenses réelles.</p></div><div class="card"><div class="section-title"><h2>Ajout express</h2><span class="muted">Une dépense en quelques secondes</span></div><div class="quick-actions"><button class="btn secondary" data-quick="Courses" data-quick-cat="Variables">🛒 Courses</button><button class="btn secondary" data-quick="Restaurant" data-quick-cat="Provisions">🍽️ Restaurant</button><button class="btn secondary" data-quick="Maison" data-quick-cat="Variables">🏠 Maison</button><button class="btn secondary" data-quick="Loisirs" data-quick-cat="Provisions">🎟️ Loisirs</button></div></div><div class="card"><h2>Vue d'ensemble</h2><div id="overview"></div><div class="actions" style="margin-top:16px"><button class="btn" id="addExpense">+ Ajouter une dépense</button><button class="btn secondary" id="addIncome">+ Revenu</button></div></div><div class="card"><div class="section-title"><h2>Dernières opérations</h2><span class="muted">Ce mois-ci</span></div><div id="recent"></div></div></div>
 <div id="transactions" class="view hidden"><div class="section-title"><h2>Mes opérations</h2><button class="btn" id="newtx">+ Ajouter</button></div><div class="card"><label>Mois<select id="txmonth"></select></label><div id="txsummary" class="muted"></div><div id="txlist"></div></div></div>
 <div id="plans" class="view hidden"><h2>Budget mensuel prévu</h2><div class="card" style="padding:14px"><label>Mois du budget<select id="budgetmonth"></select></label><p class="muted" style="margin-bottom:0">Chaque mois possède ses propres prévisions. Les provisions se cumulent.</p></div><p>Définis les montants de référence. Ils ne sont pas des dépenses réelles : les dépenses sont saisies dans « Opérations ».</p><div class="card"><div id="planlist"></div><button class="btn secondary" id="newplan">+ Ajouter une ligne</button><p class="muted">Modifie tes charges et abonnements directement dans cette liste. Les prévisions ne sont pas des dépenses enregistrées.</p></div><div class="card"><h2>Budgets variables · restant ce mois</h2><p class="muted">Les dépenses enregistrées sont déduites de chaque ligne du budget.</p><div id="variableTracking"></div></div><div class="card"><h2>Mes provisions cumulatives</h2><p class="muted">Ajoute uniquement les sommes réellement mises de côté. Le solde se reporte au mois suivant.</p><div id="envelopeTracking"></div><button class="btn secondary" id="resetEnvelopes">Remettre les enveloppes à zéro</button></div><div class="card"><h2>Mes dépenses par catégorie</h2><div id="categoryTracking"></div></div><div class="card"><div class="section-title"><h2>Opérations récurrentes</h2><span class="muted">Sur validation uniquement</span></div><p>Crédit, EDF, abonnements… Ces modèles servent uniquement à enregistrer des paiements confirmés. Ils ne modifient pas les prévisions.</p><div id="recurringlist"></div><div class="card" id="paymentcard"><div class="section-title"><h2>Échéances du mois</h2><span class="muted">Prévu / payé</span></div><div id="paymentlist"></div></div><div class="actions"><button class="btn secondary" id="newrecurring">+ Nouveau modèle</button><button class="btn" id="applyrecurring">Ajouter au mois sélectionné</button></div><p class="muted" id="recurringmonth"></p></div></div>
-<div id="wealth" class="view hidden"><h2>Mon patrimoine</h2><div class="card hero"><span class="pill">Suivi manuel · Sans connexion bancaire</span><div class="muted" style="margin-top:16px">Patrimoine suivi</div><div class="amount" id="wealthtotal">0,00 €</div><div class="wealth-kpis"><div class="wealth-kpi"><small>Capital investi renseigné</small><strong id="investedtotal">0,00 €</strong></div><div class="wealth-kpi"><small>Écart valeur / capital</small><strong id="wealthgain">0,00 €</strong></div></div><p class="muted" style="font-size:12px">Écart indicatif : il ne tient pas compte des retraits, frais ou mouvements historiques.</p></div><div class="card"><div class="section-title"><h2>Évolution du patrimoine</h2><span class="muted">Historique manuel</span></div><div id="wealthchart" class="wealthchart"></div><button class="btn secondary" id="snapshot">📌 Enregistrer la valeur du jour</button><p class="muted">Les valeurs historiques sont des instantanés manuels, pas des cours en direct.</p></div><div class="card"><h2>Répartition de mes actifs</h2><div id="wealthbreakdown" class="wealth-breakdown"></div></div><div class="card"><div id="wealthlist"></div><button class="btn secondary" id="newasset">+ Ajouter un compte / actif</button><p class="muted">Valeurs saisies manuellement : aucun cours en direct et aucune connexion bancaire.</p></div></div>
+<div id="wealth" class="view hidden"><h2>Mon patrimoine</h2><div class="card hero"><span class="pill">Suivi manuel · Sans connexion bancaire</span><div class="muted" style="margin-top:16px">Patrimoine suivi</div><div class="amount" id="wealthtotal">0,00 €</div><div class="wealth-kpis"><div class="wealth-kpi"><small>Capital investi renseigné</small><strong id="investedtotal">0,00 €</strong></div><div class="wealth-kpi"><small>Écart valeur / capital</small><strong id="wealthgain">0,00 €</strong></div></div><p class="muted" style="font-size:12px">Écart indicatif : il ne tient pas compte des retraits, frais ou mouvements historiques.</p></div><div class="card"><div class="section-title"><h2>Évolution des actifs suivis</h2><span class="muted">Historique manuel</span></div><div id="wealthchart" class="wealthchart"></div><button class="btn secondary" id="snapshot">📌 Enregistrer les actifs du jour</button><p class="muted">L’historique représente les actifs bruts saisis, sans déduction des emprunts. Ce ne sont pas des cours en direct.</p></div><div class="card"><h2>Répartition de mes actifs</h2><div id="wealthbreakdown" class="wealth-breakdown"></div></div><div class="card"><div id="wealthlist"></div><button class="btn secondary" id="newasset">+ Ajouter un compte / actif</button><p class="muted">Valeurs saisies manuellement : aucun cours en direct et aucune connexion bancaire.</p></div></div>
 <div id="settings" class="view hidden"><h2>Sécurité et sauvegardes</h2><div class="card"><p>Les données sont chiffrées dans le stockage local de cet appareil (AES-GCM). La phrase secrète n'est pas transmise au serveur.</p><div class="actions"><button class="btn" id="export">Exporter une sauvegarde chiffrée</button><button class="btn secondary" id="import">Importer une sauvegarde</button></div><input type="file" id="importfile" accept=".json,application/json" class="hidden"><hr><button class="btn secondary" id="lock">Verrouiller</button><p class="muted">Le coffre reste déverrouillé pendant 5 minutes après avoir quitté l’application, sauf fermeture complète. Le remplissage par Face ID dépend des réglages Mots de passe de ton iPhone.</p><div class="reset-box"><b>Repartir de zéro sans supprimer le coffre</b><p class="muted">Supprime le budget, les opérations, les modèles récurrents, les actifs et l’historique. Ta phrase secrète reste la même. Action irréversible sans sauvegarde.</p><button class="btn danger" id="resetdata">Réinitialiser les données</button></div><hr><button class="btn danger" id="wipe">Effacer les données locales</button></div><div class="notice">Important : le stockage Safari/iOS peut être effacé. Conserve des sauvegardes régulières dans un emplacement sûr. Cette application n'est pas un coffre-fort audité.</div></div></section>
 <div id="msg" role="status"></div></main><nav id="nav"><button data-tab="home">◉<br>Accueil</button><button data-tab="transactions">⇄<br>Opérations</button><button data-tab="add" class="active">＋<br>Ajouter</button><button data-tab="plans">▤<br>Budget</button><button data-tab="wealth">◇<br>Patrimoine</button></nav>
 <dialog id="txdialog"><form id="txform"><button type="button" class="close" data-close>×</button><h2>Nouvelle opération</h2><label>Type<select id="txtype"><option value="expense">Dépense</option><option value="income">Revenu</option></select></label><label>Libellé<input id="txname" required maxlength="100" placeholder="Ex. Courses"></label><label>Montant (€)<input id="txamount" required type="number" min="0.01" step="0.01" inputmode="decimal"></label><label>Catégorie<input id="txcat" list="txcats" required maxlength="60" value="Variables" placeholder="Ex. Alimentation"><datalist id="txcats"><option value="Fixes"><option value="Variables"><option value="Provisions"><option value="Impôts"><option value="Investissements"><option value="Courses"><option value="Restaurant"><option value="Maison"><option value="Loisirs"><option value="Alimentation"><option value="Transport"><option value="Logement"><option value="Santé"><option value="Shopping"><option value="Cadeaux"><option value="Titres-restaurant"><option value="Autres"></datalist></label><label>Budget associé (facultatif)<select id="txbudget"><option value="">Aucune imputation</option></select></label><label>Date<input id="txdate" type="date" required></label><button class="btn" id="txsubmit" type="submit">Enregistrer</button></form></dialog>
@@ -534,16 +534,41 @@ button,nav,summary,.v24-chip,.btn{touch-action:manipulation;-webkit-tap-highligh
 <dialog id="assetdialog"><form id="assetform"><button type="button" class="close" data-close>×</button><h2 id="assettitle">Ajouter un actif</h2><label>Nom<input id="assetname" required maxlength="80" placeholder="Ex. Livret A"></label><label>Type de placement<select id="assettype"><option value="Livrets">Livrets / épargne</option><option value="PEA">PEA</option><option value="Compte-titres">Compte-titres</option><option value="Crypto">Cryptomonnaies</option><option value="Immobilier">Immobilier</option><option value="Autres">Autres</option></select></label><label>Valeur actuelle (€)<input id="assetamount" required type="number" min="0" step="0.01" inputmode="decimal"></label><label>Capital investi ou versé (€) — facultatif<input id="assetinvested" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Laisser vide si inconnu"></label><p class="muted" style="font-size:12px">Le capital investi sert uniquement à calculer un écart indicatif, pas une performance réelle.</p><button class="btn" id="assetsubmit" type="submit">Ajouter</button></form></dialog>
 <dialog id="recurringdialog"><form id="recurringform"><button type="button" class="close" data-close>×</button><h2 id="recurringtitle">Nouvelle opération récurrente</h2><label>Libellé<input id="recurringname" required maxlength="80" placeholder="Ex. EDF"></label><label>Montant (€)<input id="recurringamount" required type="number" min="0.01" step="0.01" inputmode="decimal"></label><label>Catégorie<select id="recurringcat"><option>Fixes</option><option>Variables</option><option>Provisions</option><option>Impôts</option><option>Investissements</option></select></label><label>Jour du mois (1 à 31)<input id="recurringday" type="number" required min="1" max="31" value="5"></label><button class="btn" type="submit">Enregistrer le modèle</button></form></dialog>
 <script>
-'use strict';const $=id=>document.getElementById(id);const KEY='mbp-encrypted-v1';let data=null,secret=null,selectedMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);const fmt=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n||0);const uid=()=>crypto.randomUUID();const enc=new TextEncoder(),dec=new TextDecoder();const to64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));const from64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));function empty(){return {version:1,plans:[],transactions:[],assets:[],snapshots:[],recurring:[]}};async function keyFor(pass,salt){const material=await crypto.subtle.importKey('raw',enc.encode(pass),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}async function seal(obj,pass){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await keyFor(pass,salt),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(obj)));return {format:'mon-budget-prive',version:1,kdf:'PBKDF2-SHA256',iterations:310000,salt:to64(salt),iv:to64(iv),ciphertext:to64(cipher)}}async function unseal(v,pass){if(v?.format!=='mon-budget-prive'||v?.version!==1||v?.iterations!==310000)throw Error('Format de sauvegarde non reconnu');const key=await keyFor(pass,from64(v.salt));const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:from64(v.iv)},key,from64(v.ciphertext));const result=JSON.parse(dec.decode(raw));if(!Array.isArray(result.plans)||!Array.isArray(result.transactions)||!Array.isArray(result.assets))throw Error('Données incorrectes');return result}let mbpSaveQueue=Promise.resolve();async function save(){
- if(!data||!secret)return;
- const snapshot=JSON.parse(JSON.stringify(data)),pass=secret;
- const task=async()=>{const payload=await seal(snapshot,pass);localStorage.setItem(KEY,JSON.stringify(payload));return true};
+'use strict';const $=id=>document.getElementById(id);const KEY='mbp-encrypted-v1';let data=null,secret=null,selectedMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);const fmt=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n||0);const uid=()=>crypto.randomUUID();const enc=new TextEncoder(),dec=new TextDecoder();const to64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));const from64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));function empty(){return {version:1,plans:[],transactions:[],assets:[],snapshots:[],recurring:[]}};async function keyFor(pass,salt){const material=await crypto.subtle.importKey('raw',enc.encode(pass),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}async function seal(obj,pass){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await keyFor(pass,salt),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(obj)));return {format:'mon-budget-prive',version:1,kdf:'PBKDF2-SHA256',iterations:310000,salt:to64(salt),iv:to64(iv),ciphertext:to64(cipher)}}async function unseal(v,pass){if(v?.format!=='mon-budget-prive'||v?.version!==1||v?.iterations!==310000)throw Error('Format de sauvegarde non reconnu');const key=await keyFor(pass,from64(v.salt));const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:from64(v.iv)},key,from64(v.ciphertext));const result=JSON.parse(dec.decode(raw));if(!Array.isArray(result.plans)||!Array.isArray(result.transactions)||!Array.isArray(result.assets))throw Error('Données incorrectes');return result}let mbpSaveQueue=Promise.resolve(),mbpVaultGeneration=0,mbpVaultDeleting=false,mbpVaultRestoring=false,mbpVaultResetting=false;
+async function save(){
+ if(!data||!secret||mbpVaultDeleting||mbpVaultRestoring||mbpVaultResetting)throw Error('Coffre verrouillé ou en cours de remplacement');
+ const snapshot=JSON.parse(JSON.stringify(data)),pass=secret,generation=mbpVaultGeneration;
+ const task=async()=>{
+  if(generation!==mbpVaultGeneration)throw Error('Écriture annulée : coffre remplacé');
+  const payload=await seal(snapshot,pass);
+  if(generation!==mbpVaultGeneration)throw Error('Écriture annulée : coffre remplacé');
+  const next=JSON.stringify(payload);
+  const previous=localStorage.getItem(KEY);
+  const backupKey=KEY+'-previous-v4';
+  // V4: preserve the last encrypted committed snapshot before replacing the active vault.
+  // If quota or storage access fails, reject the write rather than risking a partial update.
+  if(previous!==null){
+   localStorage.setItem(backupKey,previous);
+   if(localStorage.getItem(backupKey)!==previous)throw Error('Copie de secours incomplète');
+  }
+  localStorage.setItem(KEY,next);
+  if(localStorage.getItem(KEY)!==next)throw Error('Écriture du coffre incomplète');
+  return true;
+ };
  mbpSaveQueue=mbpSaveQueue.catch(()=>{}).then(task);
  return mbpSaveQueue;
 }function mbpMigrate37(obj){
  if(!obj||!Array.isArray(obj.plans)||!Array.isArray(obj.transactions)||!Array.isArray(obj.assets))throw Error('Structure financière invalide');
  const originalVersion=Number(obj.schemaVersion)||1;
  if(originalVersion>2)throw Error('Cette sauvegarde provient d’une version plus récente');
+ // Reject inconsistent backups before touching the active encrypted vault.
+ if(obj.monthBudgets!==undefined&&(!obj.monthBudgets||typeof obj.monthBudgets!=='object'||Array.isArray(obj.monthBudgets)||
+   Object.values(obj.monthBudgets).some(v=>!Array.isArray(v))))throw Error('Budgets mensuels endommagés');
+ if(obj.envelopeMoves!==undefined&&!Array.isArray(obj.envelopeMoves))throw Error('Mouvements de provisions endommagés');
+ if(obj.recurring!==undefined&&!Array.isArray(obj.recurring))throw Error('Modèles récurrents endommagés');
+ if(obj.snapshots!==undefined&&!Array.isArray(obj.snapshots))throw Error('Historique de patrimoine endommagé');
+ if(obj.transactions.some(t=>!t||typeof t!=='object'||typeof t.id!=='string'||!Number.isFinite(Number(t.amount))||
+   Number(t.amount)<=0||typeof t.date!=='string'))throw Error('Opérations endommagées');
  if(originalVersion===2)return obj;
  const all=[...(obj.plans||[]),...Object.values(obj.monthBudgets||{}).flat().filter(Boolean)];
  const byId=new Map(),byName=new Map();
@@ -567,6 +592,12 @@ function monthPlans(){
  const list=prior.map(p=>({...p}));
  return list;
 }
+// V4: shared month-scoped plan lookup (safe in every script layer).
+function mbpV4PlansForMonth(month){
+ const prior=selectedMonth;
+ try{selectedMonth=month;return monthPlans();}
+ finally{selectedMonth=prior;}
+}
 function saveMonthPlans(next){
  if(selectedMonth==='2026-11')data.plans=next;
  else{if(!data.monthBudgets)data.monthBudgets={};data.monthBudgets[selectedMonth]=next}
@@ -587,57 +618,392 @@ function render(){if(!data)return;const m=selectedMonth,tx=data.transactions.fil
 function renderRecurring(){if(!data)return;const el=$('recurringlist');if(!el)return;const list=data.recurring||[];el.innerHTML=list.map(r=>`<div class="row"><div><b>${escapeHtml(r.name)}</b><div class="muted">${escapeHtml(r.cat)} · le ${Number(r.day)} du mois</div></div><div class="right"><b>${fmt(r.amount)}</b><div><button class="btn secondary smallbtn" data-edit-recurring="${r.id}">Modifier</button> <button class="btn secondary smallbtn" data-delete-recurring="${r.id}">Supprimer</button></div></div></div>`).join('')||'<p class="muted">Aucun modèle récurrent.</p>';$('recurringmonth').textContent='Mois cible : '+new Date(selectedMonth+'-02').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})+' (modifiable dans Opérations).'}
 let editingPlan=null,editingAsset=null,editingRecurring=null;
 $('newrecurring').onclick=()=>{editingRecurring=null;$('recurringform').reset();$('recurringtitle').textContent='Nouvelle opération récurrente';$('recurringdialog').showModal()};
-$('recurringform').onsubmit=async e=>{e.preventDefault();const r={id:editingRecurring||uid(),name:$('recurringname').value.trim(),amount:Number($('recurringamount').value),cat:$('recurringcat').value,day:Number($('recurringday').value)};if(!r.name||!Number.isFinite(r.amount)||r.amount<=0||!Number.isInteger(r.day)||r.day<1||r.day>31)return;if(!Array.isArray(data.recurring))data.recurring=[];const i=data.recurring.findIndex(x=>x.id===editingRecurring);if(i>=0)data.recurring[i]=r;else data.recurring.push(r);editingRecurring=null;await save();$('recurringdialog').close();render()};
+$('recurringform').onsubmit=async e=>{
+ e.preventDefault();if(!data)return;
+ const id=editingRecurring||uid(),old=(data.recurring||[]).find(x=>String(x.id)===String(id));
+ const r={...(old||{}),id,name:$('recurringname').value.trim(),amount:Number($('recurringamount').value),cat:$('recurringcat').value,day:Number($('recurringday').value)};
+ if(!r.name||!Number.isFinite(r.amount)||r.amount<=0||!Number.isInteger(r.day)||r.day<1||r.day>31){alertMsg('Vérifie le modèle et le jour de prélèvement.');return;}
+ const hadRecurring=Array.isArray(data.recurring),before=hadRecurring?data.recurring.map(x=>({...x})):[];
+ if(!hadRecurring)data.recurring=[];
+ const i=data.recurring.findIndex(x=>String(x.id)===String(id));
+ if(i>=0)data.recurring[i]=r;else data.recurring.push(r);
+ try{await save();editingRecurring=null;$('recurringdialog').close();render();}
+ catch(err){if(hadRecurring)data.recurring=before;else delete data.recurring;alertMsg('Enregistrement impossible : modèle précédent conservé.')}
+};
+let mbpV4RecurringApplyBusy=false;
 $('applyrecurring').onclick=async()=>{
+ if(mbpV4RecurringApplyBusy||!data)return;
+ mbpV4RecurringApplyBusy=true;
+ const month=selectedMonth;
+ try{
  const recurring=data.recurring||[];
  if(!recurring.length){alertMsg('Ajoute d’abord un modèle récurrent.');return}
  // Une occurrence par identifiant de modèle et par mois : pas de rapprochement par simple nom.
  const fresh=recurring.filter(r=>!data.transactions.some(t=>t.recurringId===r.id&&t.date?.startsWith(selectedMonth)));
  if(!fresh.length){alertMsg('Tous les modèles sont déjà enregistrés pour ce mois.');return}
- if(!await mbpConfirm(`Ajouter ${fresh.length} opération(s) au mois ${selectedMonth} pour ${fmt(fresh.reduce((s,r)=>s+Number(r.amount),0))} ?`))return;
- const daysInMonth=new Date(Number(selectedMonth.slice(0,4)),Number(selectedMonth.slice(5)),0).getDate();
- for(const r of fresh){
+ if(!await mbpConfirm(`Ajouter ${fresh.length} opération(s) au mois ${month} pour ${fmt(fresh.reduce((s,r)=>s+Number(r.amount),0))} ?`))return;
+ if(selectedMonth!==month){alertMsg('Le mois a changé : aucune charge ajoutée.');return}
+ const stillFresh=fresh.filter(r=>!data.transactions.some(t=>String(t.recurringId)===String(r.id)&&t.date?.slice(0,7)===month));
+ if(!stillFresh.length){alertMsg('Ces opérations sont déjà enregistrées.');return}
+ const daysInMonth=new Date(Number(month.slice(0,4)),Number(month.slice(5)),0).getDate();
+ const added=[],activePlans=mbpV4PlansForMonth(month);
+ for(const r of stillFresh){
   const day=Math.max(1,Math.min(daysInMonth,Number(r.day)||1));
-  data.transactions.push({id:uid(),type:'expense',name:r.name,amount:Number(r.amount),cat:r.cat,date:selectedMonth+'-'+String(day).padStart(2,'0'),recurringId:r.id,...(r.planId?{planId:r.planId}:{})});
+  const item={id:uid(),type:'expense',name:r.name,amount:Number(r.amount),cat:r.cat,date:month+'-'+String(day).padStart(2,'0'),recurringId:r.id};
+  const direct=r.planId?activePlans.find(p=>String(p.id)===String(r.planId)&&p.cat===r.cat):null;
+  const named=activePlans.filter(p=>p.cat===r.cat&&String(p.name||'').trim().toLocaleLowerCase('fr')===String(r.name||'').trim().toLocaleLowerCase('fr'));
+  if(direct)item.planId=direct.id;
+  else if(named.length===1)item.planId=named[0].id;
+  added.push(item);data.transactions.push(item);
  }
- await save();render();alertMsg(fresh.length+' opération(s) ajoutée(s).');
+ try{await save();render();alertMsg(added.length+' opération(s) ajoutée(s).');}
+ catch(err){const ids=new Set(added.map(x=>x.id));data.transactions=data.transactions.filter(x=>!ids.has(x.id));alertMsg('Enregistrement impossible : aucune charge récurrente ajoutée.');}
+ }finally{mbpV4RecurringApplyBusy=false}
 };
-function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA','Compte-titres','Crypto','Immobilier','Autres'],colors=['#a58aff','#4a8aff','#f0a44c','#36dbac','#e79bbd','#8993b1'];let invested=0,valued=0,count=0;for(const a of assets){if(a.invested!==null&&a.invested!==undefined&&Number.isFinite(Number(a.invested))){invested+=Number(a.invested);valued+=Number(a.amount)||0;count++}}$('investedtotal').textContent=count?fmt(invested):'Non renseigné';$('wealthgain').textContent=count?fmt(valued-invested):'Non calculable';$('wealthgain').style.color=count?(valued-invested>=0?'#45e5b6':'#ffaaa8'):'';const totals=types.map((name,i)=>({name,color:colors[i],value:assets.filter(a=>(a.type||'Autres')===name).reduce((s,a)=>s+Number(a.amount||0),0)})).filter(x=>x.value>0);const total=totals.reduce((s,x)=>s+x.value,0);$('wealthbreakdown').innerHTML=totals.length?totals.map(x=>'<div class="row"><span><i class="legend-dot" style="display:inline-block;background:'+x.color+';margin-right:8px"></i>'+escapeHtml(x.name)+' <small>('+Math.round(x.value/total*100)+' %)</small></span><b>'+fmt(x.value)+'</b></div>').join(''):'<p class="muted">Ajoute un actif pour voir sa répartition.</p>'}function renderHistory(){const el=$('wealthchart');if(!el)return;const a=(data.snapshots||[]).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date)&&Number.isFinite(Number(x.amount))).slice().sort((x,y)=>x.date.localeCompare(y.date));if(!a.length){el.innerHTML='<p class="muted">Aucun historique pour le moment. Enregistre un premier point.</p>';return}if(a.length===1){el.innerHTML='<p class="muted">Un point enregistré le '+escapeHtml(a[0].date)+' : <b>'+fmt(a[0].amount)+'</b>. Un deuxième jour de suivi permettra d’afficher une courbe.</p>';return}const points=a.slice(-24),values=points.map(x=>Number(x.amount)),lo=Math.min(...values),hi=Math.max(...values),range=Math.max(hi-lo,1),min=lo-range*.15,max=hi+range*.15,W=340,H=190,L=12,R=12,T=15,B=32,plotW=W-L-R,plotH=H-T-B,xy=values.map((v,i)=>[L+i*plotW/(values.length-1),T+(max-v)/(max-min)*plotH]),coords=xy.map(p=>p.map(x=>x.toFixed(2)).join(',')).join(' '),grid=[0,.5,1].map(f=>'<line x1="'+L+'" x2="'+(W-R)+'" y1="'+(T+plotH*f)+'" y2="'+(T+plotH*f)+'" class="wealth-chart-grid"/>').join(''),dots=xy.map((p,i)=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.5" fill="#36dbac"><title>'+escapeHtml(points[i].date)+' : '+fmt(values[i])+'</title></circle>').join('');el.innerHTML='<svg class="wealth-chart-svg" viewBox="0 0 340 190" role="img" aria-label="Évolution du patrimoine de '+fmt(values[0])+' à '+fmt(values.at(-1))+' sur '+points.length+' dates"><defs><linearGradient id="wealthLine" x1="0" x2="1"><stop stop-color="#a58aff"/><stop offset="1" stop-color="#36dbac"/></linearGradient></defs>'+grid+'<polyline points="'+coords+'" fill="none" stroke="url(#wealthLine)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>'+dots+'<text x="'+L+'" y="183" class="wealth-chart-axis">'+escapeHtml(points[0].date.slice(5))+'</text><text x="'+(W-R)+'" y="183" text-anchor="end" class="wealth-chart-axis">'+escapeHtml(points.at(-1).date.slice(5))+'</text></svg><div class="wealth-legend"><div class="wealth-chip">Début <b>'+fmt(values[0])+'</b></div><div class="wealth-chip">Dernier point <b>'+fmt(values.at(-1))+'</b></div><div class="wealth-chip">Variation <b>'+fmt(values.at(-1)-values[0])+'</b></div></div><p class="wealth-chart-note">'+points.length+' relevés affichés (24 derniers maximum). Une variation inclut les versements et retraits : ce n’est pas un rendement.</p>'}async function saveSnapshot(){if(!data)return;const date=new Date().toLocaleDateString('sv-SE');const amount=data.assets.reduce((s,a)=>s+Number(a.amount||0),0);if(!Array.isArray(data.snapshots))data.snapshots=[];const i=data.snapshots.findIndex(x=>x.date===date);if(i>=0){if(!await mbpConfirm('Remplacer le point déjà enregistré aujourd’hui ?'))return;data.snapshots[i]={date,amount}}else data.snapshots.push({date,amount});save().then(()=>{render();alertMsg('Patrimoine enregistré pour '+date)}).catch(()=>alertMsg('Échec de l’enregistrement'))} function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function start(){show('app');tab('add')};$('create').onclick=async()=>{const a=$('newpass').value;if(a.length<12||a!==$('confpass').value){$('setupmsg').textContent='Utilise au moins 12 caractères et confirme la même phrase.';return}try{secret=a;data=mbpMigrate37(empty());await save();$('newpass').value=$('confpass').value='';start()}catch(e){$('setupmsg').textContent='Impossible de créer le coffre : '+e.message}};$('unlockform').onsubmit=async(e)=>{e.preventDefault();try{const s=$('pass').value;data=mbpMigrate37(await unseal(JSON.parse(localStorage.getItem(KEY)),s));secret=s;$('pass').value='';$('unlockmsg').textContent='';start()}catch(e){$('unlockmsg').textContent='Phrase secrète incorrecte ou données endommagées.'}};document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.tab));document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());$('addExpense').onclick=()=>openTx('expense');$('addIncome').onclick=()=>openTx('income');$('newtx').onclick=()=>openTx('expense');let editingTx=null;function openTx(type,name='',cat='Variables'){editingTx=null;$('txform').reset();$('txsubmit').textContent='Enregistrer';$('txtype').value=type;$('txname').value=name;$('txcat').value=cat;$('txdate').value=new Date().toLocaleDateString('sv-SE');$('txdialog').showModal()}$('txform').onsubmit=async e=>{e.preventDefault();const item={id:editingTx||uid(),type:$('txtype').value,name:$('txname').value.trim(),amount:Number($('txamount').value),cat:$('txcat').value.trim(),date:$('txdate').value};if(!item.cat||!Number.isFinite(item.amount)||item.amount<=0)return;if(editingTx){const i=data.transactions.findIndex(t=>t.id===editingTx);if(i<0)return;data.transactions[i]=item}else data.transactions.push(item);editingTx=null;await save();$('txdialog').close();render()};$('newplan').onclick=()=>{editingPlan=null;$('planform').reset();$('plantitle').textContent='Ajouter une ligne au budget';$('plansubmit').textContent='Ajouter';$('plandialog').showModal()};$('planform').onsubmit=async e=>{e.preventDefault();const p={id:editingPlan||uid(),name:$('planname').value.trim(),amount:Number($('planamount').value),cat:$('plancat').value};if(!p.name||!Number.isFinite(p.amount)||p.amount<0)return;const i=data.plans.findIndex(x=>x.id===editingPlan);if(i>=0)data.plans[i]=p;else data.plans.push(p);editingPlan=null;await save();$('planform').reset();$('plandialog').close();render()};$('snapshot').onclick=saveSnapshot;$('newasset').onclick=()=>{editingAsset=null;$('assetform').reset();$('assettitle').textContent='Ajouter un actif';$('assetsubmit').textContent='Ajouter';$('assetdialog').showModal()};$('assetform').onsubmit=async e=>{e.preventDefault();const rawInvested=$('assetinvested').value.trim();const a={id:editingAsset||uid(),name:$('assetname').value.trim(),amount:Number($('assetamount').value),type:$('assettype').value,invested:rawInvested===''?null:Number(rawInvested)};if(!a.name||!Number.isFinite(a.amount)||a.amount<0||(a.invested!==null&&(!Number.isFinite(a.invested)||a.invested<0)))return;const i=data.assets.findIndex(x=>x.id===editingAsset);if(i>=0)data.assets[i]=a;else data.assets.push(a);editingAsset=null;await save();$('assetform').reset();$('assetdialog').close();render()};$('txmonth').onchange=e=>{selectedMonth=e.target.value;render()};document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b||!data)return;const x=b.dataset;if(x.deleteRecurring){if(!await mbpConfirm('Supprimer ce modèle ? Les opérations déjà créées resteront enregistrées.'))return;data.recurring=(data.recurring||[]).filter(r=>r.id!==x.deleteRecurring);await save();render();return}if(x.editRecurring){const r=(data.recurring||[]).find(r=>r.id===x.editRecurring);if(!r)return;editingRecurring=r.id;$('recurringname').value=r.name;$('recurringamount').value=r.amount;$('recurringcat').value=r.cat;$('recurringday').value=r.day;$('recurringtitle').textContent='Modifier le modèle';$('recurringdialog').showModal();return}if(x.editPlan){const p=data.plans.find(p=>p.id===x.editPlan);if(!p)return;editingPlan=p.id;$('planname').value=p.name;$('planamount').value=p.amount;$('plancat').value=p.cat;$('plantitle').textContent='Modifier une ligne du budget';$('plansubmit').textContent='Enregistrer';$('plandialog').showModal();return}if(x.deleteTx||x.deletePlan||x.deleteAsset){if(!await mbpConfirm('Supprimer cet élément ?'))return;const [kind,id]=x.deleteTx?['transactions',x.deleteTx]:x.deletePlan?['plans',x.deletePlan]:['assets',x.deleteAsset];data[kind]=data[kind].filter(a=>a.id!==id);await save();render()}if(x.quick){openTx('expense',x.quick,x.quickCat||'Variables');/* Pas de focus automatique : évite le clavier et le zoom iOS */}if(x.editTx){const t=data.transactions.find(t=>t.id===x.editTx);if(!t)return;openTx(t.type);editingTx=t.id;$('txtype').value=t.type;$('txname').value=t.name;$('txamount').value=t.amount;$('txcat').value=t.cat;$('txdate').value=t.date;$('txsubmit').textContent='Enregistrer les modifications'}if(x.editAsset){const a=data.assets.find(a=>a.id===x.editAsset);if(!a)return;editingAsset=a.id;$('assetname').value=a.name;$('assetamount').value=a.amount;$('assettype').value=['Livrets','PEA','Compte-titres','Crypto','Immobilier','Autres'].includes(a.type)?a.type:'Autres';$('assetinvested').value=a.invested??'';$('assettitle').textContent='Modifier un compte / actif';$('assetsubmit').textContent='Enregistrer';$('assetdialog').showModal()}});function lockVault(){if(!data)return;data=null;secret=null;$('pass').value='';document.querySelectorAll('dialog[open]').forEach(d=>d.close());show('unlock')} $('lock').onclick=lockVault;$('export').onclick=()=>{if(!data||!localStorage.getItem(KEY))return;const blob=new Blob([localStorage.getItem(KEY)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='mon-budget-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);alertMsg('Sauvegarde chiffrée téléchargée. Conserve ta phrase secrète.')};$('import').onclick=()=>$('importfile').click();$('importfile').onchange=async e=>{
+function renderWealthExtras(){const assets=data.assets||[],types=['Livrets','PEA','Compte-titres','Crypto','Immobilier','Autres'],colors=['#a58aff','#4a8aff','#f0a44c','#36dbac','#e79bbd','#8993b1'];let invested=0,valued=0,count=0;for(const a of assets){if(a.invested!==null&&a.invested!==undefined&&Number.isFinite(Number(a.invested))){invested+=Number(a.invested);valued+=Number(a.amount)||0;count++}}$('investedtotal').textContent=count?fmt(invested):'Non renseigné';$('wealthgain').textContent=count?fmt(valued-invested):'Non calculable';$('wealthgain').style.color=count?(valued-invested>=0?'#45e5b6':'#ffaaa8'):'';const totals=types.map((name,i)=>({name,color:colors[i],value:assets.filter(a=>(a.type||'Autres')===name).reduce((s,a)=>s+Number(a.amount||0),0)})).filter(x=>x.value>0);const total=totals.reduce((s,x)=>s+x.value,0);$('wealthbreakdown').innerHTML=totals.length?totals.map(x=>'<div class="row"><span><i class="legend-dot" style="display:inline-block;background:'+x.color+';margin-right:8px"></i>'+escapeHtml(x.name)+' <small>('+Math.round(x.value/total*100)+' %)</small></span><b>'+fmt(x.value)+'</b></div>').join(''):'<p class="muted">Ajoute un actif pour voir sa répartition.</p>'}function renderHistory(){const el=$('wealthchart');if(!el)return;const a=(data.snapshots||[]).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date)&&Number.isFinite(Number(x.amount))).slice().sort((x,y)=>x.date.localeCompare(y.date));if(!a.length){el.innerHTML='<p class="muted">Aucun historique pour le moment. Enregistre un premier point.</p>';return}if(a.length===1){el.innerHTML='<p class="muted">Un point enregistré le '+escapeHtml(a[0].date)+' : <b>'+fmt(a[0].amount)+'</b>. Un deuxième jour de suivi permettra d’afficher une courbe.</p>';return}const points=a.slice(-24),values=points.map(x=>Number(x.amount)),lo=Math.min(...values),hi=Math.max(...values),range=Math.max(hi-lo,1),min=lo-range*.15,max=hi+range*.15,W=340,H=190,L=12,R=12,T=15,B=32,plotW=W-L-R,plotH=H-T-B,xy=values.map((v,i)=>[L+i*plotW/(values.length-1),T+(max-v)/(max-min)*plotH]),coords=xy.map(p=>p.map(x=>x.toFixed(2)).join(',')).join(' '),grid=[0,.5,1].map(f=>'<line x1="'+L+'" x2="'+(W-R)+'" y1="'+(T+plotH*f)+'" y2="'+(T+plotH*f)+'" class="wealth-chart-grid"/>').join(''),dots=xy.map((p,i)=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.5" fill="#36dbac"><title>'+escapeHtml(points[i].date)+' : '+fmt(values[i])+'</title></circle>').join('');el.innerHTML='<svg class="wealth-chart-svg" viewBox="0 0 340 190" role="img" aria-label="Évolution des actifs suivis de '+fmt(values[0])+' à '+fmt(values.at(-1))+' sur '+points.length+' dates"><defs><linearGradient id="wealthLine" x1="0" x2="1"><stop stop-color="#a58aff"/><stop offset="1" stop-color="#36dbac"/></linearGradient></defs>'+grid+'<polyline points="'+coords+'" fill="none" stroke="url(#wealthLine)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>'+dots+'<text x="'+L+'" y="183" class="wealth-chart-axis">'+escapeHtml(points[0].date.slice(5))+'</text><text x="'+(W-R)+'" y="183" text-anchor="end" class="wealth-chart-axis">'+escapeHtml(points.at(-1).date.slice(5))+'</text></svg><div class="wealth-legend"><div class="wealth-chip">Début <b>'+fmt(values[0])+'</b></div><div class="wealth-chip">Dernier point <b>'+fmt(values.at(-1))+'</b></div><div class="wealth-chip">Variation <b>'+fmt(values.at(-1)-values[0])+'</b></div></div><p class="wealth-chart-note">'+points.length+' relevés affichés (24 derniers maximum). Variation des actifs bruts : elle inclut les versements et retraits, sans déduire les dettes. Ce n’est pas un rendement.</p>'}async function saveSnapshot(){
+ if(!data)return;
+ const date=new Date().toLocaleDateString('sv-SE');
+ const amount=data.assets.reduce((s,a)=>s+Number(a.amount||0),0);
+ const oldSnapshots=Array.isArray(data.snapshots)?data.snapshots.map(s=>({...s})):null;
+ if(!Array.isArray(data.snapshots))data.snapshots=[];
+ const i=data.snapshots.findIndex(x=>x.date===date);
+ if(i>=0&&!(await mbpConfirm('Remplacer le point déjà enregistré aujourd’hui ?')))return;
+ const point={date,amount};
+ if(i>=0)data.snapshots[i]=point;else data.snapshots.push(point);
+ try{
+  await save();
+  render();alertMsg('Valeur brute des actifs enregistrée pour '+date);
+ }catch(err){
+  if(oldSnapshots===null)delete data.snapshots;
+  else data.snapshots=oldSnapshots;
+  alertMsg('Échec de la sauvegarde : historique précédent conservé.');
+ }
+} function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function start(){show('app');tab('add')};$('create').onclick=async()=>{const a=$('newpass').value;if(a.length<12||a!==$('confpass').value){$('setupmsg').textContent='Utilise au moins 12 caractères et confirme la même phrase.';return}try{secret=a;data=mbpMigrate37(empty());await save();$('newpass').value=$('confpass').value='';start()}catch(e){$('setupmsg').textContent='Impossible de créer le coffre : '+e.message}};$('unlockform').onsubmit=async(e)=>{e.preventDefault();try{const s=$('pass').value;data=mbpMigrate37(await unseal(JSON.parse(localStorage.getItem(KEY)),s));secret=s;$('pass').value='';$('unlockmsg').textContent='';start()}catch(e){$('unlockmsg').textContent='Phrase secrète incorrecte ou données endommagées.'}};
+// V4 recovery is offered only on the locked screen and never silently overwrites a readable active vault.
+const mbpV4RecoveryKey=KEY+'-previous-v4';
+const mbpV4RecoverButton=document.createElement('button');
+mbpV4RecoverButton.type='button';
+mbpV4RecoverButton.className='btn secondary';
+mbpV4RecoverButton.id='mbpV4Recover';
+mbpV4RecoverButton.textContent='Récupérer la sauvegarde locale précédente';
+mbpV4RecoverButton.style.marginTop='10px';
+$('unlockform').after(mbpV4RecoverButton);
+const mbpV4UpdateRecoveryVisibility=()=>{
+ try{mbpV4RecoverButton.hidden=!localStorage.getItem(mbpV4RecoveryKey)}
+ catch(_){mbpV4RecoverButton.hidden=true}
+};
+mbpV4UpdateRecoveryVisibility();
+mbpV4RecoverButton.onclick=async()=>{
+ if(mbpVaultDeleting||mbpVaultRestoring||mbpVaultResetting)return;
+ const entered=$('pass').value;
+ if(!entered){$('unlockmsg').textContent='Saisis ta phrase secrète avant de récupérer la copie locale.';return}
+ mbpVaultRestoring=true;
+ mbpV4RecoverButton.disabled=true;
+ try{
+  await mbpSaveQueue.catch(()=>{});
+  const original=localStorage.getItem(KEY);
+  const fallback=localStorage.getItem(mbpV4RecoveryKey);
+  if(!fallback)throw Error('Pas de copie locale disponible');
+  let activeReadable=false;
+  if(original){
+   try{mbpMigrate37(await unseal(JSON.parse(original),entered));activeReadable=true}catch(_){}
+  }
+  if(activeReadable)throw Error('Le coffre principal est lisible : aucune restauration nécessaire');
+  const restored=mbpMigrate37(await unseal(JSON.parse(fallback),entered));
+  if(!await mbpConfirm('Le coffre principal ne peut pas être ouvert avec cette phrase. Récupérer la copie chiffrée précédente ? Les dernières modifications non incluses dans cette copie seront perdues.'))return;
+  if(localStorage.getItem(KEY)!==original||localStorage.getItem(mbpV4RecoveryKey)!==fallback)throw Error('Le stockage a changé pendant la confirmation');
+  localStorage.setItem(KEY,fallback);
+  if(localStorage.getItem(KEY)!==fallback){
+   if(original===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,original);
+   throw Error('Restauration incomplète');
+  }
+  mbpVaultGeneration++;
+  mbpSaveQueue=Promise.resolve();
+  data=restored;secret=entered;$('pass').value='';$('unlockmsg').textContent='';
+  start();
+  alertMsg('Copie locale chiffrée récupérée. Vérifie les dernières opérations.');
+ }catch(err){
+  $('unlockmsg').textContent='Récupération non effectuée : '+err.message;
+ }finally{mbpVaultRestoring=false;mbpV4RecoverButton.disabled=false;mbpV4UpdateRecoveryVisibility()}
+};
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.tab));document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());$('addExpense').onclick=()=>openTx('expense');$('addIncome').onclick=()=>openTx('income');$('newtx').onclick=()=>openTx('expense');let editingTx=null;function openTx(type,name='',cat='Variables'){editingTx=null;$('txform').reset();$('txsubmit').textContent='Enregistrer';$('txtype').value=type;$('txname').value=name;$('txcat').value=cat;$('txdate').value=new Date().toLocaleDateString('sv-SE');$('txdialog').showModal()}let mbpV4TxSubmitting=false;
+$('txform').onsubmit=async e=>{
+ e.preventDefault();
+ if(!data||mbpV4TxSubmitting)return;
+ const oldIndex=editingTx?data.transactions.findIndex(t=>t.id===editingTx):-1;
+ if(editingTx&&oldIndex<0)return;
+ const original=oldIndex>=0?data.transactions[oldIndex]:null;
+ const item={...(original||{}),id:editingTx||uid(),type:$('txtype').value,
+  name:$('txname').value.trim(),amount:Number($('txamount').value),
+  cat:$('txcat').value.trim(),date:$('txdate').value};
+ if(!item.name||!item.cat||!Number.isFinite(item.amount)||item.amount<=0||
+    !/^\d{4}-\d{2}-\d{2}$/.test(item.date)||
+    new Date(item.date+'T12:00:00').toLocaleDateString('sv-SE')!==item.date){
+  alertMsg('Vérifie le libellé, la date et le montant.');return;
+ }
+ const chosen=$('txbudget').value;
+ const chosenPlan=chosen?mbpV4PlansForMonth(item.date.slice(0,7)).find(p=>String(p.id)===String(chosen)):null;
+ const historicalSelection=!!(chosen&&original&&String(original.planId||'')===String(chosen)&&
+    original.date?.slice(0,7)===item.date.slice(0,7)&&original.type===item.type);
+ if(chosen&&!chosenPlan&&!historicalSelection){alertMsg('Ce budget ne correspond pas au mois sélectionné.');return;}
+ if(chosenPlan){
+  if((item.type==='income')!==(chosenPlan.cat==='Revenus')){
+   alertMsg('Le type d’opération ne correspond pas au budget choisi.');return;
+  }
+  item.planId=chosenPlan.id;
+ }else if(historicalSelection)item.planId=original.planId;
+ else delete item.planId;
+ // Les titres-restaurant sont des avantages non liquides, jamais des dépenses.
+ // Un changement de type ou de catégorie ne doit pas conserver l'ancien marqueur.
+ if(item.type==='income'){
+  const ticketCategory=/^titres?[ -]?restaurant$/i.test(item.cat);
+  const ticketName=/^tickets?[ -]?(restaurant|resto)(?:\b|$)/i.test(item.name);
+  if(ticketCategory||ticketName)item.nonCash=true;
+  else delete item.nonCash;
+ }else delete item.nonCash;
+ if(item.type!=='expense'){delete item.recurringId;delete item.goalId;}
+ else if(original&&String(original.planId||'')!==String(item.planId||'')){
+  delete item.recurringId;delete item.goalId;
+ }
+ mbpV4TxSubmitting=true;
+ if(oldIndex>=0)data.transactions[oldIndex]=item;
+ else data.transactions.push(item);
+ try{
+  await save();
+ }catch(err){
+  if(oldIndex>=0)data.transactions[oldIndex]=original;
+  else data.transactions=data.transactions.filter(t=>t.id!==item.id);
+  alertMsg('Sauvegarde impossible. L’opération n’a pas été enregistrée.');return;
+ }finally{mbpV4TxSubmitting=false;}
+ editingTx=null;$('txdialog').close();render();
+};$('newplan').onclick=()=>{editingPlan=null;$('planform').reset();$('plantitle').textContent='Ajouter une ligne au budget';$('plansubmit').textContent='Ajouter';$('plandialog').showModal()};$('planform').onsubmit=async e=>{e.preventDefault();const p={id:editingPlan||uid(),name:$('planname').value.trim(),amount:Number($('planamount').value),cat:$('plancat').value};if(!p.name||!Number.isFinite(p.amount)||p.amount<0)return;const i=data.plans.findIndex(x=>x.id===editingPlan);if(i>=0)data.plans[i]=p;else data.plans.push(p);editingPlan=null;await save();$('planform').reset();$('plandialog').close();render()};$('snapshot').onclick=saveSnapshot;$('newasset').onclick=()=>{editingAsset=null;$('assetform').reset();$('assettitle').textContent='Ajouter un actif';$('assetsubmit').textContent='Ajouter';$('assetdialog').showModal()};$('assetform').onsubmit=async e=>{
+ e.preventDefault();if(!data)return;
+ const rawInvested=$('assetinvested').value.trim(),id=editingAsset||uid();
+ const i=data.assets.findIndex(x=>String(x.id)===String(editingAsset));
+ const before=i>=0?data.assets[i]:null;
+ const a={...(before||{}),id,name:$('assetname').value.trim(),amount:Number($('assetamount').value),type:$('assettype').value,invested:rawInvested===''?null:Number(rawInvested)};
+ if(!a.name||!Number.isFinite(a.amount)||a.amount<0||(a.invested!==null&&(!Number.isFinite(a.invested)||a.invested<0))){alertMsg('Vérifie le nom et la valeur de l’actif.');return;}
+ if(i>=0)data.assets[i]=a;else data.assets.push(a);
+ try{await save();editingAsset=null;$('assetform').reset();$('assetdialog').close();render();}
+ catch(err){if(i>=0)data.assets[i]=before;else data.assets=data.assets.filter(x=>x.id!==id);alertMsg('Enregistrement impossible : actif précédent conservé.')}
+};$('txmonth').onchange=e=>{selectedMonth=e.target.value;render()};document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b||!data)return;const x=b.dataset;if(x.deleteRecurring){
+ if(!await mbpConfirm('Supprimer ce modèle ? Les opérations déjà créées resteront enregistrées.'))return;
+ const before=data.recurring,updated=(before||[]).filter(r=>String(r.id)!==String(x.deleteRecurring));
+ if(updated.length===(before||[]).length)return;
+ data.recurring=updated;
+ try{await save();render();}
+ catch(err){data.recurring=before;alertMsg('Suppression impossible : modèle conservé.')}
+ return;
+}if(x.editRecurring){const r=(data.recurring||[]).find(r=>r.id===x.editRecurring);if(!r)return;editingRecurring=r.id;$('recurringname').value=r.name;$('recurringamount').value=r.amount;$('recurringcat').value=r.cat;$('recurringday').value=r.day;$('recurringtitle').textContent='Modifier le modèle';$('recurringdialog').showModal();return}if(x.editPlan){const p=data.plans.find(p=>p.id===x.editPlan);if(!p)return;editingPlan=p.id;$('planname').value=p.name;$('planamount').value=p.amount;$('plancat').value=p.cat;$('plantitle').textContent='Modifier une ligne du budget';$('plansubmit').textContent='Enregistrer';$('plandialog').showModal();return}if(x.deleteTx||x.deletePlan||x.deleteAsset){
+ const [kind,id]=x.deleteTx?['transactions',x.deleteTx]:x.deletePlan?['plans',x.deletePlan]:['assets',x.deleteAsset];
+ const label=kind==='transactions'?'cette opération':kind==='assets'?'cet actif':'ce budget';
+ if(!data[kind]?.some(a=>String(a.id)===String(id)))return;
+ if(!await mbpConfirm('Supprimer '+label+' ?'))return;
+ const before=data[kind];
+ data[kind]=before.filter(a=>String(a.id)!==String(id));
+ try{await save();render();}
+ catch(err){data[kind]=before;alertMsg('Suppression impossible : élément conservé.')}
+ return;
+}if(x.quick){openTx('expense',x.quick,x.quickCat||'Variables');/* Pas de focus automatique : évite le clavier et le zoom iOS */}if(x.editTx){const t=data.transactions.find(t=>t.id===x.editTx);if(!t)return;openTx(t.type);editingTx=t.id;$('txtype').value=t.type;$('txname').value=t.name;$('txamount').value=t.amount;$('txcat').value=t.cat;$('txdate').value=t.date;$('txsubmit').textContent='Enregistrer les modifications'}if(x.editAsset){const a=data.assets.find(a=>a.id===x.editAsset);if(!a)return;editingAsset=a.id;$('assetname').value=a.name;$('assetamount').value=a.amount;$('assettype').value=['Livrets','PEA','Compte-titres','Crypto','Immobilier','Autres'].includes(a.type)?a.type:'Autres';$('assetinvested').value=a.invested??'';$('assettitle').textContent='Modifier un compte / actif';$('assetsubmit').textContent='Enregistrer';$('assetdialog').showModal()}});function lockVault(){if(!data)return;data=null;secret=null;$('pass').value='';document.querySelectorAll('dialog[open]').forEach(d=>d.close());show('unlock')} $('lock').onclick=lockVault;$('export').onclick=async()=>{
+ if(!data||!secret)return;
+ const currentData=data,currentSecret=secret;
+ try{
+  // Wait for any queued writes: exporting a stale vault would silently lose recent operations.
+  await mbpSaveQueue;
+  if(data!==currentData||secret!==currentSecret)throw Error('Le coffre a changé');
+  const serialized=localStorage.getItem(KEY);
+  if(!serialized)throw Error('Coffre absent');
+  // Authenticate and compare the full decrypted snapshot before handing it to the user.
+  const snapshot=await unseal(JSON.parse(serialized),currentSecret);
+  if(data!==currentData||secret!==currentSecret||
+      JSON.stringify(snapshot)!==JSON.stringify(currentData))throw Error('Sauvegarde non synchronisée');
+  const blob=new Blob([serialized],{type:'application/json'}),url=URL.createObjectURL(blob);
+  try{
+   const a=document.createElement('a');a.href=url;
+   a.download='mon-budget-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+   alertMsg('Sauvegarde chiffrée téléchargée. Conserve ta phrase secrète.');
+  }finally{setTimeout(()=>URL.revokeObjectURL(url),1000)}
+ }catch(err){alertMsg('Export impossible : les dernières données ne sont pas encore sécurisées. Réessaie.')}
+};$('import').onclick=()=>$('importfile').click();$('importfile').onchange=async e=>{
  const file=e.target.files[0];if(!file)return;
- const previousData=data,previousSecret=secret;
- const previousPayload=localStorage.getItem(KEY);
+ const openedData=data,openedSecret=secret;
+ let previousData=null,previousSecret=null,previousPayload=null,previousBackup=null,locked=false,writeAttempted=false;
  try{
   const v=JSON.parse(await file.text());
   const pw=await mbpPrompt('Phrase secrète de cette sauvegarde :');if(pw===null)return;
   const imported=mbpMigrate37(await unseal(v,pw));
   if(!await mbpConfirm('Remplacer toutes les données locales par cette sauvegarde ?'))return;
-  // Ne remplacer l'état actif qu'après validation et vérification d'une nouvelle copie chiffrée.
+  if(data!==openedData||secret!==openedSecret||mbpVaultDeleting||mbpVaultRestoring||mbpVaultResetting)
+   throw Error('Le coffre a changé pendant la confirmation');
+  mbpVaultRestoring=true;locked=true;
   await mbpSaveQueue.catch(()=>{});
+  previousData=data;previousSecret=secret;
+  previousPayload=localStorage.getItem(KEY);
+  previousBackup=localStorage.getItem(mbpV4RecoveryKey);
   const ciphertext=JSON.stringify(await seal(imported,pw));
   const verified=await unseal(JSON.parse(ciphertext),pw);
-  if(!verified||verified.transactions.length!==imported.transactions.length)throw Error('Vérification de sauvegarde échouée');
+  if(JSON.stringify(verified)!==JSON.stringify(imported))
+   throw Error('Vérification de sauvegarde échouée');
+  // Treat primary replacement and cleanup of the old recovery snapshot as one transaction.
+  // Otherwise a V3.7 vault with a different password survives an explicit V4 restore.
+  writeAttempted=true;
+  localStorage.setItem(KEY,ciphertext);
+  if(localStorage.getItem(KEY)!==ciphertext)throw Error('Enregistrement incomplet');
+  localStorage.removeItem(mbpV4RecoveryKey);
+  if(localStorage.getItem(mbpV4RecoveryKey)!==null)throw Error('Ancienne copie de secours non supprimée');
+  data=imported;secret=pw;
+  render();
+  mbpVaultGeneration++;
+  mbpSaveQueue=Promise.resolve();
+  alertMsg('Sauvegarde restaurée');
+ }catch(err){
+  let rolledBack=true;
+  if(writeAttempted){
+   try{
+    if(previousPayload===null)localStorage.removeItem(KEY);
+    else localStorage.setItem(KEY,previousPayload);
+    if(localStorage.getItem(KEY)!==previousPayload)throw Error('Coffre précédent non restauré');
+    if(previousBackup===null)localStorage.removeItem(mbpV4RecoveryKey);
+    else localStorage.setItem(mbpV4RecoveryKey,previousBackup);
+    if(localStorage.getItem(mbpV4RecoveryKey)!==previousBackup)throw Error('Copie précédente non restaurée');
+   }catch(_){rolledBack=false}
+  }
+  if(previousData){data=previousData;secret=previousSecret;try{render()}catch(_){}}
+  mbpAlert(rolledBack?'Restauration annulée : les données précédentes sont conservées.':'Restauration interrompue : état du stockage à vérifier avant de continuer.');
+ }finally{if(locked)mbpVaultRestoring=false;e.target.value=''}
+};$('resetdata').onclick=async()=>{
+ if(!data||!secret||mbpVaultRestoring||mbpVaultDeleting||mbpVaultResetting)return;
+ const confirmation=await mbpPrompt('Cette action efface TOUTES les données du coffre, sans supprimer sa phrase secrète. Tape RÉINITIALISER pour confirmer :');
+ if(confirmation!=='RÉINITIALISER')return;
+ const pw=await mbpPrompt('Saisis ta phrase secrète pour confirmer :');
+ if(pw===null)return;
+ if(!data||!secret||mbpVaultRestoring||mbpVaultDeleting||mbpVaultResetting)return;
+ mbpVaultResetting=true;
+ let previousData=null,previousPayload=null,previousBackup=null,previousMonth=selectedMonth;
+ try{
+  // Drain all earlier mutations before confirming the actual encrypted vault password.
+  await mbpSaveQueue.catch(()=>{});
+  previousData=data;
+  previousPayload=localStorage.getItem(KEY);
+  previousBackup=localStorage.getItem(mbpV4RecoveryKey);
+  if(!previousPayload)throw Error('Coffre absent');
+  await unseal(JSON.parse(previousPayload),pw);
+  if(secret!==pw)throw Error('Phrase secrète incompatible');
+  const cleared=empty();
+  const ciphertext=JSON.stringify(await seal(cleared,pw));
+  const verified=await unseal(JSON.parse(ciphertext),pw);
+  if(JSON.stringify(verified)!==JSON.stringify(cleared))throw Error('Vérification échouée');
+  localStorage.setItem(KEY,ciphertext);
+  if(localStorage.getItem(KEY)!==ciphertext)throw Error('Écriture incomplète');
+  data=cleared;
   try{
-   localStorage.setItem(KEY,ciphertext);
-   if(localStorage.getItem(KEY)!==ciphertext)throw Error('Enregistrement incomplet');
-   data=imported;secret=pw;render();mbpSaveQueue=Promise.resolve();
-   alertMsg('Sauvegarde restaurée');
-  }catch(writeError){
+   selectedMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);
+   render();tab('home');
+  }catch(uiError){
    if(previousPayload===null)localStorage.removeItem(KEY);
    else localStorage.setItem(KEY,previousPayload);
-   data=previousData;secret=previousSecret;
+   data=previousData;
    try{render()}catch(_){}
-   throw writeError;
+   throw uiError;
   }
- }catch(err){mbpAlert('Restauration impossible : aucune donnée existante ne doit être remplacée.')}
- finally{e.target.value=''}
-};$('resetdata').onclick=async()=>{if(!data||!secret)return;const confirmation=await mbpPrompt('Cette action efface TOUTES les données du coffre, sans supprimer sa phrase secrète. Tape RÉINITIALISER pour confirmer :');if(confirmation!=='RÉINITIALISER')return;const pw=await mbpPrompt('Saisis ta phrase secrète pour confirmer :');if(pw===null)return;try{await unseal(JSON.parse(localStorage.getItem(KEY)),pw)}catch(e){alertMsg('Phrase secrète incorrecte : aucune donnée supprimée.');return}const previous=data;data=empty();try{await save();selectedMonth=new Date().toISOString().slice(0,7);render();tab('home');alertMsg('Données réinitialisées. Coffre conservé.')}catch(e){data=previous;alertMsg('Réinitialisation impossible : aucune suppression confirmée.')}};$('wipe').onclick=async()=>{if(await mbpPrompt('Pour supprimer définitivement les données locales, écris EFFACER')!=='EFFACER')return;localStorage.removeItem(KEY);data=null;secret=null;show('setup')};if(!crypto?.subtle){$('subtitle').textContent='Erreur : ce navigateur ne fournit pas le chiffrement sécurisé requis.';$('msg').textContent='Ouvre cette application via une adresse HTTPS.'}else show(localStorage.getItem(KEY)?'unlock':'setup');if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  // A reset must not leave the previous financial history recoverable locally.
+  localStorage.removeItem(mbpV4RecoveryKey);
+  if(localStorage.getItem(mbpV4RecoveryKey)!==null)throw Error('Ancienne copie de secours non supprimée');
+  mbpVaultGeneration++;
+  mbpSaveQueue=Promise.resolve();
+  alertMsg('Données réinitialisées. Coffre conservé.');
+ }catch(err){
+  // Restore both storage and in-memory state when any post-write step fails.
+  let rolledBack=true;
+  try{
+   if(previousPayload!==null&&localStorage.getItem(KEY)!==previousPayload){
+    localStorage.setItem(KEY,previousPayload);
+    if(localStorage.getItem(KEY)!==previousPayload)throw Error('Coffre précédent non restauré');
+   }
+   if(previousBackup!==null&&localStorage.getItem(mbpV4RecoveryKey)!==previousBackup){
+    localStorage.setItem(mbpV4RecoveryKey,previousBackup);
+    if(localStorage.getItem(mbpV4RecoveryKey)!==previousBackup)throw Error('Copie précédente non restaurée');
+   }
+  }catch(_){rolledBack=false}
+  if(previousData){data=previousData;selectedMonth=previousMonth;try{render()}catch(_){}}
+  alertMsg(rolledBack?'Réinitialisation annulée : données précédentes conservées.':'Réinitialisation interrompue : état du stockage à vérifier avant de continuer.');
+ }finally{mbpVaultResetting=false}
+};
+$('wipe').onclick=async()=>{
+ if(await mbpPrompt('Pour supprimer définitivement les données locales, écris EFFACER')!=='EFFACER')return;
+ if(mbpVaultRestoring||mbpVaultDeleting||mbpVaultResetting){alertMsg('Une opération sur le coffre est déjà en cours.');return}
+ // Cancel pending snapshots first: none may re-create the removed vault.
+ mbpVaultDeleting=true;
+ mbpVaultGeneration++;
+ await mbpSaveQueue.catch(()=>{});
+ try{
+  // Delete both encrypted snapshots: erasing only the active one leaves personal data behind.
+  localStorage.removeItem(mbpV4RecoveryKey);
+  localStorage.removeItem(KEY);
+  if(localStorage.getItem(KEY)!==null||localStorage.getItem(mbpV4RecoveryKey)!==null)throw Error('Suppression incomplète');
+  data=null;secret=null;show('setup');
+ }catch(err){alertMsg('Effacement impossible : le coffre local est toujours présent.')}
+ finally{mbpVaultDeleting=false}
+};if(!crypto?.subtle){$('subtitle').textContent='Erreur : ce navigateur ne fournit pas le chiffrement sécurisé requis.';$('msg').textContent='Ouvre cette application via une adresse HTTPS.'}else show((localStorage.getItem(KEY)||localStorage.getItem(mbpV4RecoveryKey))?'unlock':'setup');if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 // v1.7: additions are stored inside the existing encrypted data object.
 const V17_GROUPS=['Résidence principale','Abonnements & télécoms','Banque & assurances','Vie quotidienne & loisirs','Provisions & investissements','Impôts','Revenus'];
 function v17Group(p){if(p.group&&p.group!=='auto')return p.group;const n=(p.name||'').toLowerCase();if(p.cat==='Revenus')return 'Revenus';if(p.cat==='Impôts'||/impôt|taxe sur revenu/.test(n))return 'Impôts';if(p.cat==='Provisions'&&/edf|électricité|chauffage/.test(n))return 'Résidence principale';if(p.cat==='Provisions'||p.cat==='Investissements')return 'Provisions & investissements';if(/crédit immobilier|loyer|habitation|edf|électricité|copro|foncière|chauffage|logement/.test(n))return 'Résidence principale';if(/orange|internet|mobile|spotify|canal|netflix|chat.?gpt|icloud|abonnement|box/.test(n))return 'Abonnements & télécoms';if(/banque|bnp|mutuelle|juridique|carte bancaire|assurance(?! habitation)|téléphone|iphone/.test(n))return 'Banque & assurances';return 'Vie quotidienne & loisirs'}
 function v17Ensure(){if(!Array.isArray(data.envelopeMoves))data.envelopeMoves=[];if(!data.envelopeStart)data.envelopeStart='2026-11'}
-function v17BudgetSpent(p){return data.transactions.filter(t=>t.type==='expense'&&t.date?.startsWith(selectedMonth)&&(t.planId===p.id||(!t.planId&&((t.name||'').trim().toLowerCase()===(p.name||'').trim().toLowerCase())))).reduce((s,t)=>s+Number(t.amount||0),0)}
-function v17EnvelopeBalance(p){v17Ensure();const start=data.envelopeStart;const movements=data.envelopeMoves.filter(x=>x.planId===p.id&&x.date.slice(0,7)>=start&&x.date.slice(0,7)<=selectedMonth).reduce((s,x)=>s+((x.kind==='fund'||x.kind==='transfer-in')?1:-1)*Number(x.amount),0);const expenses=data.transactions.filter(t=>t.type==='expense'&&t.planId===p.id&&t.date?.slice(0,7)>=start&&t.date?.slice(0,7)<=selectedMonth).reduce((s,t)=>s+Number(t.amount),0);return {funded:movements,spent:expenses,remaining:movements-expenses}}
+
+// V4: a single cent-precise ledger shared by provisions, investment goals and transfers.
+function mbpV4GoalLedger(plan,through){
+ if(!data||!plan)return {month:0,total:0,spent:0,remaining:0,funds:[],expenses:[],transfers:[]};
+ const cutoff=/^\d{4}-\d{2}$/.test(through)?through+'-31':through;
+ const month=cutoff.slice(0,7),from=(data.envelopeStart||'2026-11')+'-01';
+ const id=String(plan.id),goalId=plan.goalId?String(plan.goalId):'';
+ const ids=new Set([id]);
+ if(goalId){
+  const history=[...(data.plans||[]),...Object.entries(data.monthBudgets||{})
+    .filter(([m])=>m<=month).flatMap(([,list])=>Array.isArray(list)?list:[])];
+  for(const p of history)if(p&&String(p.goalId||'')===goalId)ids.add(String(p.id));
+ }
+ const belongs=x=>{
+  if(!x)return false;
+  if(goalId&&x.goalId)return String(x.goalId)===goalId;
+  return x.planId!==undefined&&x.planId!==null&&ids.has(String(x.planId));
+ };
+ const inRange=x=>typeof x.date==='string'&&x.date>=from&&x.date<=cutoff;
+ const moves=(data.envelopeMoves||[]).filter(x=>belongs(x)&&inRange(x));
+ const funds=moves.filter(x=>x.kind==='fund');
+ const transfers=moves.filter(x=>['transfer-in','transfer-out','use','withdraw'].includes(x.kind));
+ const expenses=(data.transactions||[]).filter(x=>{
+  if(x.type!=='expense'||!inRange(x))return false;
+  if(x.planId!==undefined&&x.planId!==null&&String(x.planId)!=='')return belongs(x);
+  if(x.goalId)return belongs(x);
+  const p=mbpV4ResolvePlan(x,mbpV4PlansForMonth(x.date.slice(0,7)));
+  return !!p&&ids.has(String(p.id));
+ });
+ const cents=x=>Math.round(Number(x.amount||0)*100);
+ const funded=funds.reduce((sum,x)=>sum+cents(x),0);
+ const net=transfers.reduce((sum,x)=>sum+(x.kind==='transfer-in'?1:-1)*cents(x),0);
+ const spent=expenses.reduce((sum,x)=>sum+cents(x),0);
+ return {month:funds.filter(x=>x.date.slice(0,7)===month).reduce((sum,x)=>sum+cents(x),0)/100,
+  total:(funded+net)/100,spent:spent/100,remaining:(funded+net-spent)/100,
+  funds,expenses,transfers};
+}
+
+// V4: une dépense ne peut être affectée qu'à un seul budget du même mois.
+function mbpV4ResolvePlan(t,plans){
+ if(!t||!Array.isArray(plans))return null;
+ if(t.planId!==undefined&&t.planId!==null&&String(t.planId)!=='')
+  return plans.find(p=>String(p.id)===String(t.planId))||null;
+ const clean=x=>String(x||'').trim().toLocaleLowerCase('fr');
+ const name=clean(t.name);
+ if(!name)return null;
+ const matches=plans.filter(p=>clean(p.name)===name&&(!t.cat||clean(p.cat)===clean(t.cat)));
+ return matches.length===1?matches[0]:null;
+}
+function v17BudgetSpent(p){
+ const plans=monthPlans();
+ return data.transactions.filter(t=>t.type==='expense'&&t.date?.startsWith(selectedMonth)&&mbpV4ResolvePlan(t,plans)?.id===p.id).reduce((total,t)=>total+Number(t.amount||0),0);
+}
+function v17EnvelopeBalance(p){const s=mbpV4GoalLedger(p,selectedMonth);return {funded:s.funds.reduce((n,m)=>n+Number(m.amount||0),0),spent:s.spent,remaining:s.remaining}}
 function v17TrackRow(p,mode){const used=v17BudgetSpent(p),left=Number(p.amount)-used,percent=p.amount?Math.max(0,Math.min(100,used/Number(p.amount)*100)):0;return `<div class="tracker"><div class="tracker-top"><b>${escapeHtml(p.name)}</b><b class="${left<0?'negative':'positive'}">${fmt(left)}</b></div><div class="trackbar"><div class="trackfill ${left<0?'over':percent>=85?'warn':''}" style="width:${percent}%"></div></div><small>${fmt(used)} dépensés sur ${fmt(p.amount)} prévus${left<0?' · dépassement':''}</small><div class="tracker-actions"><button class="btn secondary" data-v17expense="${p.id}">+ Dépense</button></div></div>`}
 function v17Render(){if(!data)return;v17Ensure();const variables=monthPlans().filter(p=>p.cat==='Variables');$('variableTracking').innerHTML=variables.map(p=>v17TrackRow(p)).join('')||'<p class="muted">Aucune dépense variable prévue.</p>';const provisions=monthPlans().filter(p=>p.cat==='Provisions');$('envelopeTracking').innerHTML=provisions.map(p=>{const b=v17EnvelopeBalance(p);return `<div class="tracker"><div class="tracker-top"><b>${escapeHtml(p.name)}</b><b class="${b.remaining<0?'negative':'positive'}">${fmt(b.remaining)}</b></div><small>Mis de côté : ${fmt(b.funded)} · Dépensé : ${fmt(b.spent)} · Objectif mensuel : ${fmt(p.amount)}</small><div class="tracker-actions"><button class="btn secondary" data-v17fund="${p.id}">+ Mettre de côté</button><button class="btn secondary" data-v17expense="${p.id}">− Dépenser</button></div></div>`}).join('')||'<p class="muted">Aucune provision prévue.</p>';const groups=V17_GROUPS.map(g=>({g,items:monthPlans().filter(p=>v17Group(p)===g)})).filter(x=>x.items.length);$('categoryTracking').innerHTML=groups.map(({g,items})=>`<div class="tracker"><div class="tracker-top"><b>${escapeHtml(g)}</b><b>${fmt(items.reduce((s,p)=>s+Number(p.amount),0))}</b></div><small>${items.map(p=>escapeHtml(p.name)).join(' · ')}</small></div>`).join('');$('homeTracking').innerHTML=variables.map(p=>{const left=p.amount-v17BudgetSpent(p);return `<div class="tracker"><div class="tracker-top"><span>${escapeHtml(p.name)}</span><b class="${left<0?'negative':'positive'}">${fmt(left)}</b></div></div>`}).join('')+provisions.map(p=>{const b=v17EnvelopeBalance(p);return `<div class="tracker"><div class="tracker-top"><span>🏦 ${escapeHtml(p.name)}</span><b class="${b.remaining<0?'negative':'positive'}">${fmt(b.remaining)}</b></div></div>`}).join('')||'<p class="muted">Ajoute tes budgets pour voir les soldes.</p>';}
 const v17OriginalRender=render;render=function(){v17OriginalRender();v17Render();updateMonthPickers()};
@@ -647,29 +1013,156 @@ const v17OriginalPlanSubmit=$('planform').onsubmit;$('planform').onsubmit=async 
 // Extend edit dialog without changing the original handlers.
 document.addEventListener('click',e=>{const edit=e.target.closest('[data-edit-plan]');if(edit){const p=data?.plans.find(x=>x.id===edit.dataset.editPlan);if(p){$('plangroup').value=p.group||'auto';const r=(data.recurring||[]).find(x=>x.planId===p.id);$('planrecurring').checked=!!r;$('planrecurringday').value=r?.day||5;$('planrecurringdaywrap').classList.toggle('hidden',!r)}}});
 const v17OpenTx=openTx;openTx=function(...args){v17OpenTx(...args);v17FillTxBudgets()};
-function v17FillTxBudgets(){const s=$('txbudget');s.innerHTML='<option value="">Aucune imputation</option>'+monthPlans().filter(p=>['Variables','Revenus','Provisions','Fixes','Impôts','Investissements'].includes(p.cat)).map(p=>`<option value="${p.id}">${escapeHtml(p.name)} (${escapeHtml(p.cat)})</option>`).join('');s.value=''}
-const v17TxSubmit=$('txform').onsubmit;$('txform').onsubmit=async function(e){const chosen=$('txbudget').value,oldId=editingTx;await v17TxSubmit(e);const t=oldId?data.transactions.find(t=>t.id===oldId):data.transactions.at(-1);if(t){if(chosen)t.planId=chosen;else delete t.planId;await save();render()}};
-document.addEventListener('click',e=>{const b=e.target.closest('[data-edit-tx]');if(!b)return;const t=data?.transactions.find(x=>x.id===b.dataset.editTx);if(t){v17FillTxBudgets();$('txbudget').value=t.planId||''}});
-document.addEventListener('click',async e=>{const b=e.target.closest('[data-v17fund],[data-v17expense]');if(!b||!data)return;const id=b.dataset.v17fund||b.dataset.v17expense,p=data.plans.find(p=>p.id===id);if(!p)return;if(b.dataset.v17expense){openTx('expense',p.name,p.cat);$('txbudget').value=p.id;return}const value=await mbpPrompt(`Montant réellement mis de côté pour « ${p.name} » (€) :`,String(p.amount));if(value===null)return;const amount=Number(value.replace(',','.'));if(!Number.isFinite(amount)||amount<=0){alertMsg('Montant invalide');return}const date=await mbpPrompt('Date de la contribution (AAAA-MM-JJ) :',new Date().toLocaleDateString('sv-SE'));if(date===null)return;if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(new Date(date).getTime())){alertMsg('Date invalide');return}v17Ensure();data.envelopeMoves.push({id:uid(),planId:p.id,kind:'fund',amount,date});await save();render();alertMsg('Provision enregistrée (sans modifier tes comptes bancaires).')});
-$('resetEnvelopes').onclick=async()=>{if(!data)return;if(await mbpPrompt('Remettre à zéro les enveloppes à partir du mois sélectionné ? Tape ZERO :')!=='ZERO')return;v17Ensure();data.envelopeStart=selectedMonth;data.envelopeMoves=data.envelopeMoves.filter(x=>x.date.slice(0,7)<selectedMonth);await save();render();alertMsg('Enveloppes remises à zéro pour '+selectedMonth)};
+function v17FillTxBudgets(preserve=false){
+ const s=$('txbudget'),previous=preserve?s.value:'',date=$('txdate').value;
+ const month=/^\d{4}-\d{2}-\d{2}$/.test(date)?date.slice(0,7):selectedMonth;
+ const plans=mbpV4PlansForMonth(month);
+ const type=$('txtype').value;
+ s.innerHTML='<option value="">Aucune imputation</option>'+plans.filter(p=>['Variables','Revenus','Provisions','Fixes','Impôts','Investissements'].includes(p.cat)&&((type==='income')===(p.cat==='Revenus'))).map(p=>`<option value="${escapeHtml(String(p.id))}">${escapeHtml(p.name)} (${escapeHtml(p.cat)})</option>`).join('');
+ s.value=[...s.options].some(o=>o.value===previous)?previous:'';
+}
+$('txdate').addEventListener('change',()=>v17FillTxBudgets(true));
+$('txtype').addEventListener('change',()=>v17FillTxBudgets(true));
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-edit-tx]');if(!b)return;
+ const t=data?.transactions.find(x=>x.id===b.dataset.editTx);
+ if(t){
+  v17FillTxBudgets();
+  const s=$('txbudget'),id=String(t.planId||'');
+  if(id&&!Array.from(s.options).some(o=>o.value===id)){
+   const legacy=new Option('Budget historique (supprimé ou modifié)',id);
+   legacy.dataset.mbpHistorical='true';
+   s.add(legacy);
+  }
+  s.value=id;
+ }
+});
+// V4: a single native iOS contribution sheet (amount and date together).
+const mbpV4ContributionDialog=document.createElement('dialog');
+mbpV4ContributionDialog.id='mbpV4ContributionDialog';
+mbpV4ContributionDialog.setAttribute('aria-labelledby','mbpV4ContributionTitle');
+mbpV4ContributionDialog.innerHTML='<form id="mbpV4ContributionForm"><h2 id="mbpV4ContributionTitle">Mettre de côté</h2><p id="mbpV4ContributionGoal" class="muted"></p><label>Montant (€)<input id="mbpV4ContributionAmount" type="number" inputmode="decimal" min="0.01" step="0.01" required></label><label>Date<input id="mbpV4ContributionDate" type="date" required></label><p id="mbpV4ContributionError" role="alert" class="negative" aria-live="polite"></p><div style="display:flex;gap:10px;margin-top:12px"><button id="mbpV4ContributionCancel" class="btn secondary" type="button" style="flex:1">Annuler</button><button id="mbpV4ContributionSubmit" class="btn" type="submit" style="flex:1">Valider</button></div></form>';
+document.body.append(mbpV4ContributionDialog);
+let mbpV4ContributionPlan=null,mbpV4ContributionBusy=false;
+$('mbpV4ContributionCancel').onclick=()=>{if(!mbpV4ContributionBusy)mbpV4ContributionDialog.close()};
+mbpV4ContributionDialog.addEventListener('close',()=>{mbpV4ContributionPlan=null;$('mbpV4ContributionError').textContent=''});
+mbpV4ContributionDialog.addEventListener('cancel',e=>{if(mbpV4ContributionBusy)e.preventDefault()});
+function mbpV4OpenContribution(p){
+ if(!p||mbpV4ContributionBusy||mbpV4ContributionDialog.open)return;
+ mbpV4ContributionPlan={id:p.id,goalId:p.goalId||'',name:p.name};
+ $('mbpV4ContributionGoal').textContent=p.name;
+ $('mbpV4ContributionAmount').value=Number(p.amount)||'';
+ const today=new Date().getDate(),last=new Date(Number(selectedMonth.slice(0,4)),Number(selectedMonth.slice(5)),0).getDate();
+ $('mbpV4ContributionDate').value=selectedMonth+'-'+String(Math.min(today,last)).padStart(2,'0');
+ $('mbpV4ContributionError').textContent='';
+ mbpV4ContributionDialog.showModal();
+}
+$('mbpV4ContributionForm').onsubmit=async e=>{
+ e.preventDefault();
+ if(!data||mbpV4ContributionBusy||!mbpV4ContributionPlan)return;
+ const p=mbpV4ContributionPlan,amount=Number($('mbpV4ContributionAmount').value),date=$('mbpV4ContributionDate').value;
+ const fail=msg=>{$('mbpV4ContributionError').textContent=msg};
+ if(!$('mbpV4ContributionAmount').value||!Number.isFinite(amount)||amount<=0||
+    Math.abs(amount*100-Math.round(amount*100))>1e-6){fail('Montant invalide : deux décimales maximum.');return}
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||new Date(date+'T12:00:00').toLocaleDateString('sv-SE')!==date){fail('Date invalide.');return}
+ const dated=mbpV4PlansForMonth(date.slice(0,7));
+ const match=dated.find(x=>String(x.id)===String(p.id))||
+  (p.goalId?dated.find(x=>String(x.goalId||'')===String(p.goalId)):null);
+ if(!match||match.cat!=='Provisions'){fail('Provision introuvable pour cette date.');return}
+ mbpV4ContributionBusy=true;
+ $('mbpV4ContributionSubmit').disabled=true;
+ $('mbpV4ContributionCancel').disabled=true;
+ const hadMoves=Array.isArray(data.envelopeMoves),hadStart=Object.prototype.hasOwnProperty.call(data,'envelopeStart');
+ v17Ensure();
+ const move={id:uid(),planId:match.id,goalId:match.goalId||p.goalId,kind:'fund',amount:Math.round(amount*100)/100,date};
+ data.envelopeMoves.push(move);
+ try{
+  await save();
+  mbpV4ContributionDialog.close();render();alertMsg('Provision enregistrée (sans modifier tes comptes bancaires).');
+ }catch(err){
+  data.envelopeMoves=data.envelopeMoves.filter(x=>x.id!==move.id);
+  if(!hadMoves)delete data.envelopeMoves;
+  if(!hadStart)delete data.envelopeStart;
+  fail('Enregistrement impossible : la contribution n’a pas été conservée.');
+ }finally{
+  mbpV4ContributionBusy=false;
+  $('mbpV4ContributionSubmit').disabled=false;
+  $('mbpV4ContributionCancel').disabled=false;
+ }
+};
+document.addEventListener('click',async e=>{
+ const b=e.target.closest('[data-v17fund],[data-v17expense]');
+ if(!b||!data)return;
+ const id=b.dataset.v17fund||b.dataset.v17expense;
+ const p=monthPlans().find(p=>String(p.id)===String(id));
+ if(!p)return;
+ if(b.dataset.v17expense){
+  openTx('expense',p.name,p.cat);
+  // Use a real calendar day in the selected month.
+  const d=new Date().getDate(),last=new Date(Number(selectedMonth.slice(0,4)),Number(selectedMonth.slice(5)),0).getDate();
+  $('txdate').value=selectedMonth+'-'+String(Math.min(d,last)).padStart(2,'0');
+  v17FillTxBudgets();
+  $('txbudget').value=String(p.id);
+  return;
+ }
+ mbpV4OpenContribution(p);
+});
+$('resetEnvelopes').onclick=async()=>{
+ if(!data)return;
+ if(await mbpPrompt('Remettre à zéro les enveloppes à partir du mois sélectionné ? Tape ZERO :')!=='ZERO')return;
+ v17Ensure();
+ const priorStart=data.envelopeStart,priorMoves=data.envelopeMoves.slice();
+ data.envelopeStart=selectedMonth;
+ data.envelopeMoves=data.envelopeMoves.filter(x=>x.date?.slice(0,7)<selectedMonth);
+ try{await save();render();alertMsg('Enveloppes remises à zéro pour '+selectedMonth)}
+ catch(err){data.envelopeStart=priorStart;data.envelopeMoves=priorMoves;alertMsg('Réinitialisation impossible : mouvements conservés.')}
+};
 // Re-link matching existing transactions to recurring templates only when explicitly chosen.
 
 // v2.0: month-scoped plan editing, no changes to older months.
 $('budgetmonth').onchange=e=>{selectedMonth=e.target.value;render()};
+let mbpV4PlanSubmitting=false;
 $('planform').onsubmit=async e=>{
  e.preventDefault();
- const p={id:editingPlan||uid(),name:$('planname').value.trim(),amount:Number($('planamount').value),cat:$('plancat').value,group:$('plangroup').value};
- if(!p.name||!Number.isFinite(p.amount)||p.amount<0)return;
- const plans=monthPlans().map(x=>({...x}));const i=plans.findIndex(x=>x.id===editingPlan);if(i>=0&&plans[i].goalId)p.goalId=plans[i].goalId;else if(['Provisions','Investissements'].includes(p.cat))p.goalId='goal:'+p.id;
- if(i>=0)plans[i]=p;else plans.push(p);
- saveMonthPlans(plans);
- if($('planrecurring').checked&&p.cat!=='Revenus'){
-  if(!Array.isArray(data.recurring))data.recurring=[];
-  let r=data.recurring.find(r=>r.planId===p.id);
-  if(!r){r={id:uid(),planId:p.id};data.recurring.push(r)}
-  Object.assign(r,{name:p.name,amount:Number(p.amount),cat:p.cat,day:Number($('planrecurringday').value)||5});
+ if(!data||mbpV4PlanSubmitting)return;
+ const name=$('planname').value.trim(),amount=Number($('planamount').value),cat=$('plancat').value;
+ const group=$('plangroup').value,recurring=$('planrecurring').checked,day=Number($('planrecurringday').value);
+ if(!name||!Number.isFinite(amount)||amount<0){
+  alertMsg('Vérifie le nom et le montant du budget.');return;
  }
- editingPlan=null;await save();$('planform').reset();$('plandialog').close();render();
+ if(recurring&&cat!=='Revenus'&&(!Number.isInteger(day)||day<1||day>31)){
+  alertMsg('Le jour de récurrence doit être compris entre 1 et 31.');return;
+ }
+ const previousPlans=monthPlans().map(p=>({...p}));
+ const hadMonthOverride=selectedMonth==='2026-11'||Object.prototype.hasOwnProperty.call(data.monthBudgets||{},selectedMonth);
+ const previousRecurring=Array.isArray(data.recurring)?data.recurring.map(r=>({...r})):null;
+ const plans=previousPlans.map(p=>({...p}));
+ const id=editingPlan||uid();
+ const i=plans.findIndex(p=>String(p.id)===String(id));
+ const old=i>=0?plans[i]:null;
+ const p={...(old||{}),id,name,amount,cat,group};
+ if(['Provisions','Investissements'].includes(cat))p.goalId=p.goalId||'goal:'+id;
+ else delete p.goalId;
+ if(i>=0)plans[i]=p;else plans.push(p);
+ mbpV4PlanSubmitting=true;
+ saveMonthPlans(plans);
+ if(recurring&&cat!=='Revenus'){
+  if(!Array.isArray(data.recurring))data.recurring=[];
+  let r=data.recurring.find(r=>String(r.planId)===String(id));
+  if(!r){r={id:uid(),planId:id};data.recurring.push(r)}
+  Object.assign(r,{name,amount,cat,day});
+ }
+ try{
+  await save();
+ }catch(err){
+  if(hadMonthOverride)saveMonthPlans(previousPlans);
+  else if(data.monthBudgets)delete data.monthBudgets[selectedMonth];
+  if(previousRecurring===null)delete data.recurring;
+  else data.recurring=previousRecurring;
+  alertMsg('Sauvegarde impossible : modifications du budget annulées.');return;
+ }finally{mbpV4PlanSubmitting=false;}
+ editingPlan=null;
+ $('planform').reset();$('plandialog').close();render();
 };
 document.addEventListener('click',async e=>{
  const edit=e.target.closest('[data-edit-plan]'),del=e.target.closest('[data-delete-plan]');
@@ -677,9 +1170,20 @@ document.addEventListener('click',async e=>{
  e.stopImmediatePropagation();e.preventDefault();
  const id=edit?.dataset.editPlan||del.dataset.deletePlan;
  const p=monthPlans().find(p=>p.id===id);if(!p)return;
- if(del){if(!await mbpConfirm('Supprimer cette ligne uniquement pour le mois sélectionné ?'))return;
-  saveMonthPlans(monthPlans().filter(p=>p.id!==id).map(p=>({...p})));
-  await save();render();return;
+ if(del){
+  if(!await mbpConfirm('Supprimer cette ligne uniquement pour le mois sélectionné ?'))return;
+  const month=selectedMonth;
+  const before=monthPlans().map(p=>({...p}));
+  const hadOverride=month==='2026-11'||Object.prototype.hasOwnProperty.call(data.monthBudgets||{},month);
+  if(!before.some(p=>String(p.id)===String(id)))return;
+  saveMonthPlans(before.filter(p=>String(p.id)!==String(id)));
+  try{await save();render();}
+  catch(err){
+   if(hadOverride)saveMonthPlans(before);
+   else if(data.monthBudgets)delete data.monthBudgets[month];
+   alertMsg('Suppression impossible : budget conservé.');
+  }
+  return;
  }
  editingPlan=p.id;$('planname').value=p.name;$('planamount').value=p.amount;
  $('plancat').value=p.cat;$('plangroup').value=p.group||'auto';
@@ -744,18 +1248,24 @@ function paymentItems(){
   const legacy=rec.filter(x=>!x.planId&&String(x.name||'').trim().toLocaleLowerCase('fr')===key);
   const planCount=plans.filter(x=>String(x.name||'').trim().toLocaleLowerCase('fr')===key).length;
   const r=rec.find(x=>x.planId&&x.planId===p.id)||(legacy.length===1&&planCount===1?legacy[0]:null);
-  const match=data.transactions.find(t=>t.date?.startsWith(selectedMonth)&&t.type==='expense'&&(
-    (t.planId&&t.planId===p.id)||(r&&t.recurringId&&t.recurringId===r.id)
-  ));
-  return {p,r,match,day:r?.day||null};
+  const activePlans=monthPlans();
+  const matched=data.transactions.filter(t=>{
+    if(t.date?.slice(0,7)!==selectedMonth||t.type!=='expense')return false;
+    const resolved=mbpV4ResolvePlan(t,activePlans);
+    if(resolved)return String(resolved.id)===String(p.id);
+    if(t.planId!==undefined&&t.planId!==null&&String(t.planId)!=='')return false;
+    return !!(r&&t.recurringId&&String(t.recurringId)===String(r.id));
+  });
+  const actual=matched.reduce((total,t)=>total+Math.round(Number(t.amount||0)*100),0)/100;
+  return {p,r,match:matched[0]||null,matched,actual,day:r?.day||null};
  }).sort((a,b)=>(a.day||99)-(b.day||99));
 }
 function renderPayments(){
  const list=paymentItems();
- const paid=list.filter(x=>x.match).reduce((s,x)=>s+Number(x.p.amount),0);
+ const paid=list.reduce((s,x)=>s+x.actual,0);
  const due=list.filter(x=>!x.match).reduce((s,x)=>s+Number(x.p.amount),0);
  const el=document.getElementById('paymentlist');
- if(el)el.innerHTML=`<div class="row"><span>Déjà enregistré</span><b>${fmt(paid)}</b></div><div class="row"><span>Encore prévu</span><b>${fmt(due)}</b></div>`+list.map(({p,r,match,day})=>`<div class="row"><div><b>${escapeHtml(p.name)}</b><div class="muted">${day?'Le '+day+' du mois':'Date non renseignée'} · ${match?'✓ Payé':'À payer'}</div></div><div class="right"><b>${fmt(p.amount)}</b>${!match?`<div><button class="btn secondary smallbtn" data-pay-plan="${p.id}">Marquer payé</button></div>`:''}</div></div>`).join('')||'<p class="muted">Aucune charge fixe ou impôt prévu.</p>';
+ if(el)el.innerHTML=`<div class="row"><span>Déjà enregistré (montants réels)</span><b>${fmt(paid)}</b></div><div class="row"><span>Encore prévu</span><b>${fmt(due)}</b></div>`+list.map(({p,r,match,day,actual})=>`<div class="row"><div><b>${escapeHtml(p.name)}</b><div class="muted">${day?'Le '+day+' du mois':'Date non renseignée'} · ${match?'✓ Payé':'À payer'}</div></div><div class="right"><b>${fmt(match?actual:Number(p.amount))}</b>${!match?`<div><button class="btn secondary smallbtn" data-pay-plan="${p.id}">Marquer payé</button></div>`:''}</div></div>`).join('')||'<p class="muted">Aucune charge fixe ou impôt prévu.</p>';
  const cash=document.getElementById('cashflowview');if(!cash)return;
  const tx=data.transactions.filter(t=>t.date?.startsWith(selectedMonth));
  const income=tx.filter(t=>t.type==='income'&&!t.nonCash).reduce((s,t)=>s+Number(t.amount),0);
@@ -763,7 +1273,12 @@ function renderPayments(){
  const plannedIncome=monthPlans().filter(p=>p.cat==='Revenus'&&!/ticket.?resto|titre.?resto/i.test(p.name)).reduce((s,p)=>s+Number(p.amount),0);
  const unpaidIncome=Math.max(0,plannedIncome-income);
  const pendingFixed=due;
- const variableRemaining=monthPlans().filter(p=>p.cat==='Variables').reduce((s,p)=>s+Number(p.amount),0)-tx.filter(t=>t.type==='expense'&&t.cat==='Variables').reduce((s,t)=>s+Number(t.amount),0);
+ const activePlans=monthPlans();
+ const variableRemaining=activePlans.filter(p=>p.cat==='Variables').reduce((s,p)=>s+Number(p.amount),0)-tx.filter(t=>{
+  if(t.type!=='expense')return false;
+  const p=mbpV4ResolvePlan(t,activePlans);
+  return p?p.cat==='Variables':t.cat==='Variables';
+ }).reduce((s,t)=>s+Number(t.amount),0);
  const provisions=monthPlans().filter(p=>['Provisions','Investissements'].includes(p.cat)).reduce((s,p)=>s+Number(p.amount),0);
  const estimate=income+unpaidIncome-expenses-pendingFixed-Math.max(0,variableRemaining)-provisions;
  cash.innerHTML=`<div class="amount" style="font-size:30px">${fmt(estimate)}</div><div class="muted">Projection après charges et budgets restants</div><div class="row"><span>Revenus saisis</span><b>${fmt(income)}</b></div><div class="row"><span>Revenus attendus (estimés)</span><b>${fmt(unpaidIncome)}</b></div><div class="row"><span>Dépenses enregistrées</span><b>${fmt(expenses)}</b></div><div class="row"><span>Charges non payées</span><b>${fmt(pendingFixed)}</b></div><div class="row"><span>Budgets variables non consommés</span><b>${fmt(Math.max(0,variableRemaining))}</b></div><div class="row"><span>Provisions et investissements prévus</span><b>${fmt(provisions)}</b></div>`;
@@ -776,8 +1291,11 @@ document.addEventListener('click',async e=>{
  const date=selectedMonth+'-'+d;
  if(!await mbpConfirm(`Confirmer le paiement de « ${p.name} » (${fmt(p.amount)}) le ${date} ?\n\nSi la date ou le montant diffère, utilise plutôt « Ajouter » dans Opérations.`))return;
  if(paymentItems().find(x=>x.p.id===p.id)?.match)return;
- data.transactions.push({id:uid(),type:'expense',name:p.name,amount:Number(p.amount),cat:p.cat,date,planId:p.id,...(entry.r?{recurringId:entry.r.id}:{})});
- await save();render();alertMsg('Paiement enregistré une seule fois.');
+ const payment={id:uid(),type:'expense',name:p.name,amount:Number(p.amount),cat:p.cat,date,planId:p.id,...(entry.r?{recurringId:entry.r.id}:{})};
+ data.transactions.push(payment);
+ try{await save();render();alertMsg('Paiement enregistré une seule fois.')}
+ catch(err){data.transactions=data.transactions.filter(t=>t.id!==payment.id);alertMsg('Enregistrement impossible : paiement non conservé.')}
+
 });
 
 // v2.1 — Ne change ni le format des données ni les clés de chiffrement.
@@ -809,7 +1327,7 @@ document.addEventListener('click',async e=>{
   // Une opération manuelle rattachée à une charge fixe remplace sa prévision, elle ne s'y ajoute pas.
   const matchedFixed=new Set();let extraFixed=0,spentVariable=0,extraExpenses=0;
   for(const t of tx.filter(t=>t.type==='expense')){
-   const p=plans.find(p=>p.id===t.planId)||plans.find(p=>p.name?.trim().toLowerCase()===t.name?.trim().toLowerCase());
+   const p=mbpV4ResolvePlan(t,plans);
    if(p&&['Fixes','Impôts'].includes(p.cat)){
     if(!matchedFixed.has(p.id)){extraFixed-=Number(p.amount);matchedFixed.add(p.id)}extraFixed+=Number(t.amount);
    }else if(p?.cat==='Variables'||t.cat==='Variables')spentVariable+=Number(t.amount);
@@ -817,7 +1335,8 @@ document.addEventListener('click',async e=>{
     // Les mouvements de provision/épargne ne sont pas des achats supplémentaires au budget réservé.
    }else extraExpenses+=Number(t.amount);
   }
-  const cashBefore=cashIncome-fixed-extraFixed-variable-extraExpenses;
+  // Planned variable spending is already reserved; only the excess over budget reduces the forecast further.
+  const cashBefore=cashIncome-fixed-extraFixed-Math.max(variable,spentVariable)-extraExpenses;
   const cashAfter=cashBefore-savings;
   const remainingVariable=Math.max(0,variable-spentVariable);
   const line=(label,value)=>`<div class="v21-line"><span>${safe(label)}</span><b>${fmt(value)}</b></div>`;
@@ -999,9 +1518,16 @@ document.addEventListener('click',async e=>{
    const inc=sum(plans.filter(p=>p.cat==='Revenus'&&!/ticket.?resto|titre.?resto/i.test(p.name)));
    const fixed=sum(plans.filter(p=>['Fixes','Impôts'].includes(p.cat))),variable=sum(plans.filter(p=>p.cat==='Variables')),savings=sum(plans.filter(p=>['Provisions','Investissements'].includes(p.cat)));
    forecastIncome+=inc;forecastOut+=fixed+variable+savings;
-   const earned=sum(tx.filter(t=>t.type==='income'&&!t.nonCash));const variableSpent=sum(tx.filter(t=>t.type==='expense'&&(t.cat==='Variables'||plans.some(p=>p.cat==='Variables'&&p.id===t.planId))));
-   const fixedEntries=tx.filter(t=>t.type==='expense'&&plans.some(p=>['Fixes','Impôts'].includes(p.cat)&&(p.id===t.planId||p.name?.trim().toLowerCase()===t.name?.trim().toLowerCase())));
-   const fixedIds=new Set(fixedEntries.map(t=>t.id));const other=sum(tx.filter(t=>t.type==='expense'&&!fixedIds.has(t.id)&&t.cat!=='Variables'&&!plans.some(p=>p.cat==='Variables'&&p.id===t.planId)&&!['Provisions','Investissements'].includes(t.cat)));
+   const earned=sum(tx.filter(t=>t.type==='income'&&!t.nonCash));
+   // Each transaction is resolved once. An explicit planId always overrides a label/category guess.
+   const classified=tx.filter(t=>t.type==='expense').map(t=>{
+    const p=mbpV4ResolvePlan(t,plans);
+    const category=p?.cat||(t.planId?'Hors budget':t.cat);
+    return {t,category};
+   });
+   const variableSpent=sum(classified.filter(x=>x.category==='Variables').map(x=>x.t));
+   const fixedEntries=classified.filter(x=>['Fixes','Impôts'].includes(x.category)).map(x=>x.t);
+   const other=sum(classified.filter(x=>!['Fixes','Impôts','Variables','Provisions','Investissements'].includes(x.category)).map(x=>x.t));
    if(m<=now){realIncome+=earned;realVariable+=variableSpent;realOther+=other;realFixed+=sum(fixedEntries)}
    rows.push({m,forecast:inc-fixed-variable-savings,actual:earned-variableSpent-other-sum(fixedEntries),future:m>now});
   }
@@ -1520,8 +2046,8 @@ const monthLabel=m=>new Date(m+'-02T12:00:00').toLocaleDateString('fr-FR',{month
 const monthsDelta=(m,n)=>{const d=new Date(m+'-02T12:00:00');d.setMonth(d.getMonth()+n);return d.toLocaleDateString('sv-SE').slice(0,7)};
 const plansFor=m=>{const before=selectedMonth;try{selectedMonth=m;return monthPlans().slice()}finally{selectedMonth=before}};
 const monthlyTasks=m=>plansFor(m).filter(p=>['Provisions','Investissements'].includes(p.cat)&&Number(p.amount)>0);
-const movesFor=(p,m)=>Array.isArray(data.envelopeMoves)?data.envelopeMoves.filter(x=>x.planId===p.id&&x.kind==='fund'&&x.date?.slice(0,7)===m):[];
-function target(p,m){return sum(movesFor(p,m))}
+const movesFor=(p,m)=>mbpV4GoalLedger(p,m).funds.filter(x=>x.date?.slice(0,7)===m);
+function target(p,m){return mbpV4GoalLedger(p,m).month}
 function addMonthTaskPanel(){const add=by('add');if(!add)return;const t=document.createElement('section');t.id='v32tasks';t.className='v32-card';add.append(t);const r=document.createElement('section');r.id='v32recent';r.className='v32-card';add.append(r)}
 addMonthTaskPanel();
 // Hide category budget until a deliberate category tap. Render does not reopen it.
@@ -1533,9 +2059,44 @@ by('v24income')?.addEventListener('click',()=>catPanel?.classList.remove('v32-se
 const recent=by('v32recent');recent.addEventListener('click',e=>{const b=e.target.closest('[data-v32edit],[data-v32delete]');if(!b)return;const id=b.dataset.v32edit||b.dataset.v32delete;const original=[...document.querySelectorAll(b.dataset.v32edit?'[data-edit-tx]':'[data-delete-tx]')].find(x=>(b.dataset.v32edit?x.dataset.editTx:x.dataset.deleteTx)===id);if(original)original.click()});
 // Confirm a real transfer into the encrypted envelope movement ledger (never a consumption transaction).
 const dlg=document.createElement('dialog');dlg.id='v32taskdialog';dlg.innerHTML='<h2 id="v32tasktitle">Enregistrer une contribution</h2><p class="v32-muted" id="v32taskstatus"></p><form id="v32taskform"><label>Montant de la contribution (€)<input id="v32taskamount" type="number" inputmode="decimal" min="0.01" step="0.01" required></label><label>Date de la contribution<input id="v32taskdate" type="date" required></label><div class="actions"><button class="btn secondary" type="button" id="v32taskcancel">Annuler</button><button class="btn" type="submit">Confirmer</button></div></form>';document.body.append(dlg);
-let taskId=null;by('v32taskcancel').onclick=()=>dlg.close();
+let taskId=null,mbpV4TaskSubmitting=false;by('v32taskcancel').onclick=()=>{if(!mbpV4TaskSubmitting)dlg.close()};
+dlg.addEventListener('cancel',e=>{if(mbpV4TaskSubmitting)e.preventDefault()});
 by('v32tasks').addEventListener('click',e=>{const b=e.target.closest('[data-v32task]');if(!b||!data)return;const p=monthlyTasks(currentMonth()).find(x=>x.id===b.dataset.v32task);if(!p)return;taskId=p.id;const left=Math.max(.01,Number(p.amount)-target(p,currentMonth()));by('v32tasktitle').textContent='Contribution · '+p.name;by('v32taskstatus').textContent='Tu peux confirmer un montant partiel. Il sera conservé dans le cumul annuel.';by('v32taskamount').value=left.toFixed(2);by('v32taskdate').value=today();dlg.showModal()});
-by('v32taskform').onsubmit=async e=>{e.preventDefault();if(!data||!taskId)return;const amount=Number(by('v32taskamount').value),date=by('v32taskdate').value;if(!Number.isFinite(amount)||amount<=0||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(date)){by('v32taskstatus').textContent='Montant ou date invalide.';return}const p=data.plans.find(x=>x.id===taskId);if(!p)return;if(!Array.isArray(data.envelopeMoves))data.envelopeMoves=[];const entry={id:uid(),planId:taskId,kind:'fund',amount,date};data.envelopeMoves.push(entry);try{await save();dlg.close();render();alertMsg('Contribution confirmée et enregistrée une seule fois.')}catch(err){data.envelopeMoves=data.envelopeMoves.filter(x=>x!==entry);by('v32taskstatus').textContent='Erreur de sauvegarde : réessaie.'}};
+by('v32taskform').onsubmit=async e=>{
+ e.preventDefault();
+ if(!data||!taskId||mbpV4TaskSubmitting)return;
+ const value=by('v32taskamount').value,date=by('v32taskdate').value,amount=Number(value);
+ const invalidDate=!/^\d{4}-\d{2}-\d{2}$/.test(date)||new Date(date+'T12:00:00').toLocaleDateString('sv-SE')!==date;
+ if(value===''||!Number.isFinite(amount)||amount<=0||Math.abs(amount*100-Math.round(amount*100))>1e-6||invalidDate){
+  by('v32taskstatus').textContent='Montant ou date invalide (deux décimales maximum).';return;
+ }
+ const origin=monthlyTasks(currentMonth()).find(x=>String(x.id)===String(taskId));
+ if(!origin){by('v32taskstatus').textContent='Objectif introuvable : sélectionne-le à nouveau.';return}
+ const dated=mbpV4PlansForMonth(date.slice(0,7));
+ const plan=dated.find(x=>String(x.id)===String(origin.id))||
+  (origin.goalId?dated.find(x=>String(x.goalId||'')===String(origin.goalId)):null);
+ if(!plan||!['Provisions','Investissements'].includes(plan.cat)){
+  by('v32taskstatus').textContent='Objectif indisponible pour cette date.';return;
+ }
+ mbpV4TaskSubmitting=true;
+ const submit=by('v32taskform').querySelector('[type="submit"]');
+ if(submit)submit.disabled=true;
+ const hadMoves=Array.isArray(data.envelopeMoves),hadStart=Object.prototype.hasOwnProperty.call(data,'envelopeStart');
+ if(!hadMoves)data.envelopeMoves=[];
+ if(!data.envelopeStart)data.envelopeStart='2026-11';
+ const entry={id:uid(),planId:plan.id,...(plan.goalId?{goalId:plan.goalId}:{}),kind:'fund',amount:Math.round(amount*100)/100,date};
+ data.envelopeMoves.push(entry);
+ try{await save();dlg.close();render();alertMsg('Contribution confirmée et enregistrée une seule fois.')}
+ catch(err){
+  data.envelopeMoves=data.envelopeMoves.filter(x=>x.id!==entry.id);
+  if(!hadMoves)delete data.envelopeMoves;
+  if(!hadStart)delete data.envelopeStart;
+  by('v32taskstatus').textContent='Erreur de sauvegarde : réessaie.';
+ }finally{
+  mbpV4TaskSubmitting=false;
+  if(submit)submit.disabled=false;
+ }
+};
 // Remove redundant actions from settings without removing configuration or encrypted data.
 const profile=by('v30profile');profile?.querySelectorAll('[data-v17fund],[data-v17expense]').forEach(b=>b.style.display='none');
 const monthnav=document.createElement('section');monthnav.id='v32monthnav';monthnav.className='v32-card';monthnav.innerHTML='<div class="v32-monthrow"><button id="v32prev" aria-label="Mois précédent">‹</button><strong id="v32monthtitle"></strong><button id="v32next" aria-label="Mois suivant">›</button></div>';
@@ -1921,7 +2482,7 @@ const dlg=document.createElement('dialog');dlg.id='mbp-ui-dialog';dlg.setAttribu
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let resolveActive=null,activeField=null;
 function finish(value){if(dlg.open)dlg.close();const f=resolveActive;resolveActive=null;activeField=null;if(f)f(value)}
-function show(html){if(dlg.open){finish(null)}dlg.innerHTML=html;dlg.showModal();return new Promise(resolve=>{resolveActive=resolve})}
+function show(html){if(dlg.open){finish(null)}dlg.innerHTML=html;const heading=dlg.querySelector('.mbpu-title');if(heading)heading.tabIndex=-1;dlg.showModal();if(heading)heading.focus({preventScroll:true});return new Promise(resolve=>{resolveActive=resolve})}
 dlg.addEventListener('cancel',e=>{e.preventDefault();finish(null)});
 const actions=(primary='Valider',cancel='Annuler')=>`<div class="mbpu-actions"><button type="button" data-act="cancel">${esc(cancel)}</button><button type="button" class="mbpu-primary" data-act="accept">${esc(primary)}</button></div>`;
 window.mbpConfirm=async message=>{
@@ -2864,24 +3425,17 @@ const findPlan=id=>plansAt(now().slice(0,7)).find(p=>p.id===id)||data?.plans.fin
 const goalDialog=document.createElement('dialog');goalDialog.id='mbp36goaldialog';document.body.append(goalDialog);
 let activeGoal=null;
 const goalsFor=m=>plansAt(m).filter(p=>['Provisions','Investissements'].includes(p.cat));
-const goalMoves=(p,until)=>Array.isArray(data?.envelopeMoves)?data.envelopeMoves.filter(v=>(v.goalId&&p.goalId?v.goalId===p.goalId:v.planId===p.id)&&v.date?.slice(0,7)<=until&&v.kind==='fund'):[];
-const paidMonth=(p,m)=>goalMoves(p,m).filter(v=>v.date?.slice(0,7)===m).reduce((n,v)=>n+Number(v.amount||0),0);
+const goalMoves=(p,until)=>mbpV4GoalLedger(p,until).funds;
+const paidMonth=(p,m)=>mbpV4GoalLedger(p,m).month;
 const isInvestment=p=>p.cat==='Investissements';
-function balance(p,m){
- const start=data.envelopeStart||'2026-11',funded=goalMoves(p,m).filter(v=>v.date.slice(0,7)>=start).reduce((a,v)=>a+Number(v.amount),0);
- const match=x=>x.goalId&&p.goalId?x.goalId===p.goalId:String(x.planId)===String(p.id);
- const transfers=(data.envelopeMoves||[]).filter(v=>match(v)&&v.date?.slice(0,7)>=start&&v.date?.slice(0,7)<=m);
- const netTransfers=transfers.reduce((a,v)=>a+(v.kind==='transfer-in'?Number(v.amount):v.kind==='transfer-out'?-Number(v.amount):v.kind==='use'?-Number(v.amount):0),0);
- const spent=(data.transactions||[]).filter(t=>t.type==='expense'&&(t.goalId&&p.goalId?t.goalId===p.goalId:t.planId===p.id)&&t.date?.slice(0,7)>=start&&t.date?.slice(0,7)<=m).reduce((a,t)=>a+Number(t.amount),0);
- return{funded,spent,transfers,remaining:Math.round((funded-spent+netTransfers)*100)/100};
-}
+function balance(p,m){const s=mbpV4GoalLedger(p,m);return {funded:s.funds.reduce((n,e)=>n+Number(e.amount||0),0),spent:s.spent,transfers:s.transfers,remaining:s.remaining}}
 function drawGoals(){if(!data||!q('v32tasks'))return;
  const m=now().slice(0,7),goals=goalsFor(m),done=goals.filter(p=>paidMonth(p,m)>=Number(p.amount)),todo=goals.filter(p=>paidMonth(p,m)<Number(p.amount));
  const row=(p,complete)=>{const amount=paidMonth(p,m),goal=Number(p.amount),pct=goal?Math.min(100,Math.max(0,amount/goal*100)):0;return `<div class="v36-goal mbp372-goal"><button type="button" class="v36-goal-main" data-v36detail="${esc(p.id)}" aria-label="Consulter ${esc(p.name)} et ses actions"><span class="mbp372-goal-content"><strong>${esc(p.name)}</strong><p>${euros(amount)} / ${euros(goal)} · ${complete?'Objectif atteint':'Reste '+euros(Math.max(0,goal-amount))}</p><div class="v32-track"><div class="v32-fill ${complete?'v36-complete':''}" style="width:${pct}%"></div></div></span>${complete?'<span class="v36-check" aria-hidden="true">✓</span>':''}<span class="mbp372-goal-arrow" aria-hidden="true">›</span></button></div>`};
  const wealthWidget=q('v33wealthtask');q('v32tasks').innerHTML=`<div class="v32-head"><h2>Mes tâches du mois</h2><span class="v32-muted">${new Date(m+'-02T12:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</span></div><p class="v32-sub">${done.length} / ${goals.length} objectifs atteints</p>${todo.map(p=>row(p,false)).join('')}${done.length?`<details class="v36-done" style="margin-top:10px"><summary class="v32-muted">✓ Effectuées (${done.length})</summary>${done.map(p=>row(p,true)).join('')}</details>`:''}${goals.length?'':'<p class="v32-muted">Aucun objectif pour ce mois.</p>'}`;if(wealthWidget)q('v32tasks').append(wealthWidget);
 }
-function showGoal(id){if(!data)return;const p=goalsFor(now().slice(0,7)).find(x=>x.id===id)||findPlan(id);if(!p)return;activeGoal=p.id;const m=now().slice(0,7),deposited=paidMonth(p,m),b=balance(p,m),history=goalMoves(p,m).sort((a,b)=>b.date.localeCompare(a.date)),expenses=data.transactions.filter(t=>t.type==='expense'&&t.planId===p.id&&t.date?.slice(0,7)<=m).sort((a,b)=>b.date.localeCompare(a.date));
- goalDialog.innerHTML=`<h2>${esc(p.name)}</h2><p class="muted" style="font-size:12px;margin:0">${isInvestment(p)?'Suivi des versements investis':'Provision cumulée'} · ${new Date(m+'-02T12:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</p><div class="v36-goalmetrics"><div><span>Objectif du mois</span><b>${euros(p.amount)}</b></div><div><span>Versé ce mois</span><b>${euros(deposited)}</b></div><div><span>Cumul des versements</span><b>${euros(b.funded)}</b></div><div><span>${isInvestment(p)?'Versements nets suivis':'Solde disponible'}</span><b>${euros(b.remaining)}</b></div></div><div class="v36-goalactions"><button type="button" class="btn" data-v36action="add">+ Versement</button>${isInvestment(p)?'<button type="button" class="btn secondary" data-v36action="investment">Mouvements</button>':'<button type="button" class="btn secondary" data-v36action="spend">Utiliser</button>'}</div><h3 style="font-size:14px;margin:18px 0 4px">Historique</h3><div class="v36-history">${[...history.map(x=>({date:x.date,name:'Versement',value:x.amount,sign:1})),...expenses.map(x=>({date:x.date,name:x.name,value:x.amount,sign:-1}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20).map(x=>`<div><span>${new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})} · ${esc(x.name)}</span><b style="color:${x.sign>0?'#57cfae':'#f1a6ae'}">${x.sign>0?'+':'−'}${euros(x.value)}</b></div>`).join('')||'<p class="muted">Aucun mouvement enregistré.</p>'}</div><button type="button" class="btn secondary v36-close" data-v36action="close">Fermer</button>`;
+function showGoal(id){if(!data)return;const p=goalsFor(now().slice(0,7)).find(x=>x.id===id)||findPlan(id);if(!p)return;goalDialog.dataset.mbpV4GoalId=String(p.id);activeGoal=p.id;const m=now().slice(0,7),ledger=mbpV4GoalLedger(p,m),deposited=ledger.month,b=balance(p,m),history=ledger.funds.slice(),expenses=ledger.expenses.slice(),transfers=ledger.transfers.slice();
+ goalDialog.innerHTML=`<h2>${esc(p.name)}</h2><p class="muted" style="font-size:12px;margin:0">${isInvestment(p)?'Suivi des versements investis':'Provision cumulée'} · ${new Date(m+'-02T12:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</p><div class="v36-goalmetrics"><div><span>Objectif du mois</span><b>${euros(p.amount)}</b></div><div><span>Versé ce mois</span><b>${euros(deposited)}</b></div><div><span>Cumul des versements</span><b>${euros(b.funded)}</b></div><div><span>${isInvestment(p)?'Versements nets suivis':'Solde disponible'}</span><b>${euros(b.remaining)}</b></div></div><div class="v36-goalactions"><button type="button" class="btn" data-v36action="add">+ Versement</button>${isInvestment(p)?'<button type="button" class="btn secondary" data-v36action="investment">Mouvements</button>':'<button type="button" class="btn secondary" data-v36action="spend">Utiliser</button>'}</div><h3 style="font-size:14px;margin:18px 0 4px">Historique</h3><div class="v36-history">${[...history.map(x=>({date:x.date,name:'Versement',value:x.amount,sign:1})),...expenses.map(x=>({date:x.date,name:x.name||'Dépense',value:x.amount,sign:-1})),...transfers.map(x=>({date:x.date,name:x.kind==='transfer-in'?'Transfert reçu':x.kind==='transfer-out'?'Transfert envoyé':x.kind==='withdraw'?'Retrait':'Utilisation',value:x.amount,sign:x.kind==='transfer-in'?1:-1}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20).map(x=>`<div><span>${new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})} · ${esc(x.name)}</span><b style="color:${x.sign>0?'#57cfae':'#f1a6ae'}">${x.sign>0?'+':'−'}${euros(x.value)}</b></div>`).join('')||'<p class="muted">Aucun mouvement enregistré.</p>'}</div><button type="button" class="btn secondary v36-close" data-v36action="close">Fermer</button>`;
  goalDialog.showModal();
 }
 function openGoalContribution(id){
@@ -2913,13 +3467,54 @@ const renderExtra=()=>{if(!configDialog?.open||!q('v31shortcutform')||q('v36shor
 };
 configDialog&&new MutationObserver(renderExtra).observe(configDialog,{childList:true,subtree:false});
 // Directly open the existing edit form when tapping a recent transaction: no intermediate action sheet.
-q('v32recent')?.addEventListener('click',e=>{const row=e.target.closest('[data-mb35tx]');if(!row||!data)return;e.preventDefault();e.stopImmediatePropagation();const id=row.dataset.mb35tx;const b=[...document.querySelectorAll('#txlist [data-edit-tx]')].find(x=>x.dataset.editTx===id);b?.click();},true);
+q('v32recent')?.addEventListener('click',e=>{
+ const row=e.target.closest('[data-mb35tx]');if(!row||!data)return;
+ e.preventDefault();e.stopImmediatePropagation();
+ const tx=data.transactions.find(t=>String(t.id)===String(row.dataset.mb35tx));
+ if(!tx)return;
+ const month=tx.date?.slice(0,7);
+ if(month&&selectedMonth!==month){selectedMonth=month;render();}
+ const button=[...document.querySelectorAll('#txlist [data-edit-tx]')]
+  .find(x=>String(x.dataset.editTx)===String(tx.id));
+ if(button)button.click();else alertMsg('Impossible d’ouvrir cette opération depuis le mois sélectionné.');
+},true);
 // The delete action belongs to the actual operation editor, with existing confirmation.
-const txDialog=q('txdialog');const txForm=q('txform');if(txDialog&&txForm){const del=document.createElement('button');del.type='button';del.className='btn danger v36-delete-tx';del.textContent='Supprimer cette opération';del.style.cssText='margin-top:8px;width:100%';txForm.append(del);del.addEventListener('click',()=>{const id=editingTx;if(!id)return;txDialog.close();const b=[...q('txlist').querySelectorAll('[data-delete-tx]')].find(x=>x.dataset.deleteTx===id);b?.click()});const sync=()=>{del.style.display=editingTx?'block':'none';q('txsubmit').style.width='100%';q('txdialog')?.querySelector('h2')&&(q('txdialog').querySelector('h2').textContent=editingTx?'Modifier une opération':'Nouvelle opération');};new MutationObserver(sync).observe(txDialog,{attributes:true,attributeFilter:['open']});sync()}
+const txDialog=q('txdialog');const txForm=q('txform');if(txDialog&&txForm){const del=document.createElement('button');del.type='button';del.className='btn danger v36-delete-tx';del.textContent='Supprimer cette opération';del.style.cssText='margin-top:8px;width:100%';txForm.append(del);del.addEventListener('click',async()=>{
+ const id=editingTx;if(!id||!data||del.disabled)return;
+ if(!data.transactions.some(t=>String(t.id)===String(id)))return;
+ const tx=data.transactions.find(t=>String(t.id)===String(id));
+ const txLabel=String(tx?.name||tx?.cat||'cette opération').trim();
+ const txAmount=fmt(Number(tx?.amount)||0);
+ if(!await mbpConfirm('Supprimer '+txLabel+' — '+txAmount+' ?'))return;
+ del.disabled=true;
+ const before=data.transactions;
+ data.transactions=before.filter(t=>String(t.id)!==String(id));
+ try{
+  await save();
+  editingTx=null;txDialog.close();render();alertMsg('Opération supprimée.');
+ }catch(err){
+  data.transactions=before;
+  alertMsg('Suppression impossible : opération conservée.');
+ }finally{del.disabled=false}
+});const sync=()=>{del.style.display=editingTx?'block':'none';q('txsubmit').style.width='100%';q('txdialog')?.querySelector('h2')&&(q('txdialog').querySelector('h2').textContent=editingTx?'Modifier une opération':'Nouvelle opération');};new MutationObserver(sync).observe(txDialog,{attributes:true,attributeFilter:['open']});sync()}
 
 // Open the asset editor directly. A delete action in the same editor removes a redundant action sheet.
 q('wealthlist')?.addEventListener('click',e=>{const row=e.target.closest('[data-b6asset]');if(!row||e.target.closest('button'))return;e.preventDefault();e.stopImmediatePropagation();const edit=row.querySelector('[data-edit-asset]');edit?.click();},true);
-const assetDialog=q('assetdialog');const assetForm=q('assetform');if(assetDialog&&assetForm){const del=document.createElement('button');del.className='btn danger';del.type='button';del.textContent='Supprimer cet actif';del.style.cssText='width:100%;margin-top:7px';assetForm.append(del);del.onclick=()=>{const id=editingAsset;if(!id)return;assetDialog.close();q('wealthlist')?.querySelector(`[data-delete-asset="${CSS.escape(id)}"]`)?.click()};const update=()=>{del.style.display=editingAsset?'block':'none';q('assetsubmit').style.width='100%';};new MutationObserver(update).observe(assetDialog,{attributes:true,attributeFilter:['open']});update()}
+const assetDialog=q('assetdialog');const assetForm=q('assetform');if(assetDialog&&assetForm){const del=document.createElement('button');del.className='btn danger';del.type='button';del.textContent='Supprimer cet actif';del.style.cssText='width:100%;margin-top:7px';assetForm.append(del);del.onclick=async()=>{
+ const id=editingAsset;if(!id||!data||del.disabled)return;
+ if(!data.assets.some(a=>String(a.id)===String(id)))return;
+ if(!await mbpConfirm('Supprimer cet actif ?'))return;
+ del.disabled=true;
+ const before=data.assets;
+ data.assets=before.filter(a=>String(a.id)!==String(id));
+ try{
+  await save();
+  editingAsset=null;assetDialog.close();render();alertMsg('Actif supprimé.');
+ }catch(err){
+  data.assets=before;
+  alertMsg('Suppression impossible : actif conservé.');
+ }finally{del.disabled=false}
+};const update=()=>{del.style.display=editingAsset?'block':'none';q('assetsubmit').style.width='100%';};new MutationObserver(update).observe(assetDialog,{attributes:true,attributeFilter:['open']});update()}
 // Recurring models are discoverable; never synthesize payments or overwrite a previous month.
 const tools=q('v33profiletools');if(tools){const d=document.createElement('details');d.id='v36recurrings';d.className='v32-card';d.innerHTML='<summary>Mes charges récurrentes</summary><p class="muted" style="font-size:11px;margin:8px 0">Les modèles facilitent le suivi des échéances. Ils ne constituent pas des paiements réels.</p><div id="v36recurringrows"></div><button class="btn secondary" type="button" id="v36recurringadd">+ Ajouter un modèle</button>';tools.after(d);q('v36recurringadd').onclick=()=>q('newrecurring')?.click()}
 function redrawRecurrings(){const root=q('v36recurringrows');if(!root||!data)return;root.innerHTML=(data.recurring||[]).map(r=>`<div class="v36-row"><span>${esc(r.name)}<br><small>Le ${Number(r.day)} · ${esc(r.cat)}</small></span><span style="text-align:right"><b>${euros(r.amount)}</b><br><button type="button" class="btn secondary" data-v36rec="${esc(r.id)}">Modifier</button></span></div>`).join('')||'<p class="muted" style="font-size:12px">Aucun modèle défini.</p>'}
@@ -2993,20 +3588,15 @@ input[type=checkbox]{accent-color:#9bc7f6!important}
    }
    return ids;
  }
- function goalDetails(p,until){
-   const ids=matchingGoalIds(p,until),from=data.envelopeStart||'2026-11';
-   const funds=(data.envelopeMoves||[]).filter(e=>ids.has(String(e.planId))&&e.kind==='fund'&&e.date?.slice(0,7)<=until);
-   const spent=(data.transactions||[]).filter(t=>ids.has(String(t.planId))&&t.type==='expense'&&t.date?.slice(0,7)<=until&&t.date?.slice(0,7)>=from);
-   const allFunds=funds.filter(e=>e.date?.slice(0,7)>=from);
-   const transfers=(data.envelopeMoves||[]).filter(e=>((p.goalId&&e.goalId===p.goalId)||(!e.goalId&&ids.has(String(e.planId))))&&e.date?.slice(0,7)>=from&&e.date?.slice(0,7)<=until&&['transfer-in','transfer-out','use'].includes(e.kind));const net=transfers.reduce((v,e)=>v+(e.kind==='transfer-in'?1:-1)*Number(e.amount||0),0);return {month:funds.filter(x=>x.date?.slice(0,7)===until).reduce((a,x)=>a+Number(x.amount||0),0),total:allFunds.reduce((a,x)=>a+Number(x.amount||0),0)+net,spent:spent.reduce((a,x)=>a+Number(x.amount||0),0),funds,expenses:spent,transfers};
- }
+ function goalDetails(p,until){return mbpV4GoalLedger(p,until)}
  // Replace goal dialog detail content after it opens, without changing or persisting any data.
  const dlg=q('mbp36goaldialog');
  function refreshGoalDetail(){if(!dlg?.open||!data)return;
-   const p=(typeof monthPlans==='function'?monthPlans():[]).find(x=>x.name===dlg.querySelector('h2')?.textContent&&['Provisions','Investissements'].includes(x.cat));if(!p)return;
+   const goalId=dlg.dataset.mbpV4GoalId;
+   const p=[...(data.plans||[]),...Object.values(data.monthBudgets||{}).flat()].find(x=>String(x.id)===String(goalId)&&['Provisions','Investissements'].includes(x.cat));if(!p)return;
    const m=today().slice(0,7),s=goalDetails(p,m),cards=dlg.querySelectorAll('.v36-goalmetrics b');
    if(cards.length>=4){cards[0].textContent=money(p.amount);cards[1].textContent=money(s.month);cards[2].textContent=money(s.total);cards[3].textContent=money(s.total-s.spent)}
-   const hist=dlg.querySelector('.v36-history');if(hist){const lines=[...s.funds.map(x=>({date:x.date,name:'Versement',amount:x.amount,positive:true})),...s.expenses.map(x=>({date:x.date,name:x.name,amount:x.amount,positive:false}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,35);hist.innerHTML=lines.map(x=>`<div><span>${escape(new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}))} · ${escape(x.name)}</span><b style="color:${x.positive?'#4ed0aa':'#f19ba9'}">${x.positive?'+':'−'}${money(x.amount)}</b></div>`).join('')||'<p class="muted">Aucun mouvement enregistré.</p>'}
+   const hist=dlg.querySelector('.v36-history');if(hist){const lines=[...s.funds.map(x=>({date:x.date,name:'Versement',amount:x.amount,positive:true})),...s.expenses.map(x=>({date:x.date,name:x.name||'Dépense',amount:x.amount,positive:false})),...s.transfers.map(x=>({date:x.date,name:x.kind==='transfer-in'?'Transfert reçu':x.kind==='transfer-out'?'Transfert envoyé':x.kind==='withdraw'?'Retrait':'Utilisation',amount:x.amount,positive:x.kind==='transfer-in'}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,35);hist.innerHTML=lines.map(x=>`<div><span>${escape(new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}))} · ${escape(x.name)}</span><b style="color:${x.positive?'#4ed0aa':'#f19ba9'}">${x.positive?'+':'−'}${money(x.amount)}</b></div>`).join('')||'<p class="muted">Aucun mouvement enregistré.</p>'}
  }
  new MutationObserver(()=>queueMicrotask(refreshGoalDetail)).observe(dlg,{attributes:true,attributeFilter:['open']});
  // A budget type is different from the category of a transaction. We do not silently rewrite
@@ -3134,7 +3724,7 @@ dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,86
    const savings=!!row.closest('#v32tasks')||/épargne|provisions|investissement|objectifs/i.test(heading);
    fill.classList.remove(...financialClasses);
    if(savings){fill.classList.add('mbp363-progress-goal',rate>=1?'mbp363-complete':'mbp363-incomplete');fill.style.setProperty('background-color',rate>=1?'#53cda7':'#8294a8','important')}
-   else {fill.classList.add('mbp363-progress-budget',rate>=1?'mbp363-over':rate>=.85?'mbp363-high':rate>=.60?'mbp363-caution':'mbp363-low');fill.style.setProperty('background-color',rate>=1?'#f08c9b':rate>=.85?'#ed9a61':rate>=.60?'#edbd73':'#48bea0','important')}
+   else {fill.classList.add('mbp363-progress-budget',rate>1?'mbp363-over':rate>=.85?'mbp363-high':rate>=.60?'mbp363-caution':'mbp363-low');fill.style.setProperty('background-color',rate>1?'#f08c9b':rate>=.85?'#ed9a61':rate>=.60?'#edbd73':'#48bea0','important')}
   });
  }
  function cleanRecent(){
@@ -3254,8 +3844,7 @@ dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,86
  const cents=v=>Math.round(Number(v)*100);
  const plans=()=>[...(data?.plans||[]),...Object.values(data?.monthBudgets||{}).flat()];
  const availableGoals=()=>{const unique=new Map();for(const p of plans())if(['Provisions','Investissements'].includes(p.cat)){const key=p.goalId||'goal:'+p.id;unique.set(key,p)}return [...unique.values()]};
- const movementMatches=(e,p)=>e.goalId&&p.goalId?e.goalId===p.goalId:String(e.planId)===String(p.id);
- const balance=(p,day)=>{const from=data.envelopeStart||'2026-11';let v=0;for(const e of data.envelopeMoves||[])if(movementMatches(e,p)&&e.date?.slice(0,7)>=from&&e.date<=day){v+=cents(e.amount)*(e.kind==='fund'||e.kind==='transfer-in'?1:-1)}for(const t of data.transactions||[])if(t.type==='expense'&&movementMatches(t,p)&&t.date?.slice(0,7)>=from&&t.date<=day)v-=cents(t.amount);return v/100};
+ const balance=(p,day)=>mbpV4GoalLedger(p,day).remaining;
  const dlg=document.createElement('dialog');dlg.id='mbp37transferdialog';dlg.setAttribute('aria-labelledby','mbp37heading');dlg.innerHTML='<form id="mbp37form"><h2 id="mbp37heading" tabindex="-1">Transfert entre enveloppes</h2><p class="mbp37-help">Déplacer une somme sans créer de revenu ni de dépense.</p><div class="mbp373-field"><span class="mbp373-label">Enveloppe source</span><div id="mbp37sourceview" class="mbp373-static"></div><input type="hidden" id="mbp37source"></div><div class="mbp373-field"><span class="mbp373-label">Enveloppe destination</span><input type="hidden" id="mbp37target"><button type="button" id="mbp37targetbutton" class="mbp373-picker" aria-expanded="false" aria-controls="mbp37choices"><span id="mbp37targetlabel">Choisir une destination</span><span aria-hidden="true">⌄</span></button><div id="mbp37choices" class="mbp373-choices" hidden role="group" aria-label="Choix de la destination"></div></div><div class="mbp373-field"><label for="mbp37amount" class="mbp373-label">Montant (€)</label><input id="mbp37amount" inputmode="decimal" type="number" min="0.01" step="0.01" required><div id="mbp37available" class="mbp373-available"></div></div><div class="mbp373-field"><label for="mbp37date" class="mbp373-label">Date</label><input id="mbp37date" type="date" required></div><p class="mbp37-error" id="mbp37error" role="alert" aria-live="polite"></p><div class="mbp37-actions"><button type="button" class="btn secondary" id="mbp37cancel">Annuler</button><button type="submit" class="btn" id="mbp37submit" disabled>Transférer</button></div></form>';document.body.append(dlg);
  const goalKey=g=>String(g.goalId||'goal:'+g.id);
  const sourceGoal=()=>availableGoals().find(g=>goalKey(g)===q('mbp37source').value);
@@ -3278,16 +3867,46 @@ dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,86
   dlg.showModal();q('mbp37heading').focus({preventScroll:true});
  }
  q('mbp37cancel').onclick=()=>dlg.close();
- q('mbp37form').onsubmit=async e=>{e.preventDefault();if(!data)return;const source=sourceGoal(),target=targetGoal(),amount=Number(q('mbp37amount').value),date=q('mbp37date').value;
- if(!source||!target||goalKey(source)===goalKey(target)||!Number.isFinite(amount)||cents(amount)<=0||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(new Date(date+'T12:00:00').getTime())||new Date(date+'T12:00:00').toLocaleDateString('sv-SE')!==date){q('mbp37error').textContent='Vérifie les enveloppes, la date et le montant.';return}
- if(cents(amount)>cents(balance(source,date))){q('mbp37error').textContent='Solde insuffisant dans la provision source.';return}
- const group=crypto.randomUUID(),transfer=[{id:crypto.randomUUID(),transferId:group,planId:source.id,goalId:source.goalId,kind:'transfer-out',amount:cents(amount)/100,date},{id:crypto.randomUUID(),transferId:group,planId:target.id,goalId:target.goalId,kind:'transfer-in',amount:cents(amount)/100,date}];
- if(!Array.isArray(data.envelopeMoves))data.envelopeMoves=[];data.envelopeMoves.push(...transfer);
- try{await save();dlg.close();render();alertMsg('Transfert enregistré, sans revenu ni dépense supplémentaire.')}catch(err){data.envelopeMoves=data.envelopeMoves.filter(x=>x.transferId!==group);q('mbp37error').textContent='Sauvegarde impossible : aucun transfert conservé.'}
+ let mbpV4TransferBusy=false;
+ dlg.addEventListener('cancel',e=>{if(mbpV4TransferBusy)e.preventDefault()});
+ q('mbp37cancel').onclick=()=>{if(!mbpV4TransferBusy)dlg.close()};
+ q('mbp37form').onsubmit=async e=>{
+  e.preventDefault();
+  if(!data||mbpV4TransferBusy)return;
+  const source=sourceGoal(),target=targetGoal(),amount=Number(q('mbp37amount').value),date=q('mbp37date').value;
+  if(!source||!target||goalKey(source)===goalKey(target)||q('mbp37amount').value===''||
+   !Number.isFinite(amount)||amount<=0||Math.abs(amount*100-Math.round(amount*100))>1e-6||
+   !isDate(date)){
+   q('mbp37error').textContent='Vérifie les enveloppes, la date et le montant (deux décimales maximum).';return;
+  }
+  if(cents(amount)>cents(balance(source,date))){
+   q('mbp37error').textContent='Solde insuffisant dans la provision source.';return;
+  }
+  mbpV4TransferBusy=true;
+  q('mbp37submit').disabled=true;
+  q('mbp37cancel').disabled=true;
+  const group=crypto.randomUUID(),transfer=[
+   {id:crypto.randomUUID(),transferId:group,planId:source.id,goalId:source.goalId,kind:'transfer-out',amount:cents(amount)/100,date},
+   {id:crypto.randomUUID(),transferId:group,planId:target.id,goalId:target.goalId,kind:'transfer-in',amount:cents(amount)/100,date}
+  ];
+  const hadMoves=Array.isArray(data.envelopeMoves);
+  if(!hadMoves)data.envelopeMoves=[];
+  data.envelopeMoves.push(...transfer);
+  try{
+   await save();dlg.close();render();alertMsg('Transfert enregistré, sans revenu ni dépense supplémentaire.');
+  }catch(err){
+   data.envelopeMoves=data.envelopeMoves.filter(x=>x.transferId!==group);
+   if(!hadMoves)delete data.envelopeMoves;
+   q('mbp37error').textContent='Sauvegarde impossible : aucun transfert conservé.';
+  }finally{
+   mbpV4TransferBusy=false;
+   q('mbp37cancel').disabled=false;
+   updateTransferValidity();
+  }
  };
  // Place transfer access near existing goal controls while preserving all existing interactions.
  const goalsDialog=q('mbp36goaldialog');
- if(goalsDialog)new MutationObserver(()=>{if(!goalsDialog.open||!data||goalsDialog.querySelector('#mbp37transferbutton'))return;const actions=goalsDialog.querySelector('.v36-goalactions');if(!actions)return;const goal=availableGoals().find(g=>g.name===goalsDialog.querySelector('h2')?.textContent);if(goal?.cat!=='Provisions')return;const btn=document.createElement('button');btn.type='button';btn.id='mbp37transferbutton';btn.className='btn secondary';btn.textContent='⇄ Transférer';actions.append(btn);btn.onclick=()=>{const goal=availableGoals().find(g=>g.name===goalsDialog.querySelector('h2')?.textContent);goalsDialog.close();openTransfer(goal?.goalId)};}).observe(goalsDialog,{childList:true,subtree:false});
+ if(goalsDialog)new MutationObserver(()=>{if(!goalsDialog.open||!data||goalsDialog.querySelector('#mbp37transferbutton'))return;const actions=goalsDialog.querySelector('.v36-goalactions');if(!actions)return;const goal=availableGoals().find(g=>String(g.id)===goalsDialog.dataset.mbpV4GoalId);if(goal?.cat!=='Provisions')return;const btn=document.createElement('button');btn.type='button';btn.id='mbp37transferbutton';btn.className='btn secondary';btn.textContent='⇄ Transférer';actions.append(btn);btn.onclick=()=>{const goal=availableGoals().find(g=>String(g.id)===goalsDialog.dataset.mbpV4GoalId);goalsDialog.close();if(goal)openTransfer(goalKey(goal))};}).observe(goalsDialog,{childList:true,subtree:false});
  // The user may verify any previously exported encrypted file without replacing the live vault.
  const settings=q('settings');if(settings){const section=document.createElement('section');section.className='card';section.innerHTML='<h3 style="font-size:16px">Contrôle des sauvegardes</h3><p class="muted" style="font-size:12px">Teste une sauvegarde chiffrée sans remplacer tes données actuelles.</p><button type="button" id="mbp37verify" class="btn secondary">Vérifier un fichier de sauvegarde</button><input type="file" id="mbp37verifyfile" accept=".json,application/json" style="display:none"><p class="muted" id="mbp37verifyresult" role="status"></p>';settings.append(section);q('mbp37verify').onclick=()=>q('mbp37verifyfile').click();q('mbp37verifyfile').onchange=async()=>{try{const file=q('mbp37verifyfile').files?.[0];if(!file)return;const raw=JSON.parse(await file.text());const obj=await unseal(raw,secret);if(!Array.isArray(obj.transactions)||!Array.isArray(obj.plans)||!Array.isArray(obj.assets))throw Error('Structure non valide');const summary=['Sauvegarde lisible','Opérations : '+obj.transactions.length,'Budgets : '+obj.plans.length,'Actifs : '+obj.assets.length,'Provisions : '+(obj.envelopeMoves||[]).length];q('mbp37verifyresult').textContent=summary.join(' · ')}catch(err){q('mbp37verifyresult').textContent='Fichier non vérifié : format endommagé ou phrase secrète incorrecte.'}finally{q('mbp37verifyfile').value=''}};}
  // Clearly distinguish realized expenses from budget allocations.
@@ -3434,7 +4053,7 @@ dialog input[type=date],dialog input[type=number]{box-sizing:border-box!importan
   const n=fmt(pair[1]),goal=fmt(pair[2]);if(!(goal>0)||!Number.isFinite(n))return;
   const header=row.closest('.mb35-section,.v32-card')?.querySelector('h2')?.textContent||'';
   const savings=!!row.closest('#v32tasks')||/épargne|provisions|investissements|objectifs/i.test(header);
-  const ratio=n/goal,color=savings?(n<=0?'#77879a':ratio>=1?'#4dc69f':'#e8ae68'):(ratio>=1?'#f08e9c':ratio>=.85?'#e88b55':ratio>=.6?'#e8ae68':'#4dc69f');
+  const ratio=n/goal,color=savings?(ratio>=1?'#4dc69f':'#8294a8'):(ratio>1?'#f08e9c':ratio>=.85?'#e88b55':ratio>=.6?'#e8ae68':'#4dc69f');
   if(fill.style.getPropertyValue('--mbp372-status')!==color)fill.style.setProperty('--mbp372-status',color);
   fill.classList.add('mbp372-status');
  });}
@@ -3733,7 +4352,7 @@ html,body{overflow-x:clip!important;}
 <script id="mbp376-finishing">
 (()=>{'use strict';
  const text1='Espace personnel et confidentiel';
- const text2='Mon Budget Privé · v3.7 bêta 9';
+ const text2='Mon Budget Privé · V4.0';
  const desiredHelp='Conserve ta phrase secrète en lieu sûr. Si tu l’oublies, seule une sauvegarde chiffrée avec son mot de passe te permettra de restaurer tes données.';
  function fixFooter(){
   const footer=document.querySelector('.v32-lock-footer');
@@ -3762,7 +4381,7 @@ html,body{overflow-x:clip!important;}
  if(unlock){new MutationObserver(()=>fix()).observe(unlock,{attributes:true,attributeFilter:['class']});}
  // Display-only version label (never reaches encrypted vault).
  document.querySelectorAll('#settings .v262-version').forEach(el=>{
-  el.textContent=el.textContent.replace(/Version\s+3\.7\s+bêta\s+\d+/gi,'Version 3.7 bêta 6');
+  el.textContent='Mon Budget Privé · V4.0 · Données chiffrées localement';
  });
 })();
 </script>
@@ -3865,6 +4484,154 @@ body:has(#app:not(.hidden)) .v32-lock-footer{display:none!important}
 #v26customlist .v31-shortrow .v31-actions button[data-v31up],
 #v26customlist .v31-shortrow .v31-actions button[data-v31down]{
  min-width:38px!important;
+}
+</style>
+<style id="mbp-v4-native-numeric-focus">
+/* V4: all amount controls use Safari's native decimal pad, never a secondary input sheet.
+   iOS avoids focus zoom when controls use a legible font size. */
+input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
+ font-size:max(16px,1rem)!important;
+ touch-action:manipulation;
+}
+#mbpV4ContributionDialog[open]{
+ max-height:min(var(--mbp374-height,calc(100dvh - 32px)),calc(100dvh - 24px));
+ overflow-y:auto;
+}
+#mbpV4ContributionDialog input{max-width:100%;min-width:0;}
+</style>
+
+<style id="mbp-v4-navigation-ice">
+/* V4: one restrained Ice Glass navigation language on all four tabs. */
+#nav button[data-tab]{
+ border:1px solid transparent!important;
+ border-radius:13px!important;
+ background:transparent!important;
+ color:#b8c9df!important;
+ font-weight:600!important;
+ transition:background-color .14s ease,border-color .14s ease,color .14s ease;
+}
+#nav button[data-tab].active{
+ background:linear-gradient(155deg,rgba(91,149,211,.25),rgba(128,104,193,.20))!important;
+ border-color:rgba(158,192,236,.43)!important;
+ color:#f5f9ff!important;
+}
+#v30profile .v30-subnav button.active{
+ background:linear-gradient(145deg,rgba(81,135,190,.36),rgba(116,98,183,.31))!important;
+ border-color:#9bc3eb!important;
+ color:#fff!important;
+}
+#nav button:focus-visible,#v30profile .v30-subnav button:focus-visible{
+ outline:2px solid #b5d8ff!important;outline-offset:2px!important;
+}
+@media(prefers-reduced-motion:reduce){#nav button[data-tab]{transition:none!important}}
+</style>
+<script id="mbp-v4-navigation-state">
+(()=>{
+ 'use strict';
+ const nav=document.getElementById('nav');
+ if(!nav)return;
+ nav.setAttribute('aria-label','Navigation principale');
+ const update=()=>{
+  const tabs=[...nav.querySelectorAll('button[data-tab]')];
+  for(const button of tabs){
+   const active=button.classList.contains('active');
+   if(active)button.setAttribute('aria-current','page');
+   else button.removeAttribute('aria-current');
+   button.setAttribute('aria-label',(button.textContent||'').trim());
+  }
+  const profile=document.getElementById('v30profile');
+  if(profile)for(const b of profile.querySelectorAll('.v30-subnav button')){
+   b.setAttribute('aria-pressed',String(b.classList.contains('active')));
+  }
+ };
+ // Watch CSS class changes only: updating ARIA attributes never re-triggers this observer.
+ const observer=new MutationObserver(update);
+ observer.observe(nav,{subtree:true,attributes:true,attributeFilter:['class'],childList:true});
+ const sub=document.querySelector('#v30profile .v30-subnav');
+ if(sub)observer.observe(sub,{subtree:true,attributes:true,attributeFilter:['class']});
+ update();
+})();
+</script>
+
+<style id="mbp-v4-semantic-progress">
+/* Final V4 override: the semantic color always takes precedence over legacy Ice UI fills. */
+#v32tasks .v36-goal .v32-fill.mbp372-status:not(.v36-complete),
+#v32tasks .v36-goal .v32-fill.mbp372-status.v36-complete,
+#v32tasks .v32-fill.mbp372-status,
+#v32summary .v32-fill.mbp372-status,
+#v30profile .v32-fill.mbp372-status,
+#v30profile .trackfill.mbp372-status,
+.mb35-section .v32-fill.mbp372-status{
+ background-color:var(--mbp372-status)!important;
+ background-image:none!important;
+}
+</style>
+
+
+<style id="mbp-v4-beta2-polish">
+/* Ice Glass B2: restrained navy-blue accents without violet status chips. */
+#setup:not(.hidden),#unlock:not(.hidden){
+ background:linear-gradient(150deg,#243750,#162437 80%)!important;
+ border-color:rgba(135,172,213,.42)!important;
+}
+#setup .notice,#unlock .notice{
+ background:linear-gradient(135deg,rgba(41,65,90,.72),rgba(28,48,68,.86))!important;
+ border-left:3px solid #719dc4!important;
+ border-color:rgba(120,164,211,.30)!important;
+ color:#d4e3f4!important;
+}
+#setup #create,#unlock #open{
+ background:linear-gradient(145deg,#385c83,#2e4d70)!important;
+ border:1px solid #668cb5!important;color:#f7fbff!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 7px 18px rgba(7,19,37,.18)!important;
+}
+#setup input,#unlock input{
+ background:#101e31!important;border-color:#4e6986!important;
+}
+#v32tasks .v33-status:not(.done),#v33wealthtask .v33-status:not(.done){
+ background:#273a50!important;border:1px solid #557391!important;
+ color:#d4e6f8!important;box-shadow:none!important;
+}
+#nav button[data-tab].active{
+ background:linear-gradient(145deg,rgba(79,137,194,.32),rgba(52,100,151,.20))!important;
+ border-color:rgba(145,190,232,.43)!important;
+}
+#v30profile .v30-subnav button.active{
+ background:linear-gradient(145deg,rgba(74,127,180,.34),rgba(57,100,151,.22))!important;
+ border-color:#7da6cf!important;
+}
+#mbp-ui-dialog .mbpu-actions button.mbpu-primary.mbpu-destructive[data-act="accept"]{
+ background:#8b3343!important;background-image:none!important;
+ color:#fff3f5!important;border:1px solid #b85c6d!important;
+ box-shadow:none!important;
+}
+#mbp-ui-dialog .mbpu-actions button.mbpu-primary.mbpu-destructive[data-act="accept"]:active{
+ background:#a13e51!important;
+}
+#txdialog .v36-delete-tx{
+ background:#6d2e3b!important;background-image:none!important;
+ color:#ffe6eb!important;border-color:#a24b5d!important;
+}
+</style>
+<style id="mbp-v4-beta2-dialog-focus">
+/* Safari iOS: never draw an extra focus ring around the entire modal surface. */
+#txdialog:focus,#txdialog:focus-visible,
+#mbp-ui-dialog:focus,#mbp-ui-dialog:focus-visible{
+ outline:none!important;
+ outline-offset:0!important;
+}
+/* Opening a confirmation focuses its heading, not the default Cancel button. */
+#mbp-ui-dialog .mbpu-title[tabindex="-1"]:focus{
+ outline:none!important;box-shadow:none!important;
+}
+/* Pointer interaction does not keep a double blue focus outline around actions. */
+#mbp-ui-dialog .mbpu-actions button:focus:not(:focus-visible),
+#txdialog button:focus:not(:focus-visible){
+ outline:none!important;outline-offset:0!important;box-shadow:none!important;
+}
+/* Keep an accessible, restrained keyboard navigation focus indicator. */
+#mbp-ui-dialog .mbpu-actions button:focus-visible{
+ outline:2px solid #7da6cf!important;outline-offset:2px!important;
 }
 </style>
 </body></html>

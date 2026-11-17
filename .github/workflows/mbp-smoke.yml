@@ -1,7 +1,7 @@
 name: Test Mon Budget Prive
 on:
   push:
-    branches: [main, fix/v3.7-beta8-verified, audit/ergonomie-v379, fix/beta9-custom-chip-alignment, audit/visuel-complet-b9]
+    branches: [main, v4/beta1-finance-engine, v4/release-candidate-production]
   pull_request:
     branches: [main]
 jobs:
@@ -18,16 +18,60 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Démarrer le site et exécuter les tests
         run: |
+          if [ "$GITHUB_REF" = "refs/heads/v4/release-candidate-production" ] || [ "$GITHUB_HEAD_REF" = "v4/release-candidate-production" ] || [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/mbp-test-server.log 2>&1 &
+            node tests/v4-production-upgrade.cjs
+            node tests/v4-functional-regression.cjs
+            node tests/v4-cross-month-goals.cjs
+            node tests/v4-operation-editor.cjs
+            node tests/v4-native-numeric.cjs
+            node tests/v4-dialog-geometry.cjs
+            node tests/v4-navigation-state.cjs
+            node tests/v4-semantic-colors.cjs
+            node tests/v4-restore-migration.cjs
+            node tests/v4-external-backup-roundtrip.cjs
+            node tests/v4-full-ui-audit.cjs
+            exit 0
+          fi
+          node scripts/build-v4-beta-preview.cjs
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/mbp-test-server.log 2>&1 &
           node tests/mbp-smoke.cjs
           node tests/visual-audit.cjs
+          node tests/v4-functional-regression.cjs
+          node tests/v4-cross-month-goals.cjs
+          node tests/v4-vault-failure.cjs
+          node tests/v4-local-recovery.cjs
+          node tests/v4-erasure-recovery.cjs
+          node tests/v4-reset-rollback.cjs
+          node tests/v4-operation-editor.cjs
+          node tests/v4-native-numeric.cjs
+          node tests/v4-dialog-geometry.cjs
+          node tests/v4-navigation-state.cjs
+          node tests/v4-offline-vault.cjs
+          node tests/v4-semantic-colors.cjs
+          node tests/v4-restore-migration.cjs
+          node tests/v4-external-backup-roundtrip.cjs
+          node tests/v4-beta-storage-isolation.cjs
+          node tests/v4-preview-scope.cjs
+          node tests/v4-vercel-preview-config.cjs
+          node tests/v4-beta2-polish.cjs
+          node tests/v4-full-ui-audit.cjs
+          node tests/v4-v37-full-migration.cjs
+      - name: Conserver le paquet beta de demonstration (non deploye)
+        if: success() && github.ref != 'refs/heads/v4/release-candidate-production' && github.head_ref != 'v4/release-candidate-production' && github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mon-budget-v4-beta2-preview
+          path: dist/v4-beta1/
+          retention-days: 7
+          if-no-files-found: error
       - name: Vérifier la page GitHub Pages en production
         if: github.ref == 'refs/heads/main'
         run: |
           for i in $(seq 1 18); do
             if curl -fsSL --max-time 15 'https://4mfchpmmh5-byte.github.io/mon-budget-prive/' -o /tmp/mbp-prod.html \
-              && grep -q 'mbp379-ergonomic-stability' /tmp/mbp-prod.html; then
-              echo 'GitHub Pages sert bien la V3.7 bêta 9'
+              && grep -q 'mbp-v4-beta2-dialog-focus' /tmp/mbp-prod.html && grep -q "const KEY='mbp-encrypted-v1'" /tmp/mbp-prod.html; then
+              echo 'GitHub Pages sert bien la V4.0 avec la clé du coffre historique'
               exit 0
             fi
             echo "La publication n'est pas encore visible (contrôle $i/18)"
