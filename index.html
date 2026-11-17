@@ -4713,70 +4713,40 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
 </style>
 
 <style id="mbp-v41-recent-all-style">
-/* Keep the Accueil focused on today while offering a direct route to full history. */
+/* Editorial text link belongs below the recent list, never alongside the month. */
 #add #v32recent .v32-head{align-items:center!important}
-#add #v32recent .mbp-v41-heading-actions{
- display:flex;align-items:center;gap:9px;margin-left:auto;min-width:0;
-}
-#add #v32recent .mbp-v41-heading-actions .v32-muted{
- white-space:nowrap!important;
-}
+#add #v32recent .v32-head .v32-muted{white-space:nowrap}
 #add #v32recent .mbp-v41-view-all{
- display:inline-flex;align-items:center;justify-content:center;
- border:1px solid rgba(128,168,213,.48)!important;
- border-radius:11px!important;
- min-height:40px;padding:7px 11px;
- color:#d8eaff!important;
- background:rgba(75,117,160,.19)!important;
- font:650 12px/1.25 system-ui,-apple-system,sans-serif!important;
- white-space:nowrap;cursor:pointer;
- box-shadow:none!important;
+ display:flex;align-items:center;justify-content:flex-end;
+ width:max-content;max-width:100%;margin:8px 0 0 auto;
+ padding:9px 0;min-height:40px;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+ color:#a9cbed!important;font:600 12px/1.2 system-ui,-apple-system,sans-serif!important;
+ cursor:pointer;
 }
-#add #v32recent .mbp-v41-view-all:active{
- background:rgba(95,146,200,.33)!important;
-}
-#add #v32recent .mbp-v41-view-all:focus:not(:focus-visible){
- outline:none!important;box-shadow:none!important;
-}
-#add #v32recent .mbp-v41-view-all:focus-visible{
- outline:2px solid #94bdea!important;outline-offset:2px!important;
-}
-@media(max-width:375px){
- #add #v32recent .mbp-v41-heading-actions{gap:6px}
- #add #v32recent .mbp-v41-view-all{padding:7px 9px}
-}
+#add #v32recent .mbp-v41-view-all:active{color:#e6f4ff!important}
+#add #v32recent .mbp-v41-view-all:focus:not(:focus-visible){outline:none!important;box-shadow:none!important}
+#add #v32recent .mbp-v41-view-all:focus-visible{outline:2px solid #94bdea!important;outline-offset:2px!important}
 </style>
 <script id="mbp-v41-recent-all-script">
 (()=>{
  'use strict';
- const section=document.getElementById('v32recent');
- if(!section)return;
+ const section=document.getElementById('v32recent');if(!section)return;
  let busy=false;
  const enhance=()=>{
-  const head=section.querySelector(':scope > .v32-head');
-  if(!head||head.querySelector('.mbp-v41-view-all'))return;
-  const label=head.querySelector('.v32-muted');
-  const actions=document.createElement('div');
-  actions.className='mbp-v41-heading-actions';
-  if(label)actions.append(label);
-  const button=document.createElement('button');
-  button.type='button';
-  button.className='mbp-v41-view-all';
-  button.textContent='Tout voir';
+  if(!section.querySelector(':scope > .v32-head')||section.querySelector(':scope > .mbp-v41-view-all'))return;
+  const button=document.createElement('button');button.type='button';
+  button.className='mbp-v41-view-all';button.textContent='Voir toutes les opérations ›';
   button.setAttribute('aria-label','Voir toutes les opérations dans la Synthèse');
-  actions.append(button);
-  head.append(actions);
+  section.append(button);
  };
  new MutationObserver(()=>{
-  if(busy)return;
-  busy=true;
+  if(busy)return;busy=true;
   requestAnimationFrame(()=>{busy=false;enhance()});
  }).observe(section,{childList:true,subtree:false});
  section.addEventListener('click',event=>{
-  const button=event.target.closest('.mbp-v41-view-all');
-  if(!button||!section.contains(button))return;
-  event.preventDefault();
-  tab('home');
+  const button=event.target.closest('.mbp-v41-view-all');if(!button||!section.contains(button))return;
+  event.preventDefault();tab('home');
  },true);
  enhance();
 })();
@@ -4909,8 +4879,11 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
 </script>
 
 <style id="mbp-v41-personalization-and-trends-style">
-#add .mbp41-personalize{display:flex;justify-content:flex-end;margin:2px 0 9px}
-#add .mbp41-personalize>button{min-height:41px;padding:8px 12px;border:1px solid #536b8b!important;border-radius:12px!important;background:#273c54!important;color:#e1f0ff!important;box-shadow:none!important;font-size:12px;font-weight:650}
+main > header h1 .mbp41-personalize{display:inline-flex;vertical-align:middle;margin-left:10px;align-items:center}
+main > header h1 .mbp41-personalize>button{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;min-width:36px;min-height:36px;padding:0!important;border:1px solid rgba(129,168,209,.28)!important;border-radius:50%!important;background:rgba(72,110,150,.09)!important;color:#a9bfdb!important;box-shadow:none!important;font-size:0!important}
+main > header h1 .mbp41-personalize>button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+main > header h1 .mbp41-personalize>button:focus:not(:focus-visible){outline:none!important;box-shadow:none!important}
+main > header h1 .mbp41-personalize>button:focus-visible{outline:2px solid #94bdea!important;outline-offset:2px!important}
 #mbp41-personalize-dialog{width:min(94vw,430px);max-height:85dvh;overflow:auto}
 #mbp41-personalize-dialog .mbp41-setting{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;padding:7px 0;border-bottom:1px solid #39485b}
 #mbp41-personalize-dialog .mbp41-setting input{width:23px;height:23px;accent-color:#9bc7f6}
@@ -4942,9 +4915,10 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
  const targets={quick:'#v24quick',tasks:'#v32tasks',recent:'#v32recent'};
  const preferences=()=>data?.v41Preferences&&typeof data.v41Preferences==='object'?data.v41Preferences:{};
  const add=q('add'),home=q('home');if(!add||!home)return;
- const bar=document.createElement('div');bar.className='mbp41-personalize';
- bar.innerHTML='<button type="button" aria-label="Personnaliser les sections de mon Accueil">Personnaliser l’Accueil</button>';
- add.prepend(bar);
+ const bar=document.createElement('span');bar.className='mbp41-personalize';
+ bar.innerHTML='<button type="button" aria-label="Personnaliser l’Accueil" title="Personnaliser l’Accueil"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.3"/><circle cx="16" cy="17" r="2.3"/></svg></button>';
+ const title=document.querySelector('main > header h1');
+ if(title)title.append(bar);else add.prepend(bar);
  const dialog=document.createElement('dialog');dialog.id='mbp41-personalize-dialog';
  dialog.innerHTML='<h2>Personnaliser mon Accueil</h2><p class="mbp41-hint">Masque les blocs que tu utilises moins. Les réglages restent dans ton coffre chiffré.</p>'+keys.map(([key,label])=>'<label class="mbp41-setting"><span>'+label+'</span><input type="checkbox" data-mbp41-pref="'+key+'" checked></label>').join('')+'<button type="button" class="btn mbp41-save" id="mbp41-save-preferences">Enregistrer</button><p class="mbp41-hint" id="mbp41-preference-status" role="status"></p>';
  document.body.append(dialog);
@@ -4952,7 +4926,7 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
   if(!data)return;
   const prefs=preferences();
   for(const [key] of keys){const node=add.querySelector(targets[key]);if(node){if(prefs[key]===false)node.style.setProperty('display','none','important');else node.style.removeProperty('display');}}
-  bar.style.display='';
+  bar.style.display='inline-flex';
  }
  bar.querySelector('button').onclick=()=>{
   if(!data)return;
