@@ -39,3 +39,11 @@
 Le script `node scripts/build-v4-beta-preview.cjs` crée `dist/v4-beta1/` (sans modifier ni publier la V3.7). Il contient la page V4, son manifeste « Budget V4 Test », ses icônes et un service worker dont la portée est relative au sous-dossier. Le test `tests/v4-preview-scope.cjs` valide le périmètre du service worker, la préservation du cache V3.7 et le fonctionnement hors ligne.
 
 GitHub Actions n°272 a validé la création et les tests du paquet. Le workflow conserve désormais le paquet comme **artefact GitHub Actions** pendant sept jours, uniquement sur la branche V4. Cet artefact n'est **pas** une application déjà publiée ni une URL d'installation iPhone : il doit d'abord être hébergé sur une origine HTTPS de test séparée. Ne pas fusionner sur `main` pour réaliser cet essai.
+
+
+## Renforcement du service worker avant hébergement
+
+- La démonstration conserve un **cache qui lui est propre** (`mon-budget-shell-v4-preview-...`) et n'efface que ses propres anciennes générations. Elle ne supprime ni le cache V3.7 ni le cache V4 racine.
+- La recherche des fichiers hors ligne est limitée au cache du service worker actif. Elle ne consulte plus automatiquement tous les caches de l'origine, ce qui évite le mélange de pages entre applications installées.
+- Le scénario Playwright `tests/v4-preview-scope.cjs` contrôle les deux caches anciens simultanément, le périmètre d'installation du service worker et le lancement hors ligne.
+- **L'hébergement sur une origine HTTPS distincte reste recommandé et non réalisé** ; cette protection des caches n'équivaut pas à une preuve d'isolation de l'application installée sur Safari iOS.
