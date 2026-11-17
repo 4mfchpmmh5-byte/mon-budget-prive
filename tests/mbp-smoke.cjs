@@ -5,7 +5,11 @@ const vm = require('node:vm');
 
 (async()=>{
   const html=fs.readFileSync('index.html','utf8');
-  assert(html.includes("const text2='Mon Budget Privé · v3.7 bêta 9'"));
+  if(html.includes("const KEY='mbp-encrypted-v4-beta1'")){
+    assert(html.includes("const text2='Mon Budget Privé · V4 Bêta 2 (test)'"),'Version de test V4 incorrecte');
+  }else{
+    assert(html.includes("const text2='Mon Budget Privé · v3.7 bêta 9'"),'Version V3.7 incorrecte');
+  }
   assert(!html.includes('p.amount=938.17'));
   assert(html.includes('planId:p.id'));
   assert(html.includes('day=Math.max(1,Math.min(daysInMonth'));
