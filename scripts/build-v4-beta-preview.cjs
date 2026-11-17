@@ -29,10 +29,15 @@ const previewManifest={
  scope:'./'
 };
 fs.writeFileSync(path.join(output,'manifest.webmanifest'),JSON.stringify(previewManifest,null,2)+'\n');
-const previewWorker=sw.replace(
- "const CACHE='mon-budget-shell-v4-beta1-offline-1'",
- "const CACHE='mon-budget-shell-v4-preview-beta1-offline-1'"
-);
+const previewWorker=sw
+ .replace("const CACHE='mon-budget-shell-v4-beta1-offline-1'",
+          "const CACHE='mon-budget-shell-v4-preview-beta1-offline-1'")
+ .replace("k.startsWith('mon-budget-shell-v4-')",
+          "k.startsWith('mon-budget-shell-v4-preview-')");
+// A preview must never clean a separate V4 cache or resolve missing assets from
+// any other app's cache on the same origin.
+assert(previewWorker.includes("k.startsWith('mon-budget-shell-v4-preview-')"),'Preview cache cleanup not scoped');
+assert(!previewWorker.includes("keys.filter(k=>k.startsWith('mon-budget-shell-v4-')"),'Preview cleanup could delete another V4 cache');
 fs.writeFileSync(path.join(output,'sw.js'),previewWorker);
 for(const file of ['icon-192.png','icon-512.png']){
  fs.copyFileSync(path.join(root,file),path.join(output,file));
