@@ -189,3 +189,13 @@ Retour utilisateur sur la **démo Vercel V4 Bêta 1**, sur iPhone Safari et inst
 - **Résultat sur GitHub Actions n°330 : suite complète réussie, 0 anomalie détectée par les critères automatiques**, aucune erreur JavaScript.
 - Les captures Safari iPhone déjà transmises ont permis de valider manuellement le thème et les précédents correctifs de focus. Ce nouvel audit reste **automatisé sur Chromium mobile simulé**, sans pouvoir garantir un contrôle pixel par pixel de toutes les modales sur Safari iOS réel.
 - Aucune correction supplémentaire requise par les vérifications automatiques, aucun changement de production ni de V3.7.
+
+
+## Préparation de migration V3.7→V4 (17 novembre 2026)
+- Comparaison du code de chiffrement de production V3.7 (`main`) avec la branche V4 : enveloppe `mon-budget-prive`, AES-GCM 256 bits, PBKDF2-SHA256 310 000 itérations compatibles.
+- Nouveau test `tests/v4-v37-full-migration.cjs` : simulation d'un export chiffré V3.7 et de l'import V4 avec 6 transactions, 5 lignes budgétaires, une période de budgets mensuels, 3 actifs, 2 instantanés, 2 récurrences, 1 transfert, raccourcis et attributs inconnus.
+- Protections contrôlées : mot de passe erroné, refus de remplacement, conservation des propriétés, migration des goalId, relecture du coffre chiffré, déverrouillage après rechargement et isolation par rapport au coffre de production.
+- Un premier contrôle a révélé un champ `envelopeStart` calculé en mémoire au rendu mais non écrit immédiatement ; le test tient explicitement compte de ce **défaut purement dérivé** tout en comparant toutes les données financières originales.
+- GitHub Actions **n°342 : réussite**, sortie `V4_V37_FULL_MIGRATION_PASS`. Les autres tests historiques restent au vert dans cette exécution.
+- Guide de migration préproduction ajouté dans `V4_GUIDE_MIGRATION_SECURISÉE.md`.
+- **Étape manuelle restante** : exporter et conserver la sauvegarde chiffrée V3.7 de l'utilisateur, puis tester la copie dans une origine de démo V4 isolée et vérifier les chiffres sur l'iPhone. Ne jamais demander sa phrase secrète ni son fichier de sauvegarde dans ChatGPT. La production V3.7 et la branche `main` restent inchangées.
