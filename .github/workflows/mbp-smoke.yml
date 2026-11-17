@@ -41,6 +41,7 @@ jobs:
           node tests/v4-vercel-preview-config.cjs
           node tests/v4-beta2-polish.cjs
           node tests/v4-full-ui-audit.cjs
+          node tests/v4-v37-full-migration.cjs
       - name: Conserver le paquet beta de demonstration (non deploye)
         if: success()
         uses: actions/upload-artifact@v4
