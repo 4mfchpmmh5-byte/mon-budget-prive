@@ -22,6 +22,8 @@ const assert=require('node:assert/strict');
    const stamp=new Date().toLocaleDateString('sv-SE');
    data.transactions.push({id:'online-entry',type:'expense',name:'Avant hors ligne',amount:21.45,cat:'Variables',date:stamp});
    await save();
+   // Preserve the stable installed-version shell when the V4 worker activates.
+   await caches.open('mon-budget-shell-v3.7-beta9-ui-1');
    await navigator.serviceWorker.register('./sw.js',{scope:'./'});
    return {encrypted:!localStorage.getItem(KEY).includes('Avant hors ligne')};
   });
@@ -39,6 +41,7 @@ const assert=require('node:assert/strict');
    return {registered:true,names};
   });
   assert(cached.names.includes('mon-budget-shell-v4-beta1-offline-1'));
+  assert(cached.names.includes('mon-budget-shell-v3.7-beta9-ui-1'),'V4 activation must never delete the V3.7 cache');
   assert(initial.encrypted);
   // SW must control navigation before entering offline mode.
   await page.reload({waitUntil:'load'});
