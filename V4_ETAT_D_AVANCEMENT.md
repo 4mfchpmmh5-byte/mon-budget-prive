@@ -168,3 +168,13 @@ Retour utilisateur sur la **démo Vercel V4 Bêta 1**, sur iPhone Safari et inst
 - Footer encore référencé V3.7 Bêta 9 sur la démo V4.
 
 **Important :** ces constats reposent sur des essais manuels rapportés par l'utilisateur. La V4 est acceptée **fonctionnellement**, pas encore graphiquement. Ne pas publier/mettre à jour `main` avant correctifs et nouvelle validation. La V3.7 reste inchangée.
+
+
+## V4 Bêta 2 — finitions visuelles et recette (17 novembre 2026)
+- Harmonisation finale Ice Glass bleu navy sur les écrans de création/déverrouillage, encarts informatifs, navigation active et badge de tâche « À faire ». Bouton principal moins pâle.
+- Confirmation de suppression d'opération contextualisée : libellé enregistré et montant en euros (ex. « Supprimer Courses — 15,90 € ? »). Confirmation destructive rouge avec priorité CSS explicite, sans changement du comportement de suppression ni de l'annulation.
+- Footer de verrouillage et version affichée dans les réglages mis à jour vers « V4 Bêta 2 » ; coffre bêta chiffré conservé sous `mbp-encrypted-v4-beta1` pour préserver les données de test existantes.
+- Tests automatiques : nouveau `tests/v4-beta2-polish.cjs` ; workflow GitHub Actions n°318 **réussi** (incluant tests financiers, sauvegarde, navigation, hors ligne, palette et confirmation).
+- Nouvelle démo Vercel **distincte de la V3.7**, déploiement `dpl_8n31ZgKGjGfYkP54BZEmMb2UerxX` sur le même projet de test : `https://mon-budget-v4-beta1-test-pnl79bd0g-tfkr89rnvg-1112.vercel.app/`. Statut **READY** ; contrôles authentifiés HTTP 200 pour la page, le manifeste et le service worker et vérification du contenu Bêta 2.
+- URL Vercel de déploiement immuable : l'ancienne URL Bêta 1 continue d'exister et n'a pas été remplacée ; la nouvelle URL a son propre stockage de navigateur. Pour la recette iPhone, utiliser uniquement une phrase et des données fictives. La protection Vercel Authentication reste active.
+- À refaire sur iPhone : contraste des couleurs sur création/Accueil, suppression contextualisée et bouton rouge, persistance et fonctionnement depuis la nouvelle URL. **Aucune modification de `main` ni de la V3.7 publiée.**
