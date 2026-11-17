@@ -98,12 +98,13 @@ const assert=require('node:assert/strict');
   const after=await page.evaluate(async legacyPassword=>{
    const original=await unseal(JSON.parse(localStorage.getItem(KEY)),legacyPassword);
    return {schemaVersion:data.schemaVersion,stored:JSON.stringify(original)===JSON.stringify(data),
+    persistedDiff:Object.keys(data).filter(key=>JSON.stringify(original[key])!==JSON.stringify(data[key])).map(key=>({key,stored:JSON.stringify(original[key])?.slice(0,160),memory:JSON.stringify(data[key])?.slice(0,160)})),
     restored:JSON.parse(JSON.stringify(data)),activeKey:KEY,
     legacyKey:localStorage.getItem('mbp-encrypted-v1'),
     betaPrevious:localStorage.getItem(KEY+'-previous-v4'),
     vaultIsEncrypted:!localStorage.getItem(KEY).includes('Compte courant')};
   },legacyPassword);
-  assert.equal(after.stored,true);
+  assert.equal(after.stored,true,'Persisted/memory mismatch: '+JSON.stringify(after.persistedDiff));
   assert.equal(after.schemaVersion,2);
   assert.equal(after.activeKey,'mbp-encrypted-v4-beta1');
   assert.equal(after.legacyKey,null);
