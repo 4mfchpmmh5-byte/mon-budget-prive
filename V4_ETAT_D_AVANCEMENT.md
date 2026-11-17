@@ -178,3 +178,14 @@ Retour utilisateur sur la **démo Vercel V4 Bêta 1**, sur iPhone Safari et inst
 - Nouvelle démo Vercel **distincte de la V3.7**, déploiement `dpl_8n31ZgKGjGfYkP54BZEmMb2UerxX` sur le même projet de test : `https://mon-budget-v4-beta1-test-pnl79bd0g-tfkr89rnvg-1112.vercel.app/`. Statut **READY** ; contrôles authentifiés HTTP 200 pour la page, le manifeste et le service worker et vérification du contenu Bêta 2.
 - URL Vercel de déploiement immuable : l'ancienne URL Bêta 1 continue d'exister et n'a pas été remplacée ; la nouvelle URL a son propre stockage de navigateur. Pour la recette iPhone, utiliser uniquement une phrase et des données fictives. La protection Vercel Authentication reste active.
 - À refaire sur iPhone : contraste des couleurs sur création/Accueil, suppression contextualisée et bouton rouge, persistance et fonctionnement depuis la nouvelle URL. **Aucune modification de `main` ni de la V3.7 publiée.**
+
+
+## Audit visuel transversal V4 — 17 novembre 2026
+À la demande de l'utilisateur, vérification globale des **encadrements, couleurs, typographies grasses, états de sélection, lisibilité et géométrie** sur tous les onglets et sous-menus.
+- Nouveau contrôle automatisé `tests/v4-full-ui-audit.cjs` exécuté sur cinq largeurs `320, 375, 390, 430, 768 px`.
+- Pages : Accueil (ancienne clé technique `add`), Synthèse (ancienne clé `home`), Profil (`v30profile`), Patrimoine (`wealth`), et deux sous-menus du Profil (Finances et budgets, Fiscalité et sécurité).
+- Huit familles de fenêtres contrôlées : édition opération, budget, actif, récurrence, tâche, contribution, transfert, dialogue de confirmation ; contrôle des bordures, focus, taille et position.
+- Vérification des styles calculés des boutons, titres, cartes et champs ; analyse de présence de couleurs violettes résiduelles, textes coupés, débordements horizontaux et poids typographiques extrêmes.
+- **Résultat sur GitHub Actions n°330 : suite complète réussie, 0 anomalie détectée par les critères automatiques**, aucune erreur JavaScript.
+- Les captures Safari iPhone déjà transmises ont permis de valider manuellement le thème et les précédents correctifs de focus. Ce nouvel audit reste **automatisé sur Chromium mobile simulé**, sans pouvoir garantir un contrôle pixel par pixel de toutes les modales sur Safari iOS réel.
+- Aucune correction supplémentaire requise par les vérifications automatiques, aucun changement de production ni de V3.7.
