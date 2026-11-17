@@ -23,7 +23,7 @@ try{for(const width of [320,375,390,430,768]){
  assert.equal(await page.locator('#mbp41-personalize-dialog').count(),1);
  await page.locator('#add .mbp41-personalize button').click();
  await page.locator('#mbp41-personalize-dialog [data-mbp41-pref="recent"]').uncheck();
- await page.locator('#mbp41-save-preferences').click();
+ await page.locator('#mbp41-save-preferences').click();await page.locator('#mbp41-personalize-dialog').waitFor({state:'hidden'});
  const result=await page.evaluate(()=>({prefs:data.v41Preferences,recent:document.getElementById('v32recent').style.display,transactions:data.transactions.length,key:KEY,width:document.documentElement.scrollWidth}));
  assert.equal(result.prefs.recent,false);assert.equal(result.recent,'none');assert.equal(result.transactions,3);assert.equal(result.key,'mbp-encrypted-v1');
  assert(result.width<=width+4,'Horizontal overflow '+width);
@@ -31,7 +31,7 @@ try{for(const width of [320,375,390,430,768]){
  assert.equal(await page.locator('#v32recent').evaluate(el=>getComputedStyle(el).display),'none');
  await page.locator('#add .mbp41-personalize button').click();
  await page.locator('#mbp41-personalize-dialog [data-mbp41-pref="recent"]').check();
- await page.locator('#mbp41-save-preferences').click();
+ await page.locator('#mbp41-save-preferences').click();await page.locator('#mbp41-personalize-dialog').waitFor({state:'hidden'});
  assert.notEqual(await page.locator('#v32recent').evaluate(el=>getComputedStyle(el).display),'none');
  await page.close();
 }
