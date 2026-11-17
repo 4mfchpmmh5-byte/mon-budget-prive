@@ -31,6 +31,7 @@ jobs:
           node tests/v4-native-numeric.cjs
           node tests/v4-dialog-geometry.cjs
           node tests/v4-navigation-state.cjs
+          node tests/v4-offline-vault.cjs
       - name: Vérifier la page GitHub Pages en production
         if: github.ref == 'refs/heads/main'
         run: |
