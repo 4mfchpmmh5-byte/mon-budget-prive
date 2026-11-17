@@ -147,3 +147,24 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - État Vercel : **READY**. Vérification authentifiée : `/`, `/manifest.webmanifest`, `/sw.js` et `/icon.svg` répondent **HTTP 200**.
 - L'environnement Vercel est protégé par **Vercel Authentication** ; une authentification Vercel peut être nécessaire lors de l'ouverture sur iPhone. Ne pas désactiver la protection sans un choix explicite.
 - Les vérifications Chromium automatisées restent celles de GitHub Actions n°292 ; le contrôle iPhone Safari en conditions réelles reste à effectuer sur données fictives.
+
+
+## Recette manuelle iPhone — 17 novembre 2026
+Retour utilisateur sur la **démo Vercel V4 Bêta 1**, sur iPhone Safari et installation depuis l'écran d'accueil : **8 parcours sur 8 acceptés**.
+1. Création d'un coffre de test distinct.
+2. Ajout d'une dépense avec clavier numérique natif.
+3. Modification, annulation et suppression confirmée d'une opération.
+4. Provision fictive de 500 €, versement de 100 €, progression 20 % et saisie de contribution native dans une seule feuille.
+5. Navigation Accueil, Synthèse, Profil, Patrimoine, changement de mois et retour à l'Accueil.
+6. Export et restauration de sauvegarde chiffrée avec retour à la valeur précédente.
+7. Fonctionnement hors ligne, sauvegarde d'une opération et persistance après rechargement hors ligne puis remise en ligne.
+8. Redémarrage du coffre V4, vérification de non-régression de la V3.7 et installation autonome sur l'écran d'accueil.
+
+**Anomalies visuelles non bloquantes identifiées lors de cette recette (à traiter avant publication) :**
+- Trop de violet dans la palette Ice Glass : création du coffre, bloc d'information, badge « À faire » et accents secondaires.
+- Bouton principal de création trop pâle.
+- Bouton destructif de confirmation de suppression affiché en bleu au lieu de rouge.
+- Confirmation de suppression générique ; rendre le libellé contextuel (catégorie/nom + montant).
+- Footer encore référencé V3.7 Bêta 9 sur la démo V4.
+
+**Important :** ces constats reposent sur des essais manuels rapportés par l'utilisateur. La V4 est acceptée **fonctionnellement**, pas encore graphiquement. Ne pas publier/mettre à jour `main` avant correctifs et nouvelle validation. La V3.7 reste inchangée.
