@@ -86,3 +86,11 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - Test Playwright ajouté pour parcourir les quatre onglets au toucher, vérifier le panneau visible, la sélection unique et les sous-onglets du Profil; intégré au workflow GitHub Actions.
 - Ne touche pas aux soldes, transactions, migrations ni au stockage chiffré.
 - Nouveau test CI en attente de validation; Safari iOS physique toujours à essayer avant diffusion.
+
+
+## Vérification PWA hors ligne — 17 novembre 2026
+- Le cache du service worker de la branche V4 porte un identifiant propre (`mon-budget-shell-v4-beta1-offline-1`), pour éviter de réutiliser une interface V3.7 périmée lors des essais.
+- Scénario automatisé ajouté : création du coffre, enregistrement en ligne, installation du service worker, passage hors ligne, rechargement sans réseau, déverrouillage, écriture chiffrée hors ligne, nouveau rechargement sans réseau et contrôle des deux transactions.
+- Le service worker ne consulte pas le contenu du coffre ; les opérations restent stockées localement et chiffrées.
+- Ce test Chromium ne remplace pas le contrôle d'une PWA installée via Safari iOS, notamment la politique de stockage et les éventuelles purges de données d'iOS.
+- État CI du nouveau scénario : à confirmer.
