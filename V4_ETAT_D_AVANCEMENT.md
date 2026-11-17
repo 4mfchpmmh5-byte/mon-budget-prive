@@ -112,3 +112,12 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - Test navigateur : refus de confirmation sans changement, échec simulé d'effacement de la copie avec retour arrière, restauration d'une sauvegarde V3.7 sous une autre phrase secrète, migration vers le schéma V4, suppression de l'ancien contenu, rechargement puis déverrouillage du nouveau coffre.
 - GitHub Actions n°246 : **suite complète réussie** après correction d'une erreur de syntaxe détectée en CI.
 - La validation Safari iOS réel et la sauvegarde externe de l'installation existante restent obligatoires avant tout déploiement ; `main` reste inchangée.
+
+
+## Test de bout en bout de sauvegarde externe — 17 novembre 2026
+- Nouveau test Playwright `tests/v4-external-backup-roundtrip.cjs` intégré au workflow.
+- Le navigateur télécharge réellement un fichier JSON de sauvegarde, vérifie le nom du fichier, le format chiffré et l'absence du libellé en texte clair.
+- Contrôles de sécurité : refus de fichier malformé et de phrase secrète incorrecte sans modification du coffre actif.
+- Après une modification volontaire des transactions, l'import du fichier initial remet les transactions, budgets et actifs enregistrés; le coffre peut être déverrouillé après rechargement.
+- GitHub Actions n°252 : **succès** sur la branche `v4/beta1-finance-engine`, y compris les tests existants.
+- Avant installation iOS : vraie sauvegarde externe de la V3.7, tests Safari de clavier/viewport/PWA et vérification sur données de démonstration. Ne pas importer des données réelles de production dans un banc de test.
