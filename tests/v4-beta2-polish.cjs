@@ -43,6 +43,26 @@ const assert=require('node:assert/strict');
    const confirm=dialog.querySelector('[data-act="accept"]');
    return {text:dialog.textContent,classes:[...confirm.classList],background:getComputedStyle(confirm).backgroundColor};
   });
+  const focus=await page.evaluate(()=>{
+    const dialog=document.getElementById('mbp-ui-dialog');
+    const cancel=dialog.querySelector('[data-act="cancel"]');
+    const title=dialog.querySelector('.mbpu-title');
+    return {
+      titleFocused:document.activeElement===title,
+      cancelFocused:document.activeElement===cancel,
+      dialogOutline:getComputedStyle(dialog).outlineStyle,
+      titleOutline:getComputedStyle(title).outlineStyle
+    };
+  });
+  assert.equal(focus.titleFocused,true,'Confirmation must focus its heading, not the Cancel button');
+  assert.equal(focus.cancelFocused,false,'Cancel must not be automatically highlighted on iOS');
+  assert.equal(focus.titleOutline,'none','Modal title should not show a focus ring');
+  await page.locator('#txdialog').evaluate(dialog=>{
+    const computedBefore=getComputedStyle(dialog).outlineStyle;
+    dialog.focus({preventScroll:true});
+    const computedAfter=getComputedStyle(dialog).outlineStyle;
+    if(computedAfter!=='none')throw Error('Edit dialog has browser focus halo: '+computedBefore+' -> '+computedAfter);
+  });
   assert.match(modal.text,/Courses test/);
   assert.match(modal.text,/15,90/);
   assert(modal.classes.includes('mbpu-destructive'));
