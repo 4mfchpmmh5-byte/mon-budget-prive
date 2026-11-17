@@ -38,13 +38,16 @@ const assert=require('node:assert/strict');
     row.remove();
     return result;
    },x);
-   assert(actual.classes.includes(x.expected),JSON.stringify({x,actual}));
+   assert(actual.classes.includes('mbp372-status'),JSON.stringify({x,actual}));
    if(x.goal){
     assert.equal(actual.cssToken,x.value>=x.target?'#4dc69f':'#8294a8');
    }else{
     const expected=x.value>x.target?'#f08e9c':x.value>=x.target*.85?'#e88b55':x.value>=x.target*.6?'#e8ae68':'#4dc69f';
     assert.equal(actual.cssToken,expected,JSON.stringify({x,actual}));
    }
+   const hex=actual.cssToken.replace('#','');
+   const expectedRgb='rgb('+[0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)).join(', ')+')';
+   assert.equal(actual.background,expectedRgb,'Displayed color must match the semantic token: '+JSON.stringify({x,actual}));
    outcomes.push({goal:x.goal,rate:x.value/x.target,token:actual.cssToken});
   }
   assert.deepEqual(errors,[]);
