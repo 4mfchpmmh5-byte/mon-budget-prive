@@ -137,3 +137,13 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - Nouveau contrôle `tests/v4-vercel-preview-config.cjs` : vérifie la configuration et l'exclusion des fichiers de développement et du coffre V3.7 de la sortie statique.
 - Exécution GitHub Actions n°292 : **succès**, tous les tests et l'archivage du paquet de démo validés.
 - Vercel n'est **pas connecté** et **aucun déploiement n'a été créé**. Requiert une connexion explicite au compte Vercel et la sélection du bon projet/branche de test. Ne pas déployer `main` ni utiliser le domaine de l'application actuelle.
+
+
+## V4 Bêta 1 — démonstration en ligne sur Vercel (17 novembre 2026)
+- Projet Vercel **distinct** : `mon-budget-v4-beta1-test`, projet `prj_uiKi05zHiIYmE272ODaICJJVJAgq` sur l'équipe `tfkr89rnvg-1112`.
+- Déploiement prêt : `dpl_A1ArPabdB1vdrRQsJTVXGLiG7uVw`, URL de démo `https://mon-budget-v4-beta1-test-qtmk0hhnu-tfkr89rnvg-1112.vercel.app/`.
+- La liaison directe GitHub a échoué (`git_info_fail`) : ce déploiement a donc été réalisé depuis quatre fichiers statiques dérivés de la branche V4 (`index.html`, `sw.js`, `manifest.webmanifest`, `icon.svg`). L'icône de démonstration SVG est temporaire.
+- Le projet de démo n'utilise pas le dépôt `main`, ne remplace pas GitHub Pages, et la clé du coffre bêta reste `mbp-encrypted-v4-beta1`. Le cache worker est identifié `mon-budget-shell-v4-preview-beta1-offline-2`.
+- État Vercel : **READY**. Vérification authentifiée : `/`, `/manifest.webmanifest`, `/sw.js` et `/icon.svg` répondent **HTTP 200**.
+- L'environnement Vercel est protégé par **Vercel Authentication** ; une authentification Vercel peut être nécessaire lors de l'ouverture sur iPhone. Ne pas désactiver la protection sans un choix explicite.
+- Les vérifications Chromium automatisées restent celles de GitHub Actions n°292 ; le contrôle iPhone Safari en conditions réelles reste à effectuer sur données fictives.
