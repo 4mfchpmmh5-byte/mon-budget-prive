@@ -4938,8 +4938,8 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
  'use strict';
  const q=id=>document.getElementById(id);
  const money=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Number(n)||0);
- const keys=[['nav','Accès rapides'],['quick','Saisie rapide'],['tasks','Mes tâches du mois'],['recent','Dernières opérations']];
- const targets={nav:'.mbp41-navigation',quick:'#v24quick',tasks:'#v32tasks',recent:'#v32recent'};
+ const keys=[['quick','Saisie rapide'],['tasks','Mes tâches du mois'],['recent','Dernières opérations']];
+ const targets={quick:'#v24quick',tasks:'#v32tasks',recent:'#v32recent'};
  const preferences=()=>data?.v41Preferences&&typeof data.v41Preferences==='object'?data.v41Preferences:{};
  const add=q('add'),home=q('home');if(!add||!home)return;
  const bar=document.createElement('div');bar.className='mbp41-personalize';
@@ -4951,7 +4951,7 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
  function apply(){
   if(!data)return;
   const prefs=preferences();
-  for(const [key] of keys){const node=add.querySelector(targets[key]);if(node)node.style.setProperty('display',prefs[key]===false?'none':'');}
+  for(const [key] of keys){const node=add.querySelector(targets[key]);if(node){if(prefs[key]===false)node.style.setProperty('display','none','important');else node.style.removeProperty('display');}}
   bar.style.display='';
  }
  bar.querySelector('button').onclick=()=>{
