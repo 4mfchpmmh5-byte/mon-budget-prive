@@ -1,13 +1,13 @@
-/* MBP V4 development shell: distinct cache name prevents stale V3.7 assets during beta tests.
+/* MBP V4 production shell: load only current production assets.
    Never cache, read or transfer local encrypted financial data. */
-const CACHE='mon-budget-shell-v4-beta1-offline-1';
+const CACHE='mon-budget-shell-v4-production-offline-1';
 const FILES=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting()));
 });
 self.addEventListener('activate',event=>{
  event.waitUntil(Promise.all([
-  caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('mon-budget-shell-v4-')&&k!==CACHE).map(k=>caches.delete(k)))),
+  caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('mon-budget-shell-v4-production-')&&k!==CACHE).map(k=>caches.delete(k)))),
   self.clients.claim()
  ]));
 });
