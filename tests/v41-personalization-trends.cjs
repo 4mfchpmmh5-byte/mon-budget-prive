@@ -1,0 +1,40 @@
+const {chromium}=require('playwright');const assert=require('node:assert/strict');
+(async()=>{const browser=await chromium.launch({headless:true});const errors=[];
+try{for(const width of [320,375,390,430,768]){
+ const page=await browser.newPage({viewport:{width,height:844},isMobile:width<768,hasTouch:width<768});
+ page.on('pageerror',e=>errors.push(width+': '+e.message));
+ await page.goto('http://127.0.0.1:8765/index.html',{waitUntil:'load'});
+ await page.locator('#setup:not(.hidden)').waitFor();
+ await page.locator('#newpass').fill('V41-personalization-test-2026!');
+ await page.locator('#confpass').fill('V41-personalization-test-2026!');
+ await page.locator('#create').click();await page.locator('#app:not(.hidden)').waitFor();
+ await page.evaluate(async()=>{
+  const today=new Date().toLocaleDateString('sv-SE').slice(0,7);
+  const old=new Date(today+'-02T12:00:00');old.setMonth(old.getMonth()-1);
+  const prev=old.getFullYear()+'-'+String(old.getMonth()+1).padStart(2,'0');
+  data.transactions.push({id:'v41-exp',name:'Dépense courante',cat:'Variables',type:'expense',amount:45,date:today+'-03'});
+  data.transactions.push({id:'v41-prev',name:'Dépense passée',cat:'Variables',type:'expense',amount:30,date:prev+'-03'});
+  data.transactions.push({id:'v41-non-cash',name:'Titres resto',cat:'Titres-restaurant',type:'income',nonCash:true,amount:80,date:today+'-03'});
+  await save();render();
+ });
+ assert.equal(await page.locator('#mbp41-comparison').count(),1);
+ assert.match(await page.locator('#mbp41-comparison').innerText(),/45\s*€/);
+ assert.match(await page.locator('#mbp41-comparison').innerText(),/30\s*€/);
+ assert.equal(await page.locator('#mbp41-personalize-dialog').count(),1);
+ await page.locator('main > header h1 .mbp41-personalize button').click();
+ await page.locator('#mbp41-personalize-dialog [data-mbp41-pref="recent"]').uncheck();
+ await page.locator('#mbp41-save-preferences').click();await page.locator('#mbp41-personalize-dialog').waitFor({state:'hidden'});
+ const result=await page.evaluate(()=>({prefs:data.v41Preferences,recent:document.getElementById('v32recent').style.display,transactions:data.transactions.length,key:KEY,width:document.documentElement.scrollWidth}));
+ assert.equal(result.prefs.recent,false);assert.equal(result.recent,'none');assert.equal(result.transactions,3);assert.equal(result.key,'mbp-encrypted-v1');
+ assert(result.width<=width+4,'Horizontal overflow '+width);
+ await page.evaluate(()=>render());
+ assert.equal(await page.locator('#v32recent').evaluate(el=>getComputedStyle(el).display),'none');
+ await page.locator('main > header h1 .mbp41-personalize button').click();
+ await page.locator('#mbp41-personalize-dialog [data-mbp41-pref="recent"]').check();
+ await page.locator('#mbp41-save-preferences').click();await page.locator('#mbp41-personalize-dialog').waitFor({state:'hidden'});
+ assert.notEqual(await page.locator('#v32recent').evaluate(el=>getComputedStyle(el).display),'none');
+ await page.close();
+}
+assert.deepEqual(errors,[]);
+console.log('V41_PERSONALIZATION_TRENDS_PASS '+JSON.stringify({viewports:5,encryptedPreferences:true,monthlyComparison:true,noDataMutation:true,keyPreserved:true}));
+}finally{await browser.close()}})().catch(e=>{console.error('V41_PERSONALIZATION_TRENDS_FAIL '+String(e.stack||e));process.exitCode=1});
