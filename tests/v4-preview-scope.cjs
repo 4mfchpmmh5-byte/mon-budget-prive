@@ -15,6 +15,8 @@ const assert=require('node:assert/strict');
    const previewScope=new URL('./',location.href).href;
    const prodCache=await caches.open('mon-budget-shell-v3.7-beta9-ui-1');
    await prodCache.put('/sentinel-v37',new Response('PRESERVE_PRODUCTION_CACHE'));
+   const v4MainCache=await caches.open('mon-budget-shell-v4-beta1-offline-1');
+   await v4MainCache.put('/sentinel-v4',new Response('PRESERVE_ROOT_V4_CACHE'));
    const reg=await navigator.serviceWorker.register('./sw.js',{scope:'./'});
    await navigator.serviceWorker.ready;
    return {manifest,htmlTitle,appleTitle,previewScope,registrationScope:reg.scope,
@@ -38,11 +40,14 @@ const assert=require('node:assert/strict');
    const cached=await preview.match(new URL('./index.html',location.href));
    const oldCache=await caches.open('mon-budget-shell-v3.7-beta9-ui-1');
    const sentinel=await oldCache.match('/sentinel-v37');
+   const v4Main=await caches.open('mon-budget-shell-v4-beta1-offline-1');
+   const v4Sentinel=await v4Main.match('/sentinel-v4');
    const rootRegistration=await navigator.serviceWorker.getRegistration(new URL('/index.html',location.href).href);
    return {previewCached:!!cached,legacyCacheProtected:sentinel?await sentinel.text():null,
+    rootV4CacheProtected:v4Sentinel?await v4Sentinel.text():null,
     rootControlledByPreview:rootRegistration?.scope===new URL('./',location.href).href};
   });
-  assert.deepEqual(protection,{previewCached:true,legacyCacheProtected:'PRESERVE_PRODUCTION_CACHE',rootControlledByPreview:false});
+  assert.deepEqual(protection,{previewCached:true,legacyCacheProtected:'PRESERVE_PRODUCTION_CACHE',rootV4CacheProtected:'PRESERVE_ROOT_V4_CACHE',rootControlledByPreview:false});
   const pass='V4-preview-isolated-test!';
   await page.locator('#newpass').fill(pass);
   await page.locator('#confpass').fill(pass);
@@ -62,7 +67,7 @@ const assert=require('node:assert/strict');
   await page.locator('#app:not(.hidden)').waitFor();
   assert.deepEqual(await page.evaluate(()=>data.transactions.map(t=>t.id)),['preview-offline']);
   assert.deepEqual(errors,[]);
-  console.log('V4_PREVIEW_SCOPE_PASS '+JSON.stringify({manifestSeparate:true,workerScopeLimited:true,oldCacheProtected:true,offlineLaunch:true}));
+  console.log('V4_PREVIEW_SCOPE_PASS '+JSON.stringify({manifestSeparate:true,workerScopeLimited:true,oldCacheProtected:true,rootV4CacheProtected:true,offlineLaunch:true}));
   await context.close();
  }finally{await browser.close()}
 })().catch(e=>{console.error('V4_PREVIEW_SCOPE_FAIL '+String(e.stack||e));process.exitCode=1});
