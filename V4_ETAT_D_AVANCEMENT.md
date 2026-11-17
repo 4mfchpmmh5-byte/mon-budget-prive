@@ -93,4 +93,4 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - Scénario automatisé ajouté : création du coffre, enregistrement en ligne, installation du service worker, passage hors ligne, rechargement sans réseau, déverrouillage, écriture chiffrée hors ligne, nouveau rechargement sans réseau et contrôle des deux transactions.
 - Le service worker ne consulte pas le contenu du coffre ; les opérations restent stockées localement et chiffrées.
 - Ce test Chromium ne remplace pas le contrôle d'une PWA installée via Safari iOS, notamment la politique de stockage et les éventuelles purges de données d'iOS.
-- État CI du nouveau scénario : à confirmer.
+- État CI : GitHub Actions n°216 **réussi** ; vérification hors ligne et régression complète validées dans Chromium, sans constituer une validation Safari iOS.
