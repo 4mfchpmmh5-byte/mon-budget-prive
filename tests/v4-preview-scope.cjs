@@ -22,7 +22,7 @@ const assert=require('node:assert/strict');
    return {manifest,htmlTitle,appleTitle,previewScope,registrationScope:reg.scope,
     betaKey:KEY};
   });
-  assert.equal(config.manifest.name,'Mon Budget Privé — V4 Bêta 1 (essai)');
+  assert.equal(config.manifest.name,'Mon Budget Privé — V4 Bêta 2 (essai)');
   assert.equal(config.manifest.short_name,'Budget V4 Test');
   assert.equal(config.manifest.scope,'./');
   assert.equal(config.manifest.start_url,'./');
@@ -30,13 +30,13 @@ const assert=require('node:assert/strict');
   assert.equal(config.appleTitle,'Budget V4 Test');
   assert.equal(config.betaKey,'mbp-encrypted-v4-beta1');
   assert.equal(config.registrationScope,config.previewScope);
-  assert.match(config.htmlTitle,/V4 Bêta 1/);
+  assert.match(config.htmlTitle,/V4 Bêta 2/);
   await page.waitForFunction(async()=>{
    const reg=await navigator.serviceWorker.getRegistration('./');
    return reg?.active?.state==='activated';
   },null,{timeout:20000});
   const protection=await page.evaluate(async()=>{
-   const preview=await caches.open('mon-budget-shell-v4-preview-beta1-offline-1');
+   const preview=await caches.open('mon-budget-shell-v4-preview-beta2-offline-1');
    const cached=await preview.match(new URL('./index.html',location.href));
    const oldCache=await caches.open('mon-budget-shell-v3.7-beta9-ui-1');
    const sentinel=await oldCache.match('/sentinel-v37');
