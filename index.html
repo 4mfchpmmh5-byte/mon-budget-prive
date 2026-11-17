@@ -4634,4 +4634,81 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
  outline:2px solid #7da6cf!important;outline-offset:2px!important;
 }
 </style>
+
+<style id="mbp-v41-home-polish">
+/* V4.1 — Accueil only. Pure presentation: no financial model, storage or navigation changes. */
+#add:not(.hidden) #v24quick,
+#add:not(.hidden) #v32tasks,
+#add:not(.hidden) #v32recent{
+ border:1px solid rgba(122,163,210,.34)!important;
+ background:linear-gradient(160deg,rgba(32,49,70,.98),rgba(24,35,52,.98))!important;
+ border-radius:20px!important;
+ box-shadow:0 6px 18px rgba(4,13,30,.11)!important;
+ padding:16px!important;
+ min-width:0!important;
+}
+#add #v24quick h2,
+#add #v32tasks h2,
+#add #v32recent h2{
+ color:#f4f8fd!important;
+ font-size:18px!important;
+ font-weight:750!important;
+ letter-spacing:-.02em!important;
+ line-height:1.3!important;
+ margin:0!important;
+}
+#add #v32tasks .v32-head,
+#add #v32recent .v32-head{
+ gap:10px!important;
+ align-items:baseline!important;
+ margin-bottom:10px!important;
+ flex-wrap:wrap!important;
+}
+#add #v32tasks .v32-muted,
+#add #v32recent .v32-muted{
+ color:#bdcadd!important;
+ font-size:12px!important;
+ line-height:1.5!important;
+}
+#add #v32recent .mb35-recentline,
+#add #v32recent button[data-mb35tx]{
+ border-radius:12px!important;
+ min-height:54px!important;
+ padding:12px!important;
+ transition:background-color .15s ease,border-color .15s ease;
+}
+#add #v32recent .mb35-recentline:active,
+#add #v32recent button[data-mb35tx]:active{
+ background-color:rgba(97,145,198,.15)!important;
+}
+#add #v32tasks .v36-goal{
+ min-width:0!important;
+ gap:12px!important;
+}
+#add #v32tasks .v36-goal-main,
+#add #v32recent .mb35-recentline>*{
+ min-width:0!important;
+}
+#add #v32tasks .v33-status.done,
+#add #v33wealthtask .v33-status.done{
+ color:#b7f3d8!important;
+}
+#add #v32recent button:focus-visible,
+#add #v32tasks button:focus-visible{
+ outline:2px solid #90b8e4!important;
+ outline-offset:2px!important;
+}
+@media (max-width:375px){
+ #add:not(.hidden) #v24quick,
+ #add:not(.hidden) #v32tasks,
+ #add:not(.hidden) #v32recent{
+  padding:13px!important;
+ }
+ #add #v24quick h2,#add #v32tasks h2,#add #v32recent h2{font-size:17px!important}
+}
+@media (prefers-reduced-motion:reduce){
+ #add #v32recent .mb35-recentline,
+ #add #v32recent button[data-mb35tx]{transition:none!important}
+}
+</style>
 </body></html>
