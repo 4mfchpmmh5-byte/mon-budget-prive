@@ -4863,17 +4863,6 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
  const q=id=>document.getElementById(id);
  const safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
  const money=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(Number(n)||0);
- // Accueil : trois accès utiles, sans dupliquer le menu de navigation permanent.
- const shortcuts=q('v24quick');
- if(shortcuts){
-  const nav=document.createElement('nav');nav.className='mbp41-navigation';nav.setAttribute('aria-label','Accès rapides aux rubriques');
-  nav.innerHTML='<button type="button" data-mbp41-nav="home">Synthèse</button><button type="button" data-mbp41-nav="v30profile">Mes budgets</button><button type="button" data-mbp41-nav="wealth">Patrimoine</button>';
-  shortcuts.before(nav);
-  nav.addEventListener('click',e=>{
-   const button=e.target.closest('button[data-mbp41-nav]');if(!button)return;
-   if(button.dataset.mbp41Nav==='v30profile')tab('plans');else tab(button.dataset.mbp41Nav);
-  });
- }
  // Synthèse : recherche et filtres sur les opérations du mois affiché.
  const home=q('home');
  const host=document.createElement('section');host.id='v41-search-history';host.className='v32-card';
