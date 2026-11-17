@@ -4918,4 +4918,88 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
  if(data)drawHistory();
 })();
 </script>
+
+<style id="mbp-v41-personalization-and-trends-style">
+#add .mbp41-personalize{display:flex;justify-content:flex-end;margin:2px 0 9px}
+#add .mbp41-personalize>button{min-height:41px;padding:8px 12px;border:1px solid #536b8b!important;border-radius:12px!important;background:#273c54!important;color:#e1f0ff!important;box-shadow:none!important;font-size:12px;font-weight:650}
+#mbp41-personalize-dialog{width:min(94vw,430px);max-height:85dvh;overflow:auto}
+#mbp41-personalize-dialog .mbp41-setting{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;padding:7px 0;border-bottom:1px solid #39485b}
+#mbp41-personalize-dialog .mbp41-setting input{width:23px;height:23px;accent-color:#9bc7f6}
+#mbp41-personalize-dialog .mbp41-setting span{font-weight:650;font-size:14px}
+#mbp41-personalize-dialog .mbp41-hint{font-size:12px;color:#aebfd4;margin:8px 0 12px}
+#mbp41-personalize-dialog .mbp41-save{width:100%;min-height:45px;margin-top:13px}
+#home .mbp41-comparison{border:1px solid #425770;background:linear-gradient(160deg,#1d2c40,#192332);border-radius:20px;margin:12px 0;padding:15px}
+#home .mbp41-comparison h2{font-size:18px;font-weight:750;margin:0 0 5px}
+#home .mbp41-comparison .mbp41-sub{font-size:12px;color:#adbed2;margin:0 0 12px}
+#home .mbp41-cmpgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#home .mbp41-cmpitem{border:1px solid #3e536a;background:#233249;padding:11px;border-radius:14px;min-width:0}
+#home .mbp41-cmpitem small{display:block;font-size:11px;color:#afc0d4;margin-bottom:5px}
+#home .mbp41-cmpitem strong{display:block;font-size:18px;overflow-wrap:anywhere;color:#f0f6ff}
+#home .mbp41-cmpitem em{display:block;font-style:normal;font-size:11px;margin-top:4px;color:#b9c7d8}
+#home .mbp41-six-months{margin-top:14px}
+#home .mbp41-six-months h3{font-size:13px;color:#d9e8fc;margin:0 0 9px}
+#home .mbp41-chartrow{display:grid;grid-template-columns:51px 1fr 70px;align-items:center;gap:7px;font-size:11px;margin:8px 0}
+#home .mbp41-charttrack{height:9px;border-radius:10px;background:#334055;overflow:hidden}
+#home .mbp41-chartfill{height:100%;background:#85b0e7;border-radius:10px}
+#home .mbp41-chartval{text-align:right;font-variant-numeric:tabular-nums;color:#d6e2f2}
+@media(max-width:360px){#home .mbp41-cmpgrid{gap:6px}#home .mbp41-cmpitem{padding:8px}#home .mbp41-cmpitem strong{font-size:16px}}
+</style>
+<script id="mbp-v41-personalization-and-trends-script">
+(()=>{
+ 'use strict';
+ const q=id=>document.getElementById(id);
+ const money=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Number(n)||0);
+ const keys=[['nav','Accès rapides'],['quick','Saisie rapide'],['tasks','Mes tâches du mois'],['recent','Dernières opérations']];
+ const targets={nav:'.mbp41-navigation',quick:'#v24quick',tasks:'#v32tasks',recent:'#v32recent'};
+ const preferences=()=>data?.v41Preferences&&typeof data.v41Preferences==='object'?data.v41Preferences:{};
+ const add=q('add'),home=q('home');if(!add||!home)return;
+ const bar=document.createElement('div');bar.className='mbp41-personalize';
+ bar.innerHTML='<button type="button" aria-label="Personnaliser les sections de mon Accueil">Personnaliser l’Accueil</button>';
+ add.prepend(bar);
+ const dialog=document.createElement('dialog');dialog.id='mbp41-personalize-dialog';
+ dialog.innerHTML='<h2>Personnaliser mon Accueil</h2><p class="mbp41-hint">Masque les blocs que tu utilises moins. Les réglages restent dans ton coffre chiffré.</p>'+keys.map(([key,label])=>'<label class="mbp41-setting"><span>'+label+'</span><input type="checkbox" data-mbp41-pref="'+key+'" checked></label>').join('')+'<button type="button" class="btn mbp41-save" id="mbp41-save-preferences">Enregistrer</button><p class="mbp41-hint" id="mbp41-preference-status" role="status"></p>';
+ document.body.append(dialog);
+ function apply(){
+  if(!data)return;
+  const prefs=preferences();
+  for(const [key] of keys){const node=add.querySelector(targets[key]);if(node)node.style.setProperty('display',prefs[key]===false?'none':'');}
+  bar.style.display='';
+ }
+ bar.querySelector('button').onclick=()=>{
+  if(!data)return;
+  const prefs=preferences();
+  keys.forEach(([key])=>{dialog.querySelector('[data-mbp41-pref="'+key+'"]').checked=prefs[key]!==false});
+  q('mbp41-preference-status').textContent='';
+  dialog.showModal();
+ };
+ q('mbp41-save-preferences').onclick=async()=>{
+  if(!data)return;
+  const old=structuredClone(preferences());const next={...old};
+  for(const [key] of keys)next[key]=dialog.querySelector('[data-mbp41-pref="'+key+'"]').checked;
+  data.v41Preferences=next;
+  try{await save();apply();dialog.close()}catch(e){data.v41Preferences=old;apply();q('mbp41-preference-status').textContent='Enregistrement impossible. Aucune préférence modifiée.'}
+ };
+ // Compare actual transactions, never planned payments, contributions or non-cash income.
+ const cmp=document.createElement('section');cmp.className='mbp41-comparison';cmp.id='mbp41-comparison';home.append(cmp);
+ function monthOffset(month,offset){const d=new Date(month+'-02T12:00:00');d.setMonth(d.getMonth()+offset);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+ function label(month){return new Date(month+'-02T12:00:00').toLocaleDateString('fr-FR',{month:'short',year:'numeric'})}
+ function totals(month){
+  const items=(data?.transactions||[]).filter(t=>t.date?.slice(0,7)===month);
+  const expense=items.filter(t=>t.type==='expense'&&!['Provisions','Investissements'].includes(t.cat)).reduce((v,t)=>v+Number(t.amount||0),0);
+  const income=items.filter(t=>t.type==='income'&&!t.nonCash).reduce((v,t)=>v+Number(t.amount||0),0);
+  return {expense,income};
+ }
+ function drawComparison(){
+  if(!data)return;
+  const month=selectedMonth,prior=monthOffset(month,-1),now=totals(month),prev=totals(prior);
+  const delta=(a,b,invert=false)=>{const difference=a-b;return (difference>0?'+':difference<0?'−':'=')+(difference===0?'Stable':money(Math.abs(difference)))+(invert?' par rapport au mois précédent':' vs mois précédent')};
+  const months=Array.from({length:6},(_,i)=>monthOffset(month,i-5));
+  const values=months.map(m=>({month:m,amount:totals(m).expense}));
+  const max=Math.max(1,...values.map(v=>v.amount));
+  cmp.innerHTML='<h2>Évolution du budget réel</h2><p class="mbp41-sub">'+label(prior)+' → '+label(month)+' · uniquement les opérations enregistrées</p><div class="mbp41-cmpgrid"><div class="mbp41-cmpitem"><small>Dépenses du mois</small><strong>'+money(now.expense)+'</strong><em>'+delta(now.expense,prev.expense)+'</em></div><div class="mbp41-cmpitem"><small>Revenus encaissés</small><strong>'+money(now.income)+'</strong><em>'+delta(now.income,prev.income)+'</em></div></div><div class="mbp41-six-months"><h3>Dépenses de consommation · six mois</h3>'+values.map(v=>'<div class="mbp41-chartrow"><span>'+label(v.month).split(' ')[0]+'</span><div class="mbp41-charttrack"><div class="mbp41-chartfill" style="width:'+Math.max(0,Math.min(100,v.amount/max*100))+'%"></div></div><span class="mbp41-chartval">'+money(v.amount)+'</span></div>').join('')+'</div><p class="mbp41-sub">Les mouvements d’épargne et les tickets restaurant ne sont pas ajoutés aux dépenses ou aux revenus encaissés.</p>';
+ }
+ const oldRender=render;render=function(){oldRender();apply();drawComparison()};
+ if(data){apply();drawComparison()}
+})();
+</script>
 </body></html>
