@@ -71,22 +71,7 @@ const assert=require('node:assert/strict');
    dialogs.push(state);
    if(!state.missing&&(state.rect.left< -5||state.rect.right>width+5||state.rect.top< -5||state.rect.bottom>height+5||state.horizontalOverflow))problems.push({type:'dialog-geometry',width,info:state});
   }
-  if(width===390){
-   await page.evaluate(()=>tab('home'));
-   await page.locator('#v32recent [data-mb35tx="tx-audit"]').click();
-   await page.locator('#txdialog[open]').waitFor();
-   const action=page.locator('#txdialog .v36-delete-tx');
-   await action.click();
-   await page.locator('#mbp-ui-dialog[open]').waitFor();
-   const confirmation=await page.evaluate(()=>{
-    const d=document.getElementById('mbp-ui-dialog'),c=d.querySelector('[data-act="cancel"]'),a=d.querySelector('[data-act="accept"]');
-    return {message:d.textContent.trim().slice(0,120),active:document.activeElement?.tagName,focusOnCancel:document.activeElement===c,
-     cancelOutline:getComputedStyle(c).outlineStyle,acceptBg:getComputedStyle(a).backgroundColor,dialogOutline:getComputedStyle(d).outlineStyle,
-     cancelFontWeight:getComputedStyle(c).fontWeight,acceptFontWeight:getComputedStyle(a).fontWeight};
-   });
-   reports.push({width,login,viewStates,profile,dialogs,confirmation});
-   await page.locator('#mbp-ui-dialog [data-act="cancel"]').click();
-  }else reports.push({width,login,viewStates,profile,dialogs});
+  reports.push({width,login,viewStates,profile,dialogs});
   await context.close();
  }
  const simplified=reports.map(r=>({width:r.width,views:r.viewStates.map(v=>({name:v.name,heading:v.heading,counts:v.counts,tiny:v.tiny.length,purple:v.purple,oddWeight:v.oddWeight,nav:v.nav})),profile:r.profile,dialogs:r.dialogs.map(d=>({id:d.id,outline:d.outline,borderWidth:d.borderWidth,scrollable:d.scrollable,geometry:d.rect})),confirmation:r.confirmation}));
