@@ -47,3 +47,12 @@ GitHub Actions n°272 a validé la création et les tests du paquet. Le workflow
 - La recherche des fichiers hors ligne est limitée au cache du service worker actif. Elle ne consulte plus automatiquement tous les caches de l'origine, ce qui évite le mélange de pages entre applications installées.
 - Le scénario Playwright `tests/v4-preview-scope.cjs` contrôle les deux caches anciens simultanément, le périmètre d'installation du service worker et le lancement hors ligne.
 - **L'hébergement sur une origine HTTPS distincte reste recommandé et non réalisé** ; cette protection des caches n'équivaut pas à une preuve d'isolation de l'application installée sur Safari iOS.
+
+
+## Préparation de l'hébergement indépendant sur Vercel
+
+Le fichier `vercel.json`, **présent uniquement sur la branche de développement V4**, prépare le déploiement de la démo avec `node scripts/build-v4-beta-preview.cjs` et le seul dossier public `dist/v4-beta1`. Le paquet utilise une identité « Budget V4 Test », un coffre local distinct et un cache hors ligne propre. Les pages de test portent l'en-tête `X-Robots-Tag: noindex` ; ce n'est **pas** une authentification.
+
+**Ne pas importer le dépôt en sélectionnant implicitement `main`** : le dépôt public possède déjà la production V3.7 et `main` ne porte pas cette configuration de démo. Créer un projet Vercel **distinct**, sélectionner explicitement `v4/beta1-finance-engine` comme référence à déployer, contrôler dans les journaux que le dossier publié est `dist/v4-beta1`, puis tester son URL `*.vercel.app`. Ne pas associer le domaine de production V3.7. Toute activation Vercel nécessite une connexion du compte propriétaire ; sans celle-ci aucune URL de démonstration n'existe encore.
+
+Ne jamais saisir de vraies informations financières dans un environnement de test public sans protection d'accès. Avant d'utiliser le lien depuis l'iPhone, revalider l'URL, le titre « V4 Bêta 1 », les entrées de démonstration et l'absence de redirection vers la V3.7.
