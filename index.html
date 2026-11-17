@@ -827,7 +827,7 @@ $('txform').onsubmit=async e=>{
 };$('import').onclick=()=>$('importfile').click();$('importfile').onchange=async e=>{
  const file=e.target.files[0];if(!file)return;
  const openedData=data,openedSecret=secret;
- let previousData=null,previousSecret=null,previousPayload=null,locked=false;
+ let previousData=null,previousSecret=null,previousPayload=null,previousBackup=null,locked=false,writeAttempted=false;
  try{
   const v=JSON.parse(await file.text());
   const pw=await mbpPrompt('Phrase secrète de cette sauvegarde :');if(pw===null)return;
@@ -835,36 +835,43 @@ $('txform').onsubmit=async e=>{
   if(!await mbpConfirm('Remplacer toutes les données locales par cette sauvegarde ?'))return;
   if(data!==openedData||secret!==openedSecret||mbpVaultDeleting||mbpVaultRestoring||mbpVaultResetting)
    throw Error('Le coffre a changé pendant la confirmation');
-  // Prevent other writers from slipping between queue drain, encryption and replacement.
   mbpVaultRestoring=true;locked=true;
   await mbpSaveQueue.catch(()=>{});
   previousData=data;previousSecret=secret;
   previousPayload=localStorage.getItem(KEY);
+  previousBackup=localStorage.getItem(mbpV4RecoveryKey);
   const ciphertext=JSON.stringify(await seal(imported,pw));
   const verified=await unseal(JSON.parse(ciphertext),pw);
-  if(!verified||JSON.stringify(verified)!==JSON.stringify(imported))
+  if(JSON.stringify(verified)!==JSON.stringify(imported))
    throw Error('Vérification de sauvegarde échouée');
-  try{
-   localStorage.setItem(KEY,ciphertext);
-   if(localStorage.getItem(KEY)!==ciphertext)throw Error('Enregistrement incomplet');
-   data=imported;secret=pw;
-   render();
-   mbpVaultGeneration++;
-   mbpSaveQueue=Promise.resolve();
-   alertMsg('Sauvegarde restaurée');
-  }catch(writeError){
+  // Treat primary replacement and cleanup of the old recovery snapshot as one transaction.
+  // Otherwise a V3.7 vault with a different password survives an explicit V4 restore.
+  writeAttempted=true;
+  localStorage.setItem(KEY,ciphertext);
+  if(localStorage.getItem(KEY)!==ciphertext)throw Error('Enregistrement incomplet');
+  localStorage.removeItem(mbpV4RecoveryKey);
+  if(localStorage.getItem(mbpV4RecoveryKey)!==null)throw Error('Ancienne copie de secours non supprimée');
+  data=imported;secret=pw;
+  render();
+  mbpVaultGeneration++;
+  mbpSaveQueue=Promise.resolve();
+  alertMsg('Sauvegarde restaurée');
+ }catch(err){
+  let rolledBack=true;
+  if(writeAttempted){
    try{
     if(previousPayload===null)localStorage.removeItem(KEY);
     else localStorage.setItem(KEY,previousPayload);
-   }finally{
-    data=previousData;secret=previousSecret;
-    try{render()}catch(_){}
-   }
-   throw writeError;
+    if(localStorage.getItem(KEY)!==previousPayload)throw Error('Coffre précédent non restauré');
+    if(previousBackup===null)localStorage.removeItem(mbpV4RecoveryKey);
+    else localStorage.setItem(mbpV4RecoveryKey,previousBackup);
+    if(localStorage.getItem(mbpV4RecoveryKey)!==previousBackup)throw Error('Copie précédente non restaurée');
+   }catch(_){rolledBack=false}
   }
- }catch(err){mbpAlert('Restauration impossible : les données existantes ont été conservées si le stockage le permet.')}
- finally{if(locked)mbpVaultRestoring=false;e.target.value=''}
-};$('resetdata').onclick=async()=>{
+  if(previousData){data=previousData;secret=previousSecret;try{render()}catch(_){}}
+  mbpAlert(rolledBack?'Restauration annulée : les données précédentes sont conservées.':'Restauration interrompue : état du stockage à vérifier avant de continuer.');
+ }finally{if(locked)mbpVaultRestoring=false;e.target.value=''}
+}$('resetdata').onclick=async()=>{
  if(!data||!secret||mbpVaultRestoring||mbpVaultDeleting||mbpVaultResetting)return;
  const confirmation=await mbpPrompt('Cette action efface TOUTES les données du coffre, sans supprimer sa phrase secrète. Tape RÉINITIALISER pour confirmer :');
  if(confirmation!=='RÉINITIALISER')return;
