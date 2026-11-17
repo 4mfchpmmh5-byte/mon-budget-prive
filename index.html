@@ -3714,7 +3714,7 @@ dialog[open]{overflow-y:auto;overscroll-behavior:contain;max-height:min(88dvh,86
    const savings=!!row.closest('#v32tasks')||/épargne|provisions|investissement|objectifs/i.test(heading);
    fill.classList.remove(...financialClasses);
    if(savings){fill.classList.add('mbp363-progress-goal',rate>=1?'mbp363-complete':'mbp363-incomplete');fill.style.setProperty('background-color',rate>=1?'#53cda7':'#8294a8','important')}
-   else {fill.classList.add('mbp363-progress-budget',rate>=1?'mbp363-over':rate>=.85?'mbp363-high':rate>=.60?'mbp363-caution':'mbp363-low');fill.style.setProperty('background-color',rate>=1?'#f08c9b':rate>=.85?'#ed9a61':rate>=.60?'#edbd73':'#48bea0','important')}
+   else {fill.classList.add('mbp363-progress-budget',rate>1?'mbp363-over':rate>=.85?'mbp363-high':rate>=.60?'mbp363-caution':'mbp363-low');fill.style.setProperty('background-color',rate>1?'#f08c9b':rate>=.85?'#ed9a61':rate>=.60?'#edbd73':'#48bea0','important')}
   });
  }
  function cleanRecent(){
