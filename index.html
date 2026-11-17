@@ -871,7 +871,7 @@ $('txform').onsubmit=async e=>{
   if(previousData){data=previousData;secret=previousSecret;try{render()}catch(_){}}
   mbpAlert(rolledBack?'Restauration annulée : les données précédentes sont conservées.':'Restauration interrompue : état du stockage à vérifier avant de continuer.');
  }finally{if(locked)mbpVaultRestoring=false;e.target.value=''}
-}$('resetdata').onclick=async()=>{
+};$('resetdata').onclick=async()=>{
  if(!data||!secret||mbpVaultRestoring||mbpVaultDeleting||mbpVaultResetting)return;
  const confirmation=await mbpPrompt('Cette action efface TOUTES les données du coffre, sans supprimer sa phrase secrète. Tape RÉINITIALISER pour confirmer :');
  if(confirmation!=='RÉINITIALISER')return;
