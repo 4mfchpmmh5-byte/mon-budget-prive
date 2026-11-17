@@ -21,7 +21,7 @@ try{for(const width of [320,375,390,430,768]){
  assert.match(await page.locator('#mbp41-comparison').innerText(),/45\s*€/);
  assert.match(await page.locator('#mbp41-comparison').innerText(),/30\s*€/);
  assert.equal(await page.locator('#mbp41-personalize-dialog').count(),1);
- await page.locator('#add .mbp41-personalize button').click();
+ await page.locator('main > header h1 .mbp41-personalize button').click();
  await page.locator('#mbp41-personalize-dialog [data-mbp41-pref="recent"]').uncheck();
  await page.locator('#mbp41-save-preferences').click();await page.locator('#mbp41-personalize-dialog').waitFor({state:'hidden'});
  const result=await page.evaluate(()=>({prefs:data.v41Preferences,recent:document.getElementById('v32recent').style.display,transactions:data.transactions.length,key:KEY,width:document.documentElement.scrollWidth}));
@@ -29,7 +29,7 @@ try{for(const width of [320,375,390,430,768]){
  assert(result.width<=width+4,'Horizontal overflow '+width);
  await page.evaluate(()=>render());
  assert.equal(await page.locator('#v32recent').evaluate(el=>getComputedStyle(el).display),'none');
- await page.locator('#add .mbp41-personalize button').click();
+ await page.locator('main > header h1 .mbp41-personalize button').click();
  await page.locator('#mbp41-personalize-dialog [data-mbp41-pref="recent"]').check();
  await page.locator('#mbp41-save-preferences').click();await page.locator('#mbp41-personalize-dialog').waitFor({state:'hidden'});
  assert.notEqual(await page.locator('#v32recent').evaluate(el=>getComputedStyle(el).display),'none');
