@@ -10,9 +10,9 @@ try{for(const width of [320,375,390,430,768]){
  await page.locator('#create').click();
  await page.locator('#app:not(.hidden)').waitFor();
  await page.evaluate(async()=>{data.transactions.push({id:'ux-courses',type:'expense',name:'Courses essai',cat:'Alimentation',amount:20,date:new Date().toLocaleDateString('sv-SE')});data.transactions.push({id:'ux-salaire',type:'income',name:'Salaire essai',cat:'Revenus',amount:100,date:new Date().toLocaleDateString('sv-SE')});await save();render()});
- assert.equal(await page.locator('#add .mbp41-navigation button').count(),3);
+ assert.equal(await page.locator('#add .mbp41-navigation button').count(),0);
  assert.equal(await page.locator('#v41-search-history').count(),1);
- await page.locator('#add [data-mbp41-nav="home"]').click();
+ await page.locator('#nav button[data-tab="home"]').click();
  assert.equal(await page.locator('#home:not(.hidden)').count(),1);
  const search=page.locator('#mbp41-query');
  await search.fill('courses');
