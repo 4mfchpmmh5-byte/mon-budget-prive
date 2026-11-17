@@ -32,3 +32,10 @@
 - Un écran affiche des informations incohérentes entre les montants réels et prévus.
 
 **Règle de déploiement :** la validation automatisée (GitHub Actions n°260, réussie) ne vaut pas validation Safari iOS. Aucune fusion ni publication de `main` sans autorisation explicite.
+
+
+## Paquet de démonstration automatisé
+
+Le script `node scripts/build-v4-beta-preview.cjs` crée `dist/v4-beta1/` (sans modifier ni publier la V3.7). Il contient la page V4, son manifeste « Budget V4 Test », ses icônes et un service worker dont la portée est relative au sous-dossier. Le test `tests/v4-preview-scope.cjs` valide le périmètre du service worker, la préservation du cache V3.7 et le fonctionnement hors ligne.
+
+GitHub Actions n°272 a validé la création et les tests du paquet. Le workflow conserve désormais le paquet comme **artefact GitHub Actions** pendant sept jours, uniquement sur la branche V4. Cet artefact n'est **pas** une application déjà publiée ni une URL d'installation iPhone : il doit d'abord être hébergé sur une origine HTTPS de test séparée. Ne pas fusionner sur `main` pour réaliser cet essai.
