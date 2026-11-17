@@ -534,7 +534,7 @@ button,nav,summary,.v24-chip,.btn{touch-action:manipulation;-webkit-tap-highligh
 <dialog id="assetdialog"><form id="assetform"><button type="button" class="close" data-close>×</button><h2 id="assettitle">Ajouter un actif</h2><label>Nom<input id="assetname" required maxlength="80" placeholder="Ex. Livret A"></label><label>Type de placement<select id="assettype"><option value="Livrets">Livrets / épargne</option><option value="PEA">PEA</option><option value="Compte-titres">Compte-titres</option><option value="Crypto">Cryptomonnaies</option><option value="Immobilier">Immobilier</option><option value="Autres">Autres</option></select></label><label>Valeur actuelle (€)<input id="assetamount" required type="number" min="0" step="0.01" inputmode="decimal"></label><label>Capital investi ou versé (€) — facultatif<input id="assetinvested" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Laisser vide si inconnu"></label><p class="muted" style="font-size:12px">Le capital investi sert uniquement à calculer un écart indicatif, pas une performance réelle.</p><button class="btn" id="assetsubmit" type="submit">Ajouter</button></form></dialog>
 <dialog id="recurringdialog"><form id="recurringform"><button type="button" class="close" data-close>×</button><h2 id="recurringtitle">Nouvelle opération récurrente</h2><label>Libellé<input id="recurringname" required maxlength="80" placeholder="Ex. EDF"></label><label>Montant (€)<input id="recurringamount" required type="number" min="0.01" step="0.01" inputmode="decimal"></label><label>Catégorie<select id="recurringcat"><option>Fixes</option><option>Variables</option><option>Provisions</option><option>Impôts</option><option>Investissements</option></select></label><label>Jour du mois (1 à 31)<input id="recurringday" type="number" required min="1" max="31" value="5"></label><button class="btn" type="submit">Enregistrer le modèle</button></form></dialog>
 <script>
-'use strict';const $=id=>document.getElementById(id);const KEY='mbp-encrypted-v4-beta1';let data=null,secret=null,selectedMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);const fmt=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n||0);const uid=()=>crypto.randomUUID();const enc=new TextEncoder(),dec=new TextDecoder();const to64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));const from64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));function empty(){return {version:1,plans:[],transactions:[],assets:[],snapshots:[],recurring:[]}};async function keyFor(pass,salt){const material=await crypto.subtle.importKey('raw',enc.encode(pass),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}async function seal(obj,pass){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await keyFor(pass,salt),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(obj)));return {format:'mon-budget-prive',version:1,kdf:'PBKDF2-SHA256',iterations:310000,salt:to64(salt),iv:to64(iv),ciphertext:to64(cipher)}}async function unseal(v,pass){if(v?.format!=='mon-budget-prive'||v?.version!==1||v?.iterations!==310000)throw Error('Format de sauvegarde non reconnu');const key=await keyFor(pass,from64(v.salt));const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:from64(v.iv)},key,from64(v.ciphertext));const result=JSON.parse(dec.decode(raw));if(!Array.isArray(result.plans)||!Array.isArray(result.transactions)||!Array.isArray(result.assets))throw Error('Données incorrectes');return result}let mbpSaveQueue=Promise.resolve(),mbpVaultGeneration=0,mbpVaultDeleting=false,mbpVaultRestoring=false,mbpVaultResetting=false;
+'use strict';const $=id=>document.getElementById(id);const KEY='mbp-encrypted-v1';let data=null,secret=null,selectedMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);const fmt=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n||0);const uid=()=>crypto.randomUUID();const enc=new TextEncoder(),dec=new TextDecoder();const to64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));const from64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));function empty(){return {version:1,plans:[],transactions:[],assets:[],snapshots:[],recurring:[]}};async function keyFor(pass,salt){const material=await crypto.subtle.importKey('raw',enc.encode(pass),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}async function seal(obj,pass){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await keyFor(pass,salt),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(obj)));return {format:'mon-budget-prive',version:1,kdf:'PBKDF2-SHA256',iterations:310000,salt:to64(salt),iv:to64(iv),ciphertext:to64(cipher)}}async function unseal(v,pass){if(v?.format!=='mon-budget-prive'||v?.version!==1||v?.iterations!==310000)throw Error('Format de sauvegarde non reconnu');const key=await keyFor(pass,from64(v.salt));const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:from64(v.iv)},key,from64(v.ciphertext));const result=JSON.parse(dec.decode(raw));if(!Array.isArray(result.plans)||!Array.isArray(result.transactions)||!Array.isArray(result.assets))throw Error('Données incorrectes');return result}let mbpSaveQueue=Promise.resolve(),mbpVaultGeneration=0,mbpVaultDeleting=false,mbpVaultRestoring=false,mbpVaultResetting=false;
 async function save(){
  if(!data||!secret||mbpVaultDeleting||mbpVaultRestoring||mbpVaultResetting)throw Error('Coffre verrouillé ou en cours de remplacement');
  const snapshot=JSON.parse(JSON.stringify(data)),pass=secret,generation=mbpVaultGeneration;
@@ -4352,7 +4352,7 @@ html,body{overflow-x:clip!important;}
 <script id="mbp376-finishing">
 (()=>{'use strict';
  const text1='Espace personnel et confidentiel';
- const text2='Mon Budget Privé · V4 Bêta 2 (test)';
+ const text2='Mon Budget Privé · V4.0';
  const desiredHelp='Conserve ta phrase secrète en lieu sûr. Si tu l’oublies, seule une sauvegarde chiffrée avec son mot de passe te permettra de restaurer tes données.';
  function fixFooter(){
   const footer=document.querySelector('.v32-lock-footer');
@@ -4381,7 +4381,7 @@ html,body{overflow-x:clip!important;}
  if(unlock){new MutationObserver(()=>fix()).observe(unlock,{attributes:true,attributeFilter:['class']});}
  // Display-only version label (never reaches encrypted vault).
  document.querySelectorAll('#settings .v262-version').forEach(el=>{
-  el.textContent='Mon Budget Privé · V4 Bêta 2 · Données chiffrées localement';
+  el.textContent='Mon Budget Privé · V4.0 · Données chiffrées localement';
  });
 })();
 </script>
@@ -4566,29 +4566,7 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
  background-image:none!important;
 }
 </style>
-<style id="mbp-v4-isolated-vault-note">
-#mbpV4BetaNotice{
- margin:10px 0 14px;padding:11px 13px;border-radius:12px;
- border:1px solid rgba(148,184,231,.42);
- background:rgba(46,78,118,.20);color:#d8e9fc;
- font-size:13px;line-height:1.45;
-}
-</style>
-<script id="mbp-v4-isolated-vault-message">
-(()=>{
- 'use strict';
- const note=document.createElement('p');
- note.id='mbpV4BetaNotice';
- note.textContent='V4 Bêta 2 — coffre de test indépendant. Les données V3.7 ne sont pas chargées automatiquement. Pour reprendre une sauvegarde, utilise l’import chiffré depuis le Profil.';
- for(const id of ['setup','unlock']){
-  const panel=document.getElementById(id);
-  if(panel)panel.insertBefore(note.cloneNode(true),panel.children[1]||null);
- }
- // Maintain unique element IDs for accessibility.
- const copies=document.querySelectorAll('#mbpV4BetaNotice');
- copies.forEach((el,i)=>{if(i)el.id='mbpV4BetaNoticeUnlock'});
-})();
-</script>
+
 
 <style id="mbp-v4-beta2-polish">
 /* Ice Glass B2: restrained navy-blue accents without violet status chips. */
