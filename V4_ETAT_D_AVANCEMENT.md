@@ -121,3 +121,12 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - Après une modification volontaire des transactions, l'import du fichier initial remet les transactions, budgets et actifs enregistrés; le coffre peut être déverrouillé après rechargement.
 - GitHub Actions n°252 : **succès** sur la branche `v4/beta1-finance-engine`, y compris les tests existants.
 - Avant installation iOS : vraie sauvegarde externe de la V3.7, tests Safari de clavier/viewport/PWA et vérification sur données de démonstration. Ne pas importer des données réelles de production dans un banc de test.
+
+
+## Préparation bêta iPhone : isolation des données (17 novembre 2026)
+- **Protection nouvelle** : la branche V4 utilise exclusivement `mbp-encrypted-v4-beta1` comme clé du coffre actif, au lieu de la clé `mbp-encrypted-v1` utilisée par la V3.7. Les copies de secours sont également séparées (`-previous-v4`).
+- La bêta ne lit ni n'importe automatiquement la clé de coffre V3.7. Une information le signale sur les écrans de création et de déverrouillage ; l'import d'un fichier de sauvegarde V3.7 reste une action manuelle et confirmée.
+- Test `tests/v4-beta-storage-isolation.cjs` : coffre de production et copie de secours simulés par des sentinelles, création et écriture du coffre de test, rechargement, déverrouillage et comparaison des sentinelles.
+- **La séparation du stockage ne suffit pas à sécuriser un déploiement** : une V4 installée sous la même origine et la même portée service worker que la V3.7 pourrait encore remplacer le contrôleur hors ligne de production. Tester avec une **origine ou une portée PWA distincte**, en conservant `main` inchangée.
+- Ne jamais utiliser une vraie sauvegarde personnelle dans les tests automatisés ; valider Safari iOS sur coffre fictif et sauvegarder la V3.7 avant toute publication.
+- État CI de ce nouveau scénario à confirmer.
