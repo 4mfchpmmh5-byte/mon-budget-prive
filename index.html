@@ -4831,4 +4831,91 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
  refresh();
 })();
 </script>
+
+<!-- V4.1 regroupement ergonomie: UI uniquement, aucune nouvelle donnée persistée -->
+<style id="mbp-v41-ux-bundle-style">
+#add .mbp41-navigation{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
+#add .mbp41-navigation button{min-height:47px;padding:9px 5px;border:1px solid rgba(128,168,213,.40)!important;border-radius:13px;background:rgba(58,82,117,.23)!important;color:#dfebfd!important;box-shadow:none!important;font:650 12px/1.25 system-ui,-apple-system,sans-serif}
+#add .mbp41-navigation button:focus:not(:focus-visible){outline:0!important;box-shadow:none!important}
+#add .mbp41-navigation button:focus-visible{outline:2px solid #94bdea!important;outline-offset:2px!important}
+#v41-search-history{margin:12px 0}
+#v41-search-history .mbp41-search-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}
+#v41-search-history label{display:block;min-width:0;color:#c0ccdc;font-size:12px;font-weight:650}
+#v41-search-history input{width:100%;box-sizing:border-box;margin-top:6px;min-height:44px!important}
+#v41-search-history .mbp41-filter{display:flex;gap:5px;margin:10px 0 8px;flex-wrap:wrap}
+#v41-search-history .mbp41-filter button{min-height:40px;border-radius:11px;padding:8px 11px;background:#263145!important;color:#d7e4f5!important;border:1px solid #465b78!important;box-shadow:none!important;font-weight:650;font-size:12px}
+#v41-search-history .mbp41-filter button[aria-pressed=true]{background:#314b6b!important;border-color:#8baed6!important;color:#fff!important}
+#v41-search-history .mbp41-history-list{display:grid;gap:7px}
+#v41-search-history .mbp41-history-item{display:flex;justify-content:space-between;align-items:center;gap:8px;min-width:0;padding:9px 10px;border:1px solid #3a485b;background:#1b2534;border-radius:12px}
+#v41-search-history .mbp41-history-item>div:first-child{min-width:0;overflow-wrap:anywhere}
+#v41-search-history .mbp41-history-item strong{font-size:13px}
+#v41-search-history .mbp41-history-item small{color:#a8b9cf;display:block;margin-top:3px;font-size:11px}
+#v41-search-history .mbp41-history-item button{min-height:40px;flex:0 0 auto;border-radius:10px;border:1px solid #536783;background:#2c3d55;color:#e7f2ff;font-size:12px;font-weight:650}
+#v41-search-history .mbp41-result-count{font-size:12px;color:#a8b9cf;margin:7px 0}
+#wealth .mbp41-wealth-tools{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+#wealth .mbp41-wealth-tools button{min-height:44px;flex:1 1 145px;border-radius:12px;border:1px solid #536b8b;background:#2b405c;color:#e5f0ff;font-weight:650;font-size:12px}
+#wealth .mbp41-wealth-note{font-size:12px;color:#aebbd0;margin:0 0 8px}
+@media(max-width:360px){#v41-search-history .mbp41-history-item{padding:8px}#add .mbp41-navigation button{font-size:11px}}
+</style>
+<script id="mbp-v41-ux-bundle-script">
+(()=>{
+ 'use strict';
+ const q=id=>document.getElementById(id);
+ const safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+ const money=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(Number(n)||0);
+ // Accueil : trois accès utiles, sans dupliquer le menu de navigation permanent.
+ const shortcuts=q('v24quick');
+ if(shortcuts){
+  const nav=document.createElement('nav');nav.className='mbp41-navigation';nav.setAttribute('aria-label','Accès rapides aux rubriques');
+  nav.innerHTML='<button type="button" data-mbp41-nav="home">Synthèse</button><button type="button" data-mbp41-nav="v30profile">Mes budgets</button><button type="button" data-mbp41-nav="wealth">Patrimoine</button>';
+  shortcuts.before(nav);
+  nav.addEventListener('click',e=>{
+   const button=e.target.closest('button[data-mbp41-nav]');if(!button)return;
+   if(button.dataset.mbp41Nav==='v30profile')tab('plans');else tab(button.dataset.mbp41Nav);
+  });
+ }
+ // Synthèse : recherche et filtres sur les opérations du mois affiché.
+ const home=q('home');
+ const host=document.createElement('section');host.id='v41-search-history';host.className='v32-card';
+ host.innerHTML='<h2>Retrouver une opération</h2><p class="v32-muted">Recherche dans le mois sélectionné · aucune donnée envoyée</p><label>Nom ou catégorie<input id="mbp41-query" type="search" autocomplete="off" placeholder="Ex. Courses, EDF, Restaurant"></label><div class="mbp41-filter" role="group" aria-label="Type d’opérations"><button type="button" data-mbp41-filter="all" aria-pressed="true">Toutes</button><button type="button" data-mbp41-filter="expense" aria-pressed="false">Dépenses</button><button type="button" data-mbp41-filter="income" aria-pressed="false">Revenus</button></div><p class="mbp41-result-count" aria-live="polite"></p><div class="mbp41-history-list"></div>';
+ home?.append(host);
+ let filter='all',query='',lastMonth='';
+ const input=q('mbp41-query'),list=host.querySelector('.mbp41-history-list'),count=host.querySelector('.mbp41-result-count');
+ const drawHistory=()=>{
+  if(!data||!host)return;
+  const month=selectedMonth;
+  if(month!==lastMonth){query='';input.value='';lastMonth=month}
+  const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const rows=(data.transactions||[]).filter(t=>t.date?.slice(0,7)===month)
+   .filter(t=>filter==='all'||t.type===filter)
+   .filter(t=>!query||norm([t.name,t.cat,t.date].join(' ')).includes(norm(query)))
+   .slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  count.textContent=rows.length+' opération'+(rows.length>1?'s':'')+' trouvée'+(rows.length>1?'s':'')+(rows.length>40?' · 40 affichées':'');
+  list.innerHTML=rows.slice(0,40).map(t=>'<div class="mbp41-history-item"><div><strong>'+safe(t.name||'Opération')+'</strong><small>'+safe(t.date)+' · '+safe(t.cat||'Autres')+'</small></div><div style="text-align:right"><strong style="display:block;color:'+(t.type==='income'?'#79dfbb':'#e7a0ad')+'">'+(t.type==='income'?'+':'−')+money(t.amount)+'</strong><button type="button" data-mbp41-edit="'+safe(t.id)+'" aria-label="Modifier '+safe(t.name||'opération')+'">Modifier</button></div></div>').join('')||'<p class="v32-muted">Aucune opération trouvée pour cette recherche.</p>';
+ };
+ input?.addEventListener('input',()=>{query=input.value.trim();drawHistory()});
+ host.addEventListener('click',e=>{
+  const type=e.target.closest('[data-mbp41-filter]');
+  if(type){filter=type.dataset.mbp41Filter;host.querySelectorAll('[data-mbp41-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===type)));drawHistory();return}
+  const edit=e.target.closest('[data-mbp41-edit]');
+  if(!edit)return;
+  const id=edit.dataset.mbp41Edit;
+  const original=[...document.querySelectorAll('#txlist [data-edit-tx]')].find(b=>b.dataset.editTx===id);
+  if(original)original.click();
+  else{tab('home');const msg=q('msg');if(msg)msg.textContent='Ouvre le mois correspondant dans les opérations pour modifier cette ligne.'}
+ });
+ // Patrimoine : accès aux actions existantes et aide, sans créer de nouvel instantané.
+ const wealth=q('wealth'),snapshot=q('snapshot'),asset=q('newasset');
+ if(wealth&&snapshot&&asset){
+  const tools=document.createElement('div');tools.className='mbp41-wealth-tools';
+  tools.innerHTML='<button type="button" data-mbp41-wealth="snapshot">Enregistrer les valeurs du jour</button><button type="button" data-mbp41-wealth="asset">Ajouter un actif</button>';
+  const note=document.createElement('p');note.className='mbp41-wealth-note';
+  note.textContent='Les valeurs restent manuelles. L’enregistrement du jour utilise ton historique existant.';
+  const hero=wealth.querySelector('.hero');if(hero)hero.after(tools,note);else wealth.prepend(tools,note);
+  tools.addEventListener('click',e=>{const b=e.target.closest('[data-mbp41-wealth]');if(!b)return;(b.dataset.mbp41Wealth==='snapshot'?snapshot:asset).click()});
+ }
+ const originalRender=render;render=function(){originalRender();drawHistory()};
+ if(data)drawHistory();
+})();
+</script>
 </body></html>
