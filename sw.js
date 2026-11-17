@@ -21,10 +21,12 @@ self.addEventListener('fetch',event=>{
   }
   return response;
  }).catch(async()=>{
-  const cached=await caches.match(request,{ignoreSearch:true});
+  // Never serve cached content from another installed app or PWA on this origin.
+  const ownCache=await caches.open(CACHE);
+  const cached=await ownCache.match(request,{ignoreSearch:true});
   if(cached)return cached;
   if(request.mode==='navigate'){
-   const fallback=await caches.match(new URL('./index.html',self.registration.scope));
+   const fallback=await ownCache.match(new URL('./index.html',self.registration.scope));
    if(fallback)return fallback;
   }
   return Response.error();
