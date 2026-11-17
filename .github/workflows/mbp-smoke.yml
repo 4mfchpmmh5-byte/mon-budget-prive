@@ -44,7 +44,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: mon-budget-v4-beta1-preview
+          name: mon-budget-v4-beta2-preview
           path: dist/v4-beta1/
           retention-days: 7
           if-no-files-found: error
