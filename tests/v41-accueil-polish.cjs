@@ -41,9 +41,22 @@ const assert=require('node:assert/strict');
    assert(result.cards.every(c=>c.left>=-4&&c.right<=width+4),'Card overflows viewport: '+JSON.stringify(result.cards));
    assert(result.recentCount>=1,'Recent operations disappeared');
    assert.deepEqual(result.nav,['add'],'Accueil must stay active');
+   const seeAll=page.locator('#v32recent .mbp-v41-view-all');
+   await seeAll.waitFor({state:'visible'});
+   assert.equal(await seeAll.count(),1,'One Tout voir action only');
+   assert.equal(await seeAll.getAttribute('aria-label'),'Voir toutes les opérations dans la Synthèse');
+   await page.evaluate(()=>render());
+   assert.equal(await seeAll.count(),1,'No duplicate action after rerender');
+   await seeAll.click();
+   assert.equal(await page.locator('#home:not(.hidden)').count(),1,'Tout voir must navigate to Synthèse');
+   assert.equal(await page.locator('#nav button[data-tab="home"].active').count(),1);
+   const after=await page.evaluate(()=>({total:data.transactions.length,old:data.transactions[0]?.id,key:KEY}));
+   assert.equal(after.total,1,'Viewing history never changes transactions');
+   assert.equal(after.old,'tx-accueil-test');
+   assert.equal(after.key,'mbp-encrypted-v1');
    await page.close();
   }
   assert.deepEqual(errors,[]);
-  console.log('V41_ACCUEIL_POLISH_PASS '+JSON.stringify({viewports:5,sections:3,sourceDataUntouched:true,productionVaultKeyPreserved:true}));
+  console.log('V41_ACCUEIL_POLISH_PASS '+JSON.stringify({viewports:5,sections:3,seeAllNavigation:true,sourceDataUntouched:true,productionVaultKeyPreserved:true}));
  }finally{await browser.close()}
 })().catch(e=>{console.error('V41_ACCUEIL_POLISH_FAIL '+String(e.stack||e));process.exitCode=1});
