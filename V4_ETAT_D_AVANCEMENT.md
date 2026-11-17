@@ -94,3 +94,13 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - Le service worker ne consulte pas le contenu du coffre ; les opérations restent stockées localement et chiffrées.
 - Ce test Chromium ne remplace pas le contrôle d'une PWA installée via Safari iOS, notamment la politique de stockage et les éventuelles purges de données d'iOS.
 - État CI : GitHub Actions n°216 **réussi** ; vérification hors ligne et régression complète validées dans Chromium, sans constituer une validation Safari iOS.
+
+
+## Revue visuelle et séparation des caches — lot final, 17 novembre 2026
+- Cache PWA V4 isolé : le nouveau service worker ne supprime plus le cache V3.7 pendant l'activation (nettoyage limité aux versions `mon-budget-shell-v4-`). Test de conservation de l'ancien cache ajouté au scénario hors ligne.
+- Indicateurs de dépenses : vert sous 60 %, ambre de 60 à moins de 85 %, orange de 85 à 100 % inclus, rouge uniquement au-delà de 100 %.
+- Indicateurs d'épargne et de provisions : bleu-gris tant que l'objectif est incomplet, vert lorsqu'il est atteint. Élimination d'une ancienne règle CSS plus spécifique qui imposait du bleu clair malgré l'état calculé.
+- Nouveau test Playwright de sept cas vérifiant les couleurs **réellement rendues**, et pas uniquement les classes ou les valeurs CSS intermédiaires.
+- Exécution complète GitHub Actions n°236 : **réussie** avec cette correction et les scénarios précédents.
+- Risques restants avant publication : vérification sur Safari iOS réel (clavier, viewport, mode installé, cache et stockage), sauvegarde externe préalable et essai de restauration avec une copie de données de test.
+- Le développement reste sur `v4/beta1-finance-engine` ; aucune modification ni déploiement de `main`.
