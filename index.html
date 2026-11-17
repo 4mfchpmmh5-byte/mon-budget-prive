@@ -4781,4 +4781,54 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
  enhance();
 })();
 </script>
+
+<style id="mbp-v41-beta3-shortcuts-style">
+#add #v24quick .mbp-v41-shortcut-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}
+#add #v24quick .mbp-v41-shortcut-head h2{margin:0!important;min-width:0}
+#add #v24quick .mbp-v41-shortcut-organize{flex:0 0 auto;min-height:42px;padding:8px 12px;border-radius:12px!important;border:1px solid rgba(128,168,213,.48)!important;background:rgba(75,117,160,.19)!important;color:#d8eaff!important;box-shadow:none!important;font:650 12px/1.2 system-ui,-apple-system,sans-serif!important}
+#add #v24quick .mbp-v41-shortcut-organize:active{background:rgba(95,146,200,.33)!important}
+#add #v24quick .mbp-v41-shortcut-organize:focus:not(:focus-visible){outline:none!important;box-shadow:none!important}
+#add #v24quick .mbp-v41-shortcut-organize:focus-visible{outline:2px solid #94bdea!important;outline-offset:2px!important}
+#add #v24quick .mbp-v41-shortcut-count{font-size:11px;color:#a8bbd5;margin:0 0 9px;line-height:1.3}
+#settings #v26custombox{scroll-margin-top:18px}
+@media(max-width:360px){#add #v24quick .mbp-v41-shortcut-head{gap:6px}#add #v24quick .mbp-v41-shortcut-organize{padding:8px 9px}}
+</style>
+<script id="mbp-v41-beta3-shortcuts-script">
+(()=>{
+ 'use strict';
+ const quick=document.getElementById('v24quick'),cats=document.getElementById('v24cats');
+ if(!quick||!cats)return;
+ const heading=quick.querySelector(':scope > h2');
+ if(!heading)return;
+ const row=document.createElement('div');row.className='mbp-v41-shortcut-head';
+ heading.before(row);row.append(heading);
+ const organize=document.createElement('button');
+ organize.type='button';organize.className='mbp-v41-shortcut-organize';
+ organize.textContent='Organiser';organize.setAttribute('aria-label','Organiser mes raccourcis de saisie');
+ row.append(organize);
+ const count=document.createElement('p');count.className='mbp-v41-shortcut-count';
+ count.setAttribute('aria-live','polite');row.after(count);
+ let previous='';
+ const refresh=()=>{
+  const custom=[...cats.querySelectorAll('.v26-custom-chip')].length;
+  const total=Array.isArray(data?.quickLabels)?data.quickLabels.length:0;
+  const label=total?custom+' raccourci'+(custom>1?'s':'')+' personnalisé'+(custom>1?'s':'')+' affiché'+(custom>1?'s':'')+' · '+total+' enregistré'+(total>1?'s':''):'Personnalise tes raccourcis depuis Organiser';
+  if(label!==previous){count.textContent=label;previous=label}
+ };
+ new MutationObserver(refresh).observe(cats,{childList:true});
+ const oldRender=render;
+ render=function(){oldRender();refresh()};
+ organize.addEventListener('click',()=>{
+  if(!data)return;
+  tab('settings');
+  requestAnimationFrame(()=>{
+   const box=document.getElementById('v26custombox');
+   box?.scrollIntoView({behavior:'instant',block:'start'});
+   const input=document.getElementById('v26custominput');
+   if(input)input.setAttribute('aria-label','Nom du nouveau raccourci');
+  });
+ });
+ refresh();
+})();
+</script>
 </body></html>
