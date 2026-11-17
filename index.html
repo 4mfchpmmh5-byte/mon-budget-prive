@@ -4965,4 +4965,83 @@ main > header h1 .mbp41-personalize>button:focus-visible{outline:2px solid #94bd
  if(data){apply();drawComparison()}
 })();
 </script>
+
+<style id="mbp-v41-profile-reorder-style">
+#v30profile #settings #mbp41-settings-layout{display:grid;gap:12px;margin-top:10px}
+#v30profile #settings #mbp41-settings-layout .mbp41-prefsection{margin:0!important;min-width:0;padding:15px!important;border-radius:19px!important;border:1px solid rgba(126,165,207,.34)!important;background:linear-gradient(155deg,#1f3045,#192536)!important;box-shadow:none!important}
+#v30profile #settings #mbp41-settings-layout .mbp41-prefsection>h3{font-size:17px!important;font-weight:750!important;margin:0 0 5px!important;letter-spacing:-.02em;color:#f2f7ff!important}
+#v30profile #settings #mbp41-settings-layout .mbp41-desc{font-size:12px;line-height:1.45;color:#b1c1d6;margin:0 0 12px}
+#v30profile #settings #mbp41-settings-layout .mbp41-prefsection>.v24-settings-group,
+#v30profile #settings #mbp41-settings-layout .mbp41-prefsection>#v26custombox{margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+#v30profile #settings #mbp41-settings-layout .v24-settings-group>h3,
+#v30profile #settings #mbp41-settings-layout #v26custombox>h3{display:none!important}
+#v30profile #settings #mbp41-settings-layout .v24-settings-group .v24-settings-row{min-height:48px!important;border-radius:12px!important}
+#v30profile #settings #mbp41-settings-layout #v312taxdetails{margin:0!important;border:1px solid rgba(122,162,206,.28)!important;border-radius:14px!important;background:#172334!important}
+#v30profile #settings #mbp41-settings-layout #v312taxdetails>summary{border:0!important;border-radius:14px!important;min-height:47px;display:flex;align-items:center;padding:12px 13px!important;font-size:14px!important;font-weight:700!important}
+#v30profile #settings #mbp41-settings-layout #v312taxdetails[open]>summary{border-bottom:1px solid #394d63!important;border-radius:14px 14px 0 0!important}
+#v30profile #settings #mbp41-settings-layout #v312taxdetails #v262taxbox{border:0!important;background:transparent!important;box-shadow:none!important;margin:0!important}
+#v30profile #settings #mbp41-settings-layout #v26custombox>p{font-size:12px!important;line-height:1.45;color:#b1c1d6!important}
+#v30profile #settings #mbp41-settings-layout #v36recurrings{margin:0!important}
+#v30profile #settings #mbp41-settings-layout .mbp41-danger-fold{border:1px solid rgba(203,112,131,.35)!important;border-radius:14px!important;background:rgba(80,33,47,.13)!important;margin-top:10px;overflow:hidden}
+#v30profile #settings #mbp41-settings-layout .mbp41-danger-fold>summary{padding:13px!important;min-height:47px;font-size:13px!important;font-weight:700;color:#f2bdc5!important;cursor:pointer}
+#v30profile #settings #mbp41-settings-layout .mbp41-danger-body{padding:4px 12px 12px}
+#v30profile #settings #mbp41-settings-layout .mbp41-danger-body .v24-settings-group{margin:8px 0!important}
+#v30profile #settings #mbp41-settings-layout .mbp41-danger-body button{width:100%;min-height:45px!important;justify-content:flex-start}
+#v30profile #settings #mbp41-settings-layout .mbp41-danger-body .mbp41-wipe{background:#532e3a!important;color:#ffe0e6!important;border:1px solid #875060!important;border-radius:12px!important;margin-top:7px}
+#v30profile #settings #mbp41-settings-layout .mbp41-security-note{font-size:11px;line-height:1.5;color:#9fb2ca;margin:11px 0 0}
+#v30profile #settings #mbp41-settings-layout .mbp41-lock{margin:0!important}
+#v30profile #settings #mbp41-settings-layout .mbp41-lock>summary{min-height:47px}
+#v30profile #settings #mbp41-settings-layout .mbp41-hidden-empty{display:none!important}
+#v30profile #settings #mbp41-settings-layout .mbp41-prefsection :focus:not(:focus-visible){outline:none!important;box-shadow:none!important}
+#v30profile #settings #mbp41-settings-layout .mbp41-prefsection :focus-visible{outline:2px solid #9cc6f2!important;outline-offset:2px!important}
+@media(max-width:370px){#v30profile #settings #mbp41-settings-layout .mbp41-prefsection{padding:12px!important}}
+</style>
+<script id="mbp-v41-profile-reorder-script">
+(()=>{
+ 'use strict';
+ const settings=document.getElementById('settings');
+ if(!settings||document.getElementById('mbp41-settings-layout'))return;
+ const layout=document.createElement('div');layout.id='mbp41-settings-layout';
+ const section=(id,title,desc)=>{
+  const box=document.createElement('section');box.className='mbp41-prefsection card';box.id=id;
+  const h=document.createElement('h3');h.textContent=title;box.append(h);
+  if(desc){const p=document.createElement('p');p.className='mbp41-desc';p.textContent=desc;box.append(p)}
+  layout.append(box);return box;
+ };
+ const backups=section('mbp41-backups','Sauvegardes et restauration','Protège tes données avant de modifier tes réglages.');
+ const fiscal=section('mbp41-fiscal','Fiscalité et prévisions','Prépare tes impôts sans modifier tes opérations enregistrées.');
+ const personalization=section('mbp41-personalization','Personnalisation','Retrouve et organise tes raccourcis de saisie.');
+ const security=section('mbp41-security','Sécurité','Gère le verrouillage du coffre et les actions exceptionnelles.');
+ const groups=[...settings.querySelectorAll(':scope > .v24-settings-group')];
+ const group=title=>groups.find(g=>g.querySelector(':scope > h3')?.textContent.trim()===title);
+ const backupsCard=group('Sauvegardes');
+ if(backupsCard)backups.append(backupsCard);
+ const tax=document.getElementById('v312taxdetails');
+ if(tax){fiscal.append(tax);tax.querySelector('summary')&&(tax.querySelector('summary').textContent='Simulateur d’impôt et prévisions 2027');}
+ const custom=document.getElementById('v26custombox');if(custom)personalization.append(custom);
+ const lock=[...settings.querySelectorAll(':scope > details')].find(d=>d.querySelector('summary')?.textContent.includes('Sécurité et verrouillage'));
+ if(lock){lock.classList.add('mbp41-lock');security.append(lock);}
+ const sensitive=document.createElement('details');sensitive.className='mbp41-danger-fold';
+ sensitive.innerHTML='<summary>Actions sensibles</summary><div class="mbp41-danger-body"><p class="mbp41-desc">Ces opérations nécessitent une confirmation. Exporte une sauvegarde avant toute remise à zéro.</p></div>';
+ const sensitiveBody=sensitive.querySelector('.mbp41-danger-body');
+ const envelopes=group('Enveloppes'),reset=group('Zone sensible');
+ if(envelopes)sensitiveBody.append(envelopes);
+ if(reset)sensitiveBody.append(reset);
+ const wipe=document.getElementById('wipe');
+ if(wipe){wipe.classList.add('mbp41-wipe');sensitiveBody.append(wipe);wipe.textContent='Effacer le coffre de cet appareil'}
+ security.append(sensitive);
+ const note=document.createElement('p');note.className='mbp41-security-note';
+ note.textContent='Données chiffrées localement. La suppression du coffre ou la réinitialisation nécessite une sauvegarde pour pouvoir restaurer les données.';
+ security.append(note);
+ const version=settings.querySelector('.v262-version');
+ if(version)version.before(layout);else settings.append(layout);
+ // Remove only redundant visual wrapper; preserve all original actions and listeners.
+ const emptySecurity=group('Sécurité');
+ if(emptySecurity){emptySecurity.classList.add('mbp41-hidden-empty');emptySecurity.setAttribute('aria-hidden','true')}
+ const obsoleteForecast=settings.querySelector('#forecast2027form')?.closest('.v24-settings-group');
+ if(obsoleteForecast?.hidden)obsoleteForecast.setAttribute('aria-hidden','true');
+ const first=settings.querySelector(':scope > .card');
+ if(first?.style.display==='none')first.setAttribute('aria-hidden','true');
+})();
+</script>
 </body></html>
