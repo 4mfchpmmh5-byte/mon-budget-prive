@@ -97,7 +97,8 @@ const assert=require('node:assert/strict');
   await page.waitForFunction(()=>data.transactions.some(t=>t.id==='t-salary'));
   const after=await page.evaluate(async legacyPassword=>{
    const original=await unseal(JSON.parse(localStorage.getItem(KEY)),legacyPassword);
-   return {schemaVersion:data.schemaVersion,stored:JSON.stringify(original)===JSON.stringify(data),
+   // The first render lazily initializes envelopeStart in memory; it is a derived UI default, not a source field.
+   return {schemaVersion:data.schemaVersion,stored:JSON.stringify(original)===JSON.stringify(Object.fromEntries(Object.entries(data).filter(([key])=>key!=='envelopeStart'))),
     persistedDiff:Object.keys(data).filter(key=>JSON.stringify(original[key])!==JSON.stringify(data[key])).map(key=>({key,stored:JSON.stringify(original[key])?.slice(0,160),memory:JSON.stringify(data[key])?.slice(0,160)})),
     restored:JSON.parse(JSON.stringify(data)),activeKey:KEY,
     legacyKey:localStorage.getItem('mbp-encrypted-v1'),
