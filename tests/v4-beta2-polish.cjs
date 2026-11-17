@@ -33,15 +33,7 @@ const assert=require('node:assert/strict');
   }
   await page.locator('#v32recent [data-mb35tx="b2-context"]').click();
   await page.locator('#txdialog[open]').waitFor();
-  const message=await page.evaluate(async()=>{
-   const prev=window.mbpConfirm;
-   window.__b2Prev=prev;
-   return await new Promise(resolve=>{
-    window.mbpConfirm=async text=>{resolve(text);return false};
-   });
-  }).catch(()=>null);
-  // Test both the actual user-facing confirmation and cancellation.
-  await page.evaluate(()=>{window.mbpConfirm=window.__b2Prev});
+  // Exercise the actual confirmation, including cancel.
   const del=page.locator('#txdialog .v36-delete-tx');
   assert(await del.isVisible());
   await del.click();
