@@ -14,7 +14,7 @@ assert(sw.includes("const CACHE='mon-budget-shell-v4-beta1-offline-1'"),'Unexpec
 assert(!sw.includes("keys.filter(k=>k.startsWith('mon-budget-shell-')"),'Unsafe cache cleanup');
 fs.mkdirSync(output,{recursive:true});
 const previewHtml=html
- .replace('<title>Mon Budget Privé</title>','<title>Mon Budget Privé — V4 Bêta 1</title>')
+ .replace('<title>Mon Budget Privé</title>','<title>Mon Budget Privé — V4 Bêta 2</title>')
  .replace('<meta name="apple-mobile-web-app-title" content="Mon Budget">','<meta name="apple-mobile-web-app-title" content="Budget V4 Test">')
  .replace('<meta name="theme-color" content="#0b1220">','<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0b1220">');
 assert(previewHtml.includes('Budget V4 Test'),'Preview app label absent');
@@ -22,7 +22,7 @@ assert(previewHtml.includes('mbpV4BetaNotice'),'Beta warning absent');
 fs.writeFileSync(path.join(output,'index.html'),previewHtml);
 const previewManifest={
  ...manifest,
- name:'Mon Budget Privé — V4 Bêta 1 (essai)',
+ name:'Mon Budget Privé — V4 Bêta 2 (essai)',
  short_name:'Budget V4 Test',
  id:'./',
  start_url:'./',
@@ -31,7 +31,7 @@ const previewManifest={
 fs.writeFileSync(path.join(output,'manifest.webmanifest'),JSON.stringify(previewManifest,null,2)+'\n');
 const previewWorker=sw
  .replace("const CACHE='mon-budget-shell-v4-beta1-offline-1'",
-          "const CACHE='mon-budget-shell-v4-preview-beta1-offline-1'")
+          "const CACHE='mon-budget-shell-v4-preview-beta2-offline-1'")
  .replace("k.startsWith('mon-budget-shell-v4-')",
           "k.startsWith('mon-budget-shell-v4-preview-')");
 // A preview must never clean a separate V4 cache or resolve missing assets from
