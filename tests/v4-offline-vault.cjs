@@ -22,17 +22,23 @@ const assert=require('node:assert/strict');
    const stamp=new Date().toLocaleDateString('sv-SE');
    data.transactions.push({id:'online-entry',type:'expense',name:'Avant hors ligne',amount:21.45,cat:'Variables',date:stamp});
    await save();
-   const reg=await navigator.serviceWorker.register('./sw.js',{scope:'./'});
-   await navigator.serviceWorker.ready;
-   const active=reg.active||reg.waiting||reg.installing;
-   if(!active||active.state!=='activated')throw Error('Service worker inactive');
+   await navigator.serviceWorker.register('./sw.js',{scope:'./'});
+   return {encrypted:!localStorage.getItem(KEY).includes('Avant hors ligne')};
+  });
+  // Registration is asynchronous: wait for an ACTIVE worker and a complete cache,
+  // not merely the registration promise (which can resolve during installation).
+  await page.waitForFunction(async()=>{
+   const reg=await navigator.serviceWorker.getRegistration('./');
+   return reg?.active?.state==='activated';
+  },null,{timeout:15000});
+  const cached=await page.evaluate(async()=>{
    const names=await caches.keys();
    const cache=await caches.open('mon-budget-shell-v4-beta1-offline-1');
    const entry=await cache.match(new URL('./index.html',location.href));
    if(!entry)throw Error('Offline shell not cached');
-   return {registered:true,names,encrypted:!localStorage.getItem(KEY).includes('Avant hors ligne')};
+   return {registered:true,names};
   });
-  assert(initial.names.includes('mon-budget-shell-v4-beta1-offline-1'));
+  assert(cached.names.includes('mon-budget-shell-v4-beta1-offline-1'));
   assert(initial.encrypted);
   // SW must control navigation before entering offline mode.
   await page.reload({waitUntil:'load'});
