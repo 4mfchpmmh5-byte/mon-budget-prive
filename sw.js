@@ -7,7 +7,7 @@ self.addEventListener('install',event=>{
 });
 self.addEventListener('activate',event=>{
  event.waitUntil(Promise.all([
-  caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('mon-budget-shell-')&&k!==CACHE).map(k=>caches.delete(k)))),
+  caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('mon-budget-shell-v4-')&&k!==CACHE).map(k=>caches.delete(k)))),
   self.clients.claim()
  ]));
 });
