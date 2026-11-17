@@ -130,3 +130,10 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - **La séparation du stockage ne suffit pas à sécuriser un déploiement** : une V4 installée sous la même origine et la même portée service worker que la V3.7 pourrait encore remplacer le contrôleur hors ligne de production. Tester avec une **origine ou une portée PWA distincte**, en conservant `main` inchangée.
 - Ne jamais utiliser une vraie sauvegarde personnelle dans les tests automatisés ; valider Safari iOS sur coffre fictif et sauvegarder la V3.7 avant toute publication.
 - GitHub Actions n°260 : **succès**, y compris le nouveau scénario d'isolation du coffre V4. Protocole de test manuel créé dans `V4_BETA1_IPHONE_TEST.md`.
+
+
+## Préparation de l'hébergement test Vercel — 17 novembre 2026
+- Configuration `vercel.json` ajoutée uniquement à `v4/beta1-finance-engine` : compilation `node scripts/build-v4-beta-preview.cjs`, publication exclusivement du dossier `dist/v4-beta1`, en-têtes anti-indexation et sécurité basique.
+- Nouveau contrôle `tests/v4-vercel-preview-config.cjs` : vérifie la configuration et l'exclusion des fichiers de développement et du coffre V3.7 de la sortie statique.
+- Exécution GitHub Actions n°292 : **succès**, tous les tests et l'archivage du paquet de démo validés.
+- Vercel n'est **pas connecté** et **aucun déploiement n'a été créé**. Requiert une connexion explicite au compte Vercel et la sélection du bon projet/branche de test. Ne pas déployer `main` ni utiliser le domaine de l'application actuelle.
