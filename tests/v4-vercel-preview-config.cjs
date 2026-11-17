@@ -18,7 +18,7 @@ assert(!html.includes("const KEY='mbp-encrypted-v1'"),'Production vault referenc
 assert.equal(manifest.short_name,'Budget V4 Test');
 assert.equal(manifest.start_url,'./');
 assert.equal(manifest.scope,'./');
-assert.match(worker,/mon-budget-shell-v4-preview-beta1-offline-1/);
+assert.match(worker,/mon-budget-shell-v4-preview-beta2-offline-1/);
 assert(!worker.includes("caches.match(request,{ignoreSearch:true})"),'Cross-app offline fallback is forbidden');
 assert(!worker.includes("keys.filter(k=>k.startsWith('mon-budget-shell-v4-')"),'Cross-app cache cleanup is forbidden');
 assert(!fs.existsSync(path.join(out,'tests')),'Test source should not be published');
