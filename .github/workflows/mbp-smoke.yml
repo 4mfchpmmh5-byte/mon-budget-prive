@@ -35,6 +35,7 @@ jobs:
           node tests/v4-semantic-colors.cjs
           node tests/v4-restore-migration.cjs
           node tests/v4-external-backup-roundtrip.cjs
+          node tests/v4-beta-storage-isolation.cjs
       - name: Vérifier la page GitHub Pages en production
         if: github.ref == 'refs/heads/main'
         run: |
