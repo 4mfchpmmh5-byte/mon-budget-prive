@@ -1,0 +1,26 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const config=JSON.parse(fs.readFileSync(path.join(root,'vercel.json'),'utf8'));
+assert.equal(config.framework,null);
+assert.equal(config.buildCommand,'node scripts/build-v4-beta-preview.cjs');
+assert.equal(config.outputDirectory,'dist/v4-beta1');
+assert(config.headers?.some(x=>x.headers?.some(h=>h.key==='X-Robots-Tag'&&/noindex/.test(h.value))));
+const out=path.join(root,config.outputDirectory);
+for(const name of ['index.html','manifest.webmanifest','sw.js','icon-192.png','icon-512.png'])
+ assert(fs.statSync(path.join(out,name)).size>0,'Missing public beta file: '+name);
+const html=fs.readFileSync(path.join(out,'index.html'),'utf8');
+const worker=fs.readFileSync(path.join(out,'sw.js'),'utf8');
+const manifest=JSON.parse(fs.readFileSync(path.join(out,'manifest.webmanifest'),'utf8'));
+assert(html.includes("const KEY='mbp-encrypted-v4-beta1'"),'Only separate beta vault allowed');
+assert(!html.includes("const KEY='mbp-encrypted-v1'"),'Production vault reference in build');
+assert.equal(manifest.short_name,'Budget V4 Test');
+assert.equal(manifest.start_url,'./');
+assert.equal(manifest.scope,'./');
+assert.match(worker,/mon-budget-shell-v4-preview-beta1-offline-1/);
+assert(!worker.includes("caches.match(request,{ignoreSearch:true})"),'Cross-app offline fallback is forbidden');
+assert(!worker.includes("keys.filter(k=>k.startsWith('mon-budget-shell-v4-')"),'Cross-app cache cleanup is forbidden');
+assert(!fs.existsSync(path.join(out,'tests')),'Test source should not be published');
+assert(!fs.existsSync(path.join(out,'.git')),'Git internals should not be published');
+console.log('V4_VERCEL_PREVIEW_CONFIG_PASS '+JSON.stringify({isolatedVault:true,previewOnlyOutput:true,seoDisabled:true,pwaManifest:true,files:5}));
