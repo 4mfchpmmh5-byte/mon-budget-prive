@@ -104,3 +104,11 @@ Ce document reflète les contrôles exécutés, pas une certification exhaustive
 - Exécution complète GitHub Actions n°236 : **réussie** avec cette correction et les scénarios précédents.
 - Risques restants avant publication : vérification sur Safari iOS réel (clavier, viewport, mode installé, cache et stockage), sauvegarde externe préalable et essai de restauration avec une copie de données de test.
 - Le développement reste sur `v4/beta1-finance-engine` ; aucune modification ni déploiement de `main`.
+
+
+## Import d'une sauvegarde V3.7 vers V4 — 17 novembre 2026
+- Restauration de sauvegarde chiffrée renforcée : la substitution du coffre principal et la suppression de l'ancienne copie de secours sont traitées comme une opération cohérente.
+- Si une écriture ou la suppression de la copie locale échoue, tentative de remise en place du coffre principal précédent, de sa copie de secours et de l'état mémoire avant d'annoncer l'échec.
+- Test navigateur : refus de confirmation sans changement, échec simulé d'effacement de la copie avec retour arrière, restauration d'une sauvegarde V3.7 sous une autre phrase secrète, migration vers le schéma V4, suppression de l'ancien contenu, rechargement puis déverrouillage du nouveau coffre.
+- GitHub Actions n°246 : **suite complète réussie** après correction d'une erreur de syntaxe détectée en CI.
+- La validation Safari iOS réel et la sauvegarde externe de l'installation existante restent obligatoires avant tout déploiement ; `main` reste inchangée.
