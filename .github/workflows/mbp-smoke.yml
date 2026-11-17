@@ -1,7 +1,7 @@
 name: Test Mon Budget Prive
 on:
   push:
-    branches: [main, v4/beta1-finance-engine, v4/release-candidate-production]
+    branches: [main, v4/beta1-finance-engine, v4/release-candidate-production, v4.1/accueil-ux]
   pull_request:
     branches: [main]
 jobs:
@@ -18,7 +18,7 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Démarrer le site et exécuter les tests
         run: |
-          if [ "$GITHUB_REF" = "refs/heads/v4/release-candidate-production" ] || [ "$GITHUB_HEAD_REF" = "v4/release-candidate-production" ] || [ "$GITHUB_REF" = "refs/heads/main" ]; then
+          if [ "$GITHUB_REF" = "refs/heads/v4/release-candidate-production" ] || [ "$GITHUB_HEAD_REF" = "v4/release-candidate-production" ] || [ "$GITHUB_REF" = "refs/heads/main" ] || [ "$GITHUB_REF" = "refs/heads/v4.1/accueil-ux" ] || [ "$GITHUB_HEAD_REF" = "v4.1/accueil-ux" ]; then
             python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/mbp-test-server.log 2>&1 &
             node tests/v4-production-upgrade.cjs
             node tests/v4-functional-regression.cjs
@@ -31,6 +31,7 @@ jobs:
             node tests/v4-restore-migration.cjs
             node tests/v4-external-backup-roundtrip.cjs
             node tests/v4-full-ui-audit.cjs
+            if [ -f tests/v41-accueil-polish.cjs ]; then node tests/v41-accueil-polish.cjs; fi
             exit 0
           fi
           node scripts/build-v4-beta-preview.cjs
@@ -58,7 +59,7 @@ jobs:
           node tests/v4-full-ui-audit.cjs
           node tests/v4-v37-full-migration.cjs
       - name: Conserver le paquet beta de demonstration (non deploye)
-        if: success() && github.ref != 'refs/heads/v4/release-candidate-production' && github.head_ref != 'v4/release-candidate-production' && github.ref != 'refs/heads/main'
+        if: success() && github.ref != 'refs/heads/v4/release-candidate-production' && github.head_ref != 'v4/release-candidate-production' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/v4.1/accueil-ux' && github.head_ref != 'v4.1/accueil-ux'
         uses: actions/upload-artifact@v4
         with:
           name: mon-budget-v4-beta2-preview
