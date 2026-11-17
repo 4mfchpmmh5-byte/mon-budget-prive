@@ -4043,7 +4043,7 @@ dialog input[type=date],dialog input[type=number]{box-sizing:border-box!importan
   const n=fmt(pair[1]),goal=fmt(pair[2]);if(!(goal>0)||!Number.isFinite(n))return;
   const header=row.closest('.mb35-section,.v32-card')?.querySelector('h2')?.textContent||'';
   const savings=!!row.closest('#v32tasks')||/épargne|provisions|investissements|objectifs/i.test(header);
-  const ratio=n/goal,color=savings?(n<=0?'#77879a':ratio>=1?'#4dc69f':'#e8ae68'):(ratio>=1?'#f08e9c':ratio>=.85?'#e88b55':ratio>=.6?'#e8ae68':'#4dc69f');
+  const ratio=n/goal,color=savings?(ratio>=1?'#4dc69f':'#8294a8'):(ratio>1?'#f08e9c':ratio>=.85?'#e88b55':ratio>=.6?'#e8ae68':'#4dc69f');
   if(fill.style.getPropertyValue('--mbp372-status')!==color)fill.style.setProperty('--mbp372-status',color);
   fill.classList.add('mbp372-status');
  });}
