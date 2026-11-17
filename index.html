@@ -2482,7 +2482,7 @@ const dlg=document.createElement('dialog');dlg.id='mbp-ui-dialog';dlg.setAttribu
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let resolveActive=null,activeField=null;
 function finish(value){if(dlg.open)dlg.close();const f=resolveActive;resolveActive=null;activeField=null;if(f)f(value)}
-function show(html){if(dlg.open){finish(null)}dlg.innerHTML=html;dlg.showModal();return new Promise(resolve=>{resolveActive=resolve})}
+function show(html){if(dlg.open){finish(null)}dlg.innerHTML=html;const heading=dlg.querySelector('.mbpu-title');if(heading)heading.tabIndex=-1;dlg.showModal();if(heading)heading.focus({preventScroll:true});return new Promise(resolve=>{resolveActive=resolve})}
 dlg.addEventListener('cancel',e=>{e.preventDefault();finish(null)});
 const actions=(primary='Valider',cancel='Annuler')=>`<div class="mbpu-actions"><button type="button" data-act="cancel">${esc(cancel)}</button><button type="button" class="mbpu-primary" data-act="accept">${esc(primary)}</button></div>`;
 window.mbpConfirm=async message=>{
@@ -4633,6 +4633,27 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
 #txdialog .v36-delete-tx{
  background:#6d2e3b!important;background-image:none!important;
  color:#ffe6eb!important;border-color:#a24b5d!important;
+}
+</style>
+<style id="mbp-v4-beta2-dialog-focus">
+/* Safari iOS: never draw an extra focus ring around the entire modal surface. */
+#txdialog:focus,#txdialog:focus-visible,
+#mbp-ui-dialog:focus,#mbp-ui-dialog:focus-visible{
+ outline:none!important;
+ outline-offset:0!important;
+}
+/* Opening a confirmation focuses its heading, not the default Cancel button. */
+#mbp-ui-dialog .mbpu-title[tabindex="-1"]:focus{
+ outline:none!important;box-shadow:none!important;
+}
+/* Pointer interaction does not keep a double blue focus outline around actions. */
+#mbp-ui-dialog .mbpu-actions button:focus:not(:focus-visible),
+#txdialog button:focus:not(:focus-visible){
+ outline:none!important;outline-offset:0!important;box-shadow:none!important;
+}
+/* Keep an accessible, restrained keyboard navigation focus indicator. */
+#mbp-ui-dialog .mbpu-actions button:focus-visible{
+ outline:2px solid #7da6cf!important;outline-offset:2px!important;
 }
 </style>
 </body></html>
