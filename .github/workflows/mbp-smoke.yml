@@ -32,6 +32,7 @@ jobs:
             node tests/v4-external-backup-roundtrip.cjs
             node tests/v4-full-ui-audit.cjs
             if [ -f tests/v41-accueil-polish.cjs ]; then node tests/v41-accueil-polish.cjs; fi
+            if [ -f tests/v41-beta3-shortcuts.cjs ]; then node tests/v41-beta3-shortcuts.cjs; fi
             exit 0
           fi
           node scripts/build-v4-beta-preview.cjs
