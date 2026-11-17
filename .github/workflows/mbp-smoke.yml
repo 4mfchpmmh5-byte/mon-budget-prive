@@ -1,7 +1,7 @@
 name: Test Mon Budget Prive
 on:
   push:
-    branches: [main, v4/beta1-finance-engine]
+    branches: [main, v4/beta1-finance-engine, v4/release-candidate-production]
   pull_request:
     branches: [main]
 jobs:
@@ -18,6 +18,21 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Démarrer le site et exécuter les tests
         run: |
+          if [ "$GITHUB_REF" = "refs/heads/v4/release-candidate-production" ]; then
+            python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/mbp-test-server.log 2>&1 &
+            node tests/v4-production-upgrade.cjs
+            node tests/v4-functional-regression.cjs
+            node tests/v4-cross-month-goals.cjs
+            node tests/v4-operation-editor.cjs
+            node tests/v4-native-numeric.cjs
+            node tests/v4-dialog-geometry.cjs
+            node tests/v4-navigation-state.cjs
+            node tests/v4-semantic-colors.cjs
+            node tests/v4-restore-migration.cjs
+            node tests/v4-external-backup-roundtrip.cjs
+            node tests/v4-full-ui-audit.cjs
+            exit 0
+          fi
           node scripts/build-v4-beta-preview.cjs
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/mbp-test-server.log 2>&1 &
           node tests/mbp-smoke.cjs
@@ -43,7 +58,7 @@ jobs:
           node tests/v4-full-ui-audit.cjs
           node tests/v4-v37-full-migration.cjs
       - name: Conserver le paquet beta de demonstration (non deploye)
-        if: success()
+        if: success() && github.ref != 'refs/heads/v4/release-candidate-production'
         uses: actions/upload-artifact@v4
         with:
           name: mon-budget-v4-beta2-preview
