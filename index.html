@@ -3482,7 +3482,10 @@ q('v32recent')?.addEventListener('click',e=>{
 const txDialog=q('txdialog');const txForm=q('txform');if(txDialog&&txForm){const del=document.createElement('button');del.type='button';del.className='btn danger v36-delete-tx';del.textContent='Supprimer cette opération';del.style.cssText='margin-top:8px;width:100%';txForm.append(del);del.addEventListener('click',async()=>{
  const id=editingTx;if(!id||!data||del.disabled)return;
  if(!data.transactions.some(t=>String(t.id)===String(id)))return;
- if(!await mbpConfirm('Supprimer cette opération ?'))return;
+ const tx=data.transactions.find(t=>String(t.id)===String(id));
+ const txLabel=String(tx?.name||tx?.cat||'cette opération').trim();
+ const txAmount=fmt(Number(tx?.amount)||0);
+ if(!await mbpConfirm('Supprimer '+txLabel+' — '+txAmount+' ?'))return;
  del.disabled=true;
  const before=data.transactions;
  data.transactions=before.filter(t=>String(t.id)!==String(id));
@@ -4349,7 +4352,7 @@ html,body{overflow-x:clip!important;}
 <script id="mbp376-finishing">
 (()=>{'use strict';
  const text1='Espace personnel et confidentiel';
- const text2='Mon Budget Privé · v3.7 bêta 9';
+ const text2='Mon Budget Privé · V4 Bêta 2 (test)';
  const desiredHelp='Conserve ta phrase secrète en lieu sûr. Si tu l’oublies, seule une sauvegarde chiffrée avec son mot de passe te permettra de restaurer tes données.';
  function fixFooter(){
   const footer=document.querySelector('.v32-lock-footer');
@@ -4378,7 +4381,7 @@ html,body{overflow-x:clip!important;}
  if(unlock){new MutationObserver(()=>fix()).observe(unlock,{attributes:true,attributeFilter:['class']});}
  // Display-only version label (never reaches encrypted vault).
  document.querySelectorAll('#settings .v262-version').forEach(el=>{
-  el.textContent=el.textContent.replace(/Version\s+3\.7\s+bêta\s+\d+/gi,'Version 3.7 bêta 6');
+  el.textContent='Mon Budget Privé · V4 Bêta 2 · Données chiffrées localement';
  });
 })();
 </script>
@@ -4576,7 +4579,7 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
  'use strict';
  const note=document.createElement('p');
  note.id='mbpV4BetaNotice';
- note.textContent='V4 Bêta 1 — coffre de test indépendant. Les données V3.7 ne sont pas chargées automatiquement. Pour reprendre une sauvegarde, utilise l’import chiffré depuis le Profil.';
+ note.textContent='V4 Bêta 2 — coffre de test indépendant. Les données V3.7 ne sont pas chargées automatiquement. Pour reprendre une sauvegarde, utilise l’import chiffré depuis le Profil.';
  for(const id of ['setup','unlock']){
   const panel=document.getElementById(id);
   if(panel)panel.insertBefore(note.cloneNode(true),panel.children[1]||null);
@@ -4586,4 +4589,50 @@ input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"]{
  copies.forEach((el,i)=>{if(i)el.id='mbpV4BetaNoticeUnlock'});
 })();
 </script>
+
+<style id="mbp-v4-beta2-polish">
+/* Ice Glass B2: restrained navy-blue accents without violet status chips. */
+#setup:not(.hidden),#unlock:not(.hidden){
+ background:linear-gradient(150deg,#243750,#162437 80%)!important;
+ border-color:rgba(135,172,213,.42)!important;
+}
+#setup .notice,#unlock .notice{
+ background:linear-gradient(135deg,rgba(41,65,90,.72),rgba(28,48,68,.86))!important;
+ border-left:3px solid #719dc4!important;
+ border-color:rgba(120,164,211,.30)!important;
+ color:#d4e3f4!important;
+}
+#setup #create,#unlock #open{
+ background:linear-gradient(145deg,#385c83,#2e4d70)!important;
+ border:1px solid #668cb5!important;color:#f7fbff!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 7px 18px rgba(7,19,37,.18)!important;
+}
+#setup input,#unlock input{
+ background:#101e31!important;border-color:#4e6986!important;
+}
+#v32tasks .v33-status:not(.done),#v33wealthtask .v33-status:not(.done){
+ background:#273a50!important;border:1px solid #557391!important;
+ color:#d4e6f8!important;box-shadow:none!important;
+}
+#nav button[data-tab].active{
+ background:linear-gradient(145deg,rgba(79,137,194,.32),rgba(52,100,151,.20))!important;
+ border-color:rgba(145,190,232,.43)!important;
+}
+#v30profile .v30-subnav button.active{
+ background:linear-gradient(145deg,rgba(74,127,180,.34),rgba(57,100,151,.22))!important;
+ border-color:#7da6cf!important;
+}
+#mbp-ui-dialog .mbpu-actions button.mbpu-primary.mbpu-destructive[data-act="accept"]{
+ background:#8b3343!important;background-image:none!important;
+ color:#fff3f5!important;border:1px solid #b85c6d!important;
+ box-shadow:none!important;
+}
+#mbp-ui-dialog .mbpu-actions button.mbpu-primary.mbpu-destructive[data-act="accept"]:active{
+ background:#a13e51!important;
+}
+#txdialog .v36-delete-tx{
+ background:#6d2e3b!important;background-image:none!important;
+ color:#ffe6eb!important;border-color:#a24b5d!important;
+}
+</style>
 </body></html>
